@@ -1,0 +1,63 @@
+function simulateJoinPlatoon()
+moving obstacle = getPlatoonTrajectory(time horizon)
+moving target = getMovingTarget(moving obstacle)
+time varying reach-avoid set = solveHJI2(moving obstacle, moving target)
+
+safe reachable set = solveHJI1()
+
+% TQ <- this quadrotor
+while 1
+	if mode of TQ is free
+		u = joinPlatoon(platoon, time varying reach-avoid set)
+		updateState(u)
+	end
+	
+	if mode of TQ is follower
+		u = followPlatoon(platoon, separation)
+		updateState(u)
+	end
+end
+end function
+
+% -------------------
+function u = joinPlatoon(platoon, time varying reach-avoid set)
+% Inputs:
+%   platoon object
+%   time vary reach-avoid set computed from
+%      moving obstacle = region around moving platoon
+%      moving target set = region behind moving platoon
+%
+% Output:
+%   control for one time step
+
+% TQ <- this quadrotor
+LQ = last quadrotor of platoon
+
+while mode of TQ is free
+	if TQ is outside reach-avoid set
+		u = followPath(straight line path from TQ to LQ)
+	else
+		u = extractOptimalControl(reach-avoid set)
+	end
+	
+	if TQ is in target set
+		change mode to follower
+		add TQ to platoon
+	end
+end
+
+end function
+% ---------------
+
+function u = followPlatoon(platoon, safe reachable set)
+NQ = next quadrotor
+Leader = lead quadrotor
+
+if value of safe reachable set > threshold 
+	% u = followPath(path of next quadrotor in the last time period)
+	u = leader's control + position and velocity error feedback
+else
+	u = optimal safe control
+	set mode to leader
+end
+end function

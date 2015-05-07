@@ -1,0 +1,20 @@
+function simulateNormal()
+platoon = put some quadrotors in the correct positions and create a platoon
+
+% TQ <- this quadrotor
+while 1
+	
+	
+	for i = 1: # of quadrotors
+		if ith quadrotor is leader
+			ith quadrotor . followPath(highway path)
+		else
+			u_i = ith quadrotor . followPlatoon(platoon)
+		end
+	end
+	
+	for i = 1: # of quadrotors
+		ith quadrotor . updateState(u_i) % can be noisy
+	end
+end
+end function
