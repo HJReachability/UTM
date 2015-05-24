@@ -67,18 +67,26 @@ end
 
 % Compute value for V(t,x) on the relative velocity slice and project down
 % to 2D
+
+% Collision reachable set: reconstruct the "max" problem
 [~, ~, g6D, valueC, ~, ind] = recon2x3D(tau, g, dataC, g, dataC, [xmin xmax], t);
+
+% Velocity reachable set: take union for the "min" problem
 valueSx = eval_u(g, dataS(:,:,:,ind), [g6D.xs{1}(:) g6D.xs{2}(:) g6D.xs{3}(:)]);
 valueSy = eval_u(g, dataS(:,:,:,ind), [g6D.xs{4}(:) g6D.xs{5}(:) g6D.xs{6}(:)]);
 valueS = min(valueSx, valueSy);
 valueS = reshape(valueS, g6D.shape);
+
+% Overall safety set is the union of collision and velocity limit sets
 value = min(valueC, valueS);
 
+% Relative velocity slice
 xs = zeros(4,1);
 xs([1 3]) = obj.x(vdim)-other.x(vdim);
 xs([2 4]) = obj.x(vdim);
 
-% Shift the grid!!!
+% Take above relative velocity slice and shift the grid to be centered
+% around "other"'s position
 [g2D, value2D] = proj2D(g6D, [0 1 1 0 1 1], g6D.N([1 4]), value, xs);
 g2Dt.dim = g2D.dim;
 g2Dt.min = g2D.min + other.x(pdim);
@@ -98,6 +106,7 @@ if isempty(obj.hsafeV{other.ID}) || ~isvalid(obj.hsafeV{other.ID})
     end
     
 else
+    % If plot already exists, simply update the plot
     obj.hsafeV{other.ID}.XData = g2Dt.xs{1};
     obj.hsafeV{other.ID}.YData = g2Dt.xs{2};
     obj.hsafeV{other.ID}.ZData = value2D;

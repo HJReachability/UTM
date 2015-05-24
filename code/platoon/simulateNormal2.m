@@ -2,7 +2,7 @@ clear all; close all
 
 cvx_quiet true
 
-tEnd = 20;                  % End of simulation time
+tEnd = 0.1;                  % End of simulation time
 dt = 0.1;                   % Sampling time
 t = 0:dt:tEnd;              % Time horizon
 tsteps = 5;                 % time steps to look ahead in MPC
@@ -64,7 +64,7 @@ ylim([-25 40])
 % return
 drawnow;
 
-export_fig('E:\Normal2\1', '-png')
+% export_fig('E:\Normal2\1', '-png')
 tplot = [1.5 2.8 7 12];
 numPlots = length(tplot);
 spC = ceil(sqrt(numPlots));
@@ -152,7 +152,7 @@ for i = 2:length(t)
 
     title(['t=' num2str(t(i))])
     drawnow;
-    export_fig(['E:\Normal2\' num2str(i)], '-png')
+%     export_fig(['E:\Normal2\' num2str(i)], '-png')
 
 %     if ~isempty(tplot) && t(i) >= tplot(1)
 %         plotnum = plotnum+1;

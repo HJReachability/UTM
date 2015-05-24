@@ -2,6 +2,7 @@ classdef quadrotor < handle
 % Note: Since quadrotor is a "handle class", we can pass on
 % handles/pointers to other quadrotor objects
 % e.g. a.platoon.leader = b (passes b by reference, does not create a copy)
+% Also see constructor
 
     properties
         ID          % ID number (global, unique)
@@ -71,14 +72,36 @@ classdef quadrotor < handle
     
     properties(Constant) 
                 
-        pdim = [1 3]% Index of position state variables
-        vdim = [2 4]% Index of velocity state variables
+        pdim = [1 3] % Index of position state variables
+        vdim = [2 4] % Index of velocity state variables
         
     end
     
     methods
         function obj = quadrotor(ID, dt, x, reachInfo)
-            % Constructor
+            % obj = quadrotor(ID, dt, x, reachInfo)
+            %
+            % Constructor. Creates a quadrotor object with a unique ID,
+            % sampling time dt, state x, and reachable set information
+            % reachInfo
+            %
+            % Dynamics:
+            %    \dot{p}_x = v_x
+            %    \dot{v}_x = u_x
+            %    \dot{p}_y = v_y
+            %    \dot{v}_y = u_y
+            %       uMin <= u_x <= uMax
+            %
+            % Inputs:   ID        - unique ID of the quadrotor
+            %           dt        - sampling time
+            %           x         - state: [xpos; ypos; xvel; yvel]
+            %           reachInfo - reachable set information
+            %                    .uMax, .uMin - max and min inputs
+            %                    .vMax, .vMin - max and min velocities
+            %
+            % Output:   obj       - a quadrotor object
+            %
+            % Mo Chen, Qie Hu, 2015-05-22
             
             % Preliminary
             obj.ID = ID;
@@ -112,7 +135,7 @@ classdef quadrotor < handle
             % Dimensions
             [obj.nx, obj.nu] = size(obj.B);
             
-            % Initial state
+            % Initial state and state history
             if nargin < 3
                 obj.x = zeros(obj.nx, 1);
             else
@@ -124,7 +147,6 @@ classdef quadrotor < handle
             obj.u = zeros(obj.nu, 0);
             obj.uhist = obj.u;
             
-           
             % Handle to platoon and index if appropriate
             obj.platoon = [];
             obj.Leader = [];
@@ -137,13 +159,13 @@ classdef quadrotor < handle
             obj.mergePlatoonV = [];
             
             % Figure handles
-            obj.hpxpy = [];
-            obj.hpxpyhist = [];
-            obj.hvxvy = [];
-            obj.hvxvyhist = [];      
-			obj.hsafeV = {[],[],[],[],[]};
-            obj.hmergeHighwayV = [];
-            obj.hmergePlatoonV = [];
+            obj.hpxpy = [];                % Position
+            obj.hpxpyhist = [];            % Position history
+            obj.hvxvy = [];                % Velocity
+            obj.hvxvyhist = [];            % Velocity history
+			obj.hsafeV = {[],[],[],[],[]}; % Safe reachable sets, up to 5
+            obj.hmergeHighwayV = [];       % merge highway reachable set
+            obj.hmergePlatoonV = [];       % merge platoon reachable set
             
             % Safety indicators (assume initially safe)
             obj.safeI = true;

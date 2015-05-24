@@ -13,6 +13,16 @@ function [safe, uSafe, valuex, valueCx] = isSafe(obj, other, safeV, t)
 %          uSafe - the optimal safe controller
 %          valuex -the value of levelset function
 %
+%
+% Dynamics:
+%    \dot{p}_{x,r}   = v_{x,r}
+%    \dot{v}_{x,r}   = obj.u_x - other.u_x
+%    \dot{v}_{x,obj} = obj.u_x
+%    \dot{p}_{y,r}   = v_{y,r}
+%    \dot{v}_{y,r}   = obj.u_y - other.u_y
+%    \dot{v}_{y,obj} = obj.u_y
+%
+% Mo Chen, 2015-05-23
 
 % Unpack reachable set
 tau = safeV.tau;
@@ -29,6 +39,8 @@ vyr = obj.x(4) - other.x(4);
 vy = obj.x(4);
 x = [xr vxr vx yr vyr vy];
 
+% If the state is more than a grid point away from the computation domain,
+% then the relative system is safe
 if any(x' <= [g.min+g.dx; g.min+g.dx])
     safe = 1;
     uSafe = [0; 0];

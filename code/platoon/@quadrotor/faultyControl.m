@@ -1,8 +1,11 @@
 function uFaulty = faultyControl(obj, other, safeV)
+% function uFaulty = faultyControl(obj, other, safeV)
+% Computes faulty control of a faulty quadrotor
+%
 %faulty QR
 
 %Randomly alternate between worst case control and random control
-r = randi(100,1,1)
+% r = randi(100,1,1);
 
 
 

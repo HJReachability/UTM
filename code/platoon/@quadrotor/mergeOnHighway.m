@@ -21,8 +21,8 @@ ds = highway(1) - highway(0);
 x(2) = v*ds(1)/norm(ds);
 x(4) = v*ds(2)/norm(ds);
 
-% keyboard
 % Path to target
+% Input: s, output: 2x2 matrix; rows are endpoints
 pathToTarget = @(s) [(1-s)*obj.x(1)+s*target(1); (1-s)*obj.x(3)+s*target(2)];
 
 % Time horizon for MPC

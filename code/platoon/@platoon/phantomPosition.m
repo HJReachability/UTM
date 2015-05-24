@@ -1,7 +1,16 @@
 function xPhantom = phantomPosition(obj, highwayPath, idx)
+% function xPhantom = phantomPosition(obj, highwayPath, idx)
 %
 % Computes phantom position of a Follower
 %
+% Inputs:  obj         - current quadrotor object
+%          highwayPath - highway function handle (shoudl change to highway
+%                        object)
+%          idx         - position in platoon
+% 
+% Output:  xPhantom    - phantom position
+%
+% Mo Chen, Qie Hu, Jaime Fisac, 2015-05-24
 %
 
 % if norm(obj.Leader.x(obj.vdim)) > 0
@@ -13,9 +22,11 @@ function xPhantom = phantomPosition(obj, highwayPath, idx)
     
 % end
 
+% Get leader vehicle and highway heading
 Leader = obj.vehicle{1};
 platoonHeading = pathHeading(Leader, highwayPath);
 
+% Vehicle spacing is 3*2*sqrt(2) between each vehicle
 xPhantom = Leader.x(Leader.pdim) - ...
     3*(2*sqrt(2)) * (idx-1) * platoonHeading; %* obj.platoon.followTime;
 % xPhantom = obj.Leader.x(obj.pdim) - ...
@@ -25,7 +36,8 @@ xPhantom = Leader.x(Leader.pdim) - ...
 end
 
 function nHeading = pathHeading(Leader,highwayPath)
-% 
+% function nHeading = pathHeading(Leader,highwayPath)
+%
 % Computes a normalized vector nHeading along direction of
 % highwayPath at location of Leader.
 

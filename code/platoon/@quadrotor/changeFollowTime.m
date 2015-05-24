@@ -1,4 +1,7 @@
 function [ u, x, tau1 ] = changeFollowTime (obj, tau0)
+%------------
+% UNUSED
+%-------------
 
 % Request to change following/separation time to the vehicle in the front 
 % to tau0 seconds. 

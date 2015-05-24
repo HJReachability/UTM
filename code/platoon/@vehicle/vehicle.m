@@ -1,5 +1,9 @@
 classdef vehicle < handle
-    
+% ----------
+% UNUSED 
+% ----------
+% This was supposed to be for the 10D quadrotor model
+
     properties
         ID          % ID number (global, unique)
         

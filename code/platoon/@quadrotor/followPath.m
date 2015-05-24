@@ -15,10 +15,13 @@ function [u1, u] = followPath(obj, tsteps, rpath, v)
 %               MPC)
 %          u  - entire control function from optimization
 %
-% keyboard
-s0 = firstPathPoint(rpath, obj.x);
+% Mo Chen, 2015-05-23
 
-if numel(v) == 1
+% Find closest point on the path to current position
+s0 = firstPathPoint(obj, rpath);
+
+% Reference velocity
+if numel(v) == 1  % Convert to velocity along the highway if needed
     deltas = rpath(1) - rpath(0);
     dirx = deltas(1)/norm(deltas);
     diry = deltas(2)/norm(deltas);
@@ -26,7 +29,7 @@ if numel(v) == 1
 else
     vref = v;
 end
-% vref
+
 % ----- BEGIN CVX -----
 cvx_begin
 variable p(2, tsteps)     % sequence of vehicle positions
@@ -67,12 +70,22 @@ u1 = u(:,1);
 end
 
 
-function s0 = firstPathPoint(rpath, x)
+function s0 = firstPathPoint(obj, rpath)
 % function s0 = firstPathPoint(rpath, x)
 %
-% Computes the point ppath on rpath that is closest to the state x.
+% Computes the parameter s0 on rpath that is closest to the current
+% position
+%
+% Inputs:  obj   - current quadrotor object
+%          rpath - a straight line path
+%
+% Output:  s0    - path parameter: rpath(s0) gives the position closest to
+%                  obj.x(p.dim)
+%
+% Mo Chen, 2015-05-23
 
-p = x([1 3]); % Position components
+x = obj.x;
+p = x(obj.pdim); % Position components
 
 N = 1000;
 s = linspace(0,1,N);

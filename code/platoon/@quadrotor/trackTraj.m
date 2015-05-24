@@ -1,4 +1,7 @@
 function u = trackTraj(obj, traj, traj_t, t0, T)
+% ---------
+% UNUSED
+% -----------
     % Track a trajectory
     % traj should be a sequence of [x;y] values with each column being a
     % time point

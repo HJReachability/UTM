@@ -66,14 +66,14 @@ u = obj.Leader.u ...
 u = max(u, obj.uMin);
 u = min(u, obj.uMax);
     
-% Speed limit
-if obj.x(obj.vdim(1)) > obj.vMax || obj.x(obj.vdim(1)) < obj.vMin
-    u(1) = 0;
-end
-
-if obj.x(obj.vdim(2)) > obj.vMax || obj.x(obj.vdim(2)) < obj.vMin
-    u(2) = 0;
-end
+% % Speed limit
+% if obj.x(obj.vdim(1)) > obj.vMax || obj.x(obj.vdim(1)) < obj.vMin
+%     u(1) = 0;
+% end
+% 
+% if obj.x(obj.vdim(2)) > obj.vMax || obj.x(obj.vdim(2)) < obj.vMin
+%     u(2) = 0;
+% end
 
 % elseif ~safeF & safeB
     % accelerate away from FQ and take over rest of platoon

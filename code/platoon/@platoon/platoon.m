@@ -23,7 +23,9 @@ classdef platoon < handle
     
     methods
         function obj = platoon(leader,nmax,followTime)
-            % Constructor
+            % function obj = platoon(leader,nmax,followTime)
+            % Constructor for platoon object
+            %
             if nargin<2, nmax = 5; end
 			obj.nmax = nmax;
 			
@@ -47,6 +49,7 @@ classdef platoon < handle
         end
                 
         function annex(obj,platoon) % Append trailing platoon at the back of obj
+            % UNUSED?? Should put this in a separate file
             
             if platoon.FP ~= obj
                 warning([
