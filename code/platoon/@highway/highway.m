@@ -16,7 +16,7 @@ classdef highway < handle
         % highway connections/segways
         connections % n by 2 cell structure
         % {s0, i/o, {hw0, s_onhw0};
-        %  s1, i/o, {hw1, s_onhw1}; ... 
+        %  s1, i/o, {hw1, s_onhw1}; ...
         %                      }
         
         speed % highway travel speed
@@ -27,44 +27,59 @@ classdef highway < handle
     
     methods
         function obj = highway(z0, z1, speed, width)
-            if nargin<3
-                speed = 3;
+            % function obj = highway(z0, z1, speed, width)
+            % Constructor for highway class
+            %
+            % Inputs:  z0     - starting point (in 2D)
+            %          z1     - ending point
+            %          speed  - speed of travel
+            %          width  - width of highway
+            %
+            % Output:  obj    - highway object
+            %
+            % Mo Chen, 2015-05-25
+            
+            % Default speed and width
+            if nargin<3, obj.speed = 3; 
+            else         obj.speed = speed;
             end
             
-            if nargin<4
-                width = 6;
+            if nargin<4, obj.width = 6; 
+            else         obj.width = width;
             end
             
             % function handle representing highway
-            obj.fn = generateFn(z0, z1);
+            obj.z0 = z0;
+            obj.z1 = z1;
+            obj.fn = obj.generateFn;
             
             % compute highway heading
-            obj.ds = zero(2,1);
-            for i = 1:2
-                obj.ds(i) = z1(i) - z0(i);
-            end
+            obj.ds = zeros(2,1);
+            for i = 1:2, obj.ds(i) = z1(i) - z0(i); end
             obj.ds = obj.ds / norm(obj.ds);
             
             warning('Need to specify connections property')
         end
         
-        function fn = generateFn(z0, z1)
-            x0 = z0(1);
-            y0 = z0(2);
-            
-            x1 = z1(1);
-            y1 = z1(2);
-            
-            fn = @(s) [(1-s)*x0 + s*x1; (1-s)*y0 + s*y1];
+        function fn = generateFn(obj)
+            % function fn = generateFn(z0, z1)
+            %
+            % Computes the function handle that describes the highway
+            %
+            % Inputs:  z0, z1 - starting and ending points
+            %
+            % Output:  fn     - function handle for the highway
+            %             fn(s) specifies a point on the highway
+            %                fn(0) = z0, fn(1) = z1
+            %                fn(s), 0<s<1 picks a point between z0 and z1, with
+            %                             linear spacing
+            %
+            % Mo Chen, 2015-05-25
+            z0 = obj.z0;
+            z1 = obj.z1;
+            fn = @(s) [(1-s)*z0(1) + s*z1(1); (1-s)*z0(2) + s*z1(2)];
         end
         
-        function s = highwayPos(z)
-            % Returns position on highway given absolute position
-            % (orthogonal projection)
-            %
-            % Returns -1 if given position is outside of the width of the
-            % highway
-        end
     end
     
 end
