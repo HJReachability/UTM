@@ -2,7 +2,7 @@ clear all; close all
 
 cvx_quiet true
 
-tEnd = 0.1;                  % End of simulation time
+tEnd = 2;                  % End of simulation time
 dt = 0.1;                   % Sampling time
 t = 0:dt:tEnd;              % Time horizon
 tsteps = 5;                 % time steps to look ahead in MPC

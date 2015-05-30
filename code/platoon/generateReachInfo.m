@@ -1,7 +1,7 @@
 function [reachInfo, safeV] = generateReachInfo( filename )
 
 if nargin < 1
-    filename = 'quad3D.mat';
+    filename = '../../data/quad3D.mat';
 end
 
 load(filename)
