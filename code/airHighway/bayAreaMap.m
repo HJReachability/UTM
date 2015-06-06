@@ -89,7 +89,7 @@ IC = [0.1354 -0.4431; ...   % San Francisco
     0.7323 -0.2338;         % San Mateo
     0.7723 0.5169];         % Fremont
 
-P = extractCostates(g,u, true);   % Gradient of value function
+P = extractCostates(g,u, @upwindFirstWENO5, true);   % Gradient of value function
 
 % Compute shortest paths to target
 spath = cell(size(IC,1),1);
