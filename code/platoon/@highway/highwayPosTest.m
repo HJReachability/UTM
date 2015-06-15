@@ -1,8 +1,11 @@
 function highwayPosTest(obj, z)
 % function highwayPosTest(obj, z)
-% Test routine for highwayPos; plots the results
+% Test routine for highwayPos(); plots the results
+% Also uses hwPlot()
 %
 % Mo Chen, 2015-05-25
+
+if nargin < 2, z = [1 0]; end
 
 disp('Testing highwayPos()')
 
@@ -11,7 +14,7 @@ disp('Testing highwayPos()')
 
 figure;
 % Plot highway and closest point
-plot([obj.z0(1) obj.z1(1)], [obj.z0(2) obj.z1(2)], 'k--'); hold on
+obj.hwPlot; hold on
 fs = obj.fn(s);
 plot(fs(1), fs(2), 'k*')
 

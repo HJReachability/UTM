@@ -23,11 +23,10 @@ Nqr = length(qr);
 u = zeros(2,Nqr);
 
 % Highway
-x0 = -30;    x1 = 80;
-y0 = 0.5*x0; y1 = 0.5*x1;
-highway = @(s) [(1-s)*x0 + s*x1; (1-s)*y0 + s*y1];
+z1 = [-30 -15];
+z2 = [80 40];
+hw = highway(z1, z2, v);
 target = [4 2];
-highwayd = highway([0 1]);
 
 % Visualize initial set
 f1 = figure;
@@ -35,7 +34,7 @@ f2 = figure;
 
 figure(f1)
 % subplot(1,2,1)
-hhw = plot(highwayd(1,:), highwayd(2,:), 'k--'); hold on
+hw.hwPlot; hold on
 
 colors = {'r', 'b', 'k', [0 0.5 0], [1 0 1]};
 for j = 1:Nqr
@@ -48,7 +47,7 @@ end
 
 xlabel('x');    ylabel('y');
 
-ds = highway(1) - highway(0);
+ds = hw.ds;
 vx = v*ds(1)/norm(ds);
 vy = v*ds(2)/norm(ds);
 
@@ -81,20 +80,20 @@ for i = 2:length(t)
                 
                 if j == pj
                     disp('Leading')
-                    u(:,j) = qr(j).followPath(tsteps, highway, v);
+                    u(:,j) = qr(j).followPath(tsteps, hw, v);
                 else
                     if isempty(qr(j).platoon)
                         disp('Merging into platoon')
                         u(:,j) = qr(j).mergeWithQuadrotor( ...
-                            qr(pj), highway, v);
+                            qr(pj), hw, v);
                     else
                         disp('Following platoon')
-                        u(:,j) = qr(j).followPlatoon(highway);
+                        u(:,j) = qr(j).followPlatoon(hw);
                     end
                 end
             else
                 disp('No platoon.')
-                u(:,j) = qr(j).mergeOnHighway(highway, target, v);
+                u(:,j) = qr(j).mergeOnHighway(hw, target, v);
             end
         else
             disp([num2str(j) 'is unsafe!'])

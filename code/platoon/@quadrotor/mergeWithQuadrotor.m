@@ -1,4 +1,4 @@
-function u = mergeWithQuadrotor(obj, other, highway, v)
+function u = mergeWithQuadrotor(obj, other, hw, v)
 % function u = mergeOnHighway(x, v, highway)
 %
 % Inputs:  target  - target position on highway (row vector)
@@ -20,11 +20,11 @@ x = zeros(4,1);
 x(vdim) = [0 0];
 
 % Direction of highway
-ds = highway(1) - highway(0);
-vxh = v*ds(1)/norm(ds);
-vyh = v*ds(2)/norm(ds);
+ds = hw.ds; % Normalized direction
+vxh = v*ds(1);
+vyh = v*ds(2);
 
-x(pdim) = other.platoon.phantomPosition(highway, obj.idx) - other.x(pdim);
+x(pdim) = other.platoon.phantomPosition(hw, obj.idx) - other.x(pdim);
 % keyboard
 % Time horizon for MPC
 tsteps = 5;
@@ -64,7 +64,7 @@ if strcmp(obj.q, 'Free')
         %             % Add current vehicle to platoon
         %             obj.platoon.vehicle{obj.idx} = obj;
         obj.joinPlatoon(other.platoon);
-        u = obj.followPlatoon(highway);
+        u = obj.followPlatoon(hw);
     else
         [valuex, gradx, ~, ~, ~, ind] = recon2x2D(tau, g1, datax, g2, datay, obj.x-other.x);
         %             keyboard
@@ -78,18 +78,15 @@ if strcmp(obj.q, 'Free')
         else
             disp('Open-loop')
             % Path to target
-            xPhantom = other.platoon.phantomPosition(highway, obj.idx);
+            xPhantom = other.platoon.phantomPosition(hw, obj.idx);
             
-            pathToOther = @(s) [(1-s) * obj.x(pdim(1)) + ...
-                s     * xPhantom(1); ...
-                (1-s) * obj.x(pdim(2))+ ...
-                s     * xPhantom(2)];
+            pathToOther = highway(obj.x(pdim), xPhantom);
             
-            ds = pathToOther([0 1]);
-            vxp = v*ds(1)/norm(ds);
-            vyp = v*ds(2)/norm(ds);
-            vx = 0.75*vxp + 0.75*vxh;
-            vy = 0.75*vyp + 0.75*vyh;
+            ds = pathToOther.ds;
+            vxp = v*ds(1);
+            vyp = v*ds(2);
+%             vx = 0.75*vxp + 0.75*vxh;
+%             vy = 0.75*vyp + 0.75*vyh;
             %                 u = obj.followPath(tsteps, pathToOther, [vx; vy]);
             u = obj.followPath(tsteps, pathToOther, v);
             %                 pathToOtherd = pathToOther([0 1]);
@@ -119,7 +116,7 @@ elseif strcmp(obj.q, 'EmergLeader')
     % follow highway; otherwise, get to the highway
     if abs(x-(obj.x-other.x))<=1.1*[g1.dx;g2.dx]
         obj.joinPlatoon(other.platoon);
-        u = obj.followPlatoon(highway);
+        u = obj.followPlatoon(hw);
     else
         % Check to see if we're in reachable set
         [valuex, gradx, ~, ~, ~, ind] = recon2x2D(tau, g1, datax, g2, datay, obj.x-other.x);
@@ -132,7 +129,7 @@ elseif strcmp(obj.q, 'EmergLeader')
         else           % Otherwise, simply head to target in a straight line
             disp('Open-loop')
             % Path to target
-            xPhantom = other.platoon.phantomPosition(highway, obj.ID);
+            xPhantom = other.platoon.phantomPosition(hw, obj.ID);
             
             pathToOther = @(s) [(1-s) * obj.x(pdim(1)) + ...
                 s     * xPhantom(1); ...
@@ -154,7 +151,7 @@ elseif strcmp(obj.q, 'EmergLeader')
     
 elseif strcmp(obj.q, 'Follower')
     warning('Vehicle is already a follower!')
-    u = obj.followPlatoon(highway);
+    u = obj.followPlatoon(hw);
     
 elseif strcmp(obj.q, 'Leader')
     error('Vehicle is already a leader!')

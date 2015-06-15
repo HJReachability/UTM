@@ -3,7 +3,7 @@ classdef highway < handle
     %   Detailed explanation goes here
     
     properties
-        % endpoints: z0, z1
+        % endpoints: z0, z1, always converted to 2x1 array
         z0
         z1
         
@@ -22,6 +22,8 @@ classdef highway < handle
         speed % highway travel speed
         
         width
+        
+        h % plot handle
     end
     
     
@@ -49,6 +51,18 @@ classdef highway < handle
             end
             
             % function handle representing highway
+            if numel(z0) ~= 2
+                error('Starting point must be in 2D!')
+            elseif size(z0,1) ~= 2
+                z0 = z0';
+            end
+            
+            if numel(z1) ~= 2
+                error('Ending point must be in 2D!')
+            elseif size(z1,1) ~= 2
+                z1 = z1';
+            end
+            
             obj.z0 = z0;
             obj.z1 = z1;
             obj.fn = obj.generateFn;
@@ -80,6 +94,7 @@ classdef highway < handle
             fn = @(s) [(1-s)*z0(1) + s*z1(1); (1-s)*z0(2) + s*z1(2)];
         end
         
+
     end
     
 end

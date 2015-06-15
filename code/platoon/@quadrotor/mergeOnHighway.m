@@ -1,4 +1,4 @@
-function u = mergeOnHighway(obj, highway, target, v)
+function u = mergeOnHighway(obj, hw, target, v)
 % function u = mergeOnHighway(x, v, highway)
 %
 % Inputs:  target  - target position on highway (row vector)
@@ -17,13 +17,13 @@ x = zeros(1,4);
 x([1 3]) = target;
 
 % Direction of highway
-ds = highway(1) - highway(0);
-x(2) = v*ds(1)/norm(ds);
-x(4) = v*ds(2)/norm(ds);
+ds = hw.ds; % Normalized direction
+x(2) = v*ds(1);
+x(4) = v*ds(2);
 
 % Path to target
 % Input: s, output: 2x2 matrix; rows are endpoints
-pathToTarget = @(s) [(1-s)*obj.x(1)+s*target(1); (1-s)*obj.x(3)+s*target(2)];
+pathToTarget = highway(obj.x(obj.pdim), target);
 
 % Time horizon for MPC
 tsteps = 5;
@@ -57,7 +57,7 @@ switch obj.q
             obj.Leader = obj;           % Leader pointer
             obj.idx = 1;
             
-            u = obj.followPath(tsteps, highway, v);
+            u = obj.followPath(tsteps, hw, v);
         else
         % Otherwise, compute V(t,obj.x) at the first t such at V(t,obj.x)<=0
             [valuex, gradx] = recon2x2D(tau, g, datax, g, datay, obj.x);
@@ -75,7 +75,7 @@ switch obj.q
 
     case 'Leader'
         warning('Vehicle is already a leader!')
-        u = obj.followPath(tsteps, highway, v);
+        u = obj.followPath(tsteps, hw, v);
         
     case 'Follower'
         error('Vehicle is already a follower!')

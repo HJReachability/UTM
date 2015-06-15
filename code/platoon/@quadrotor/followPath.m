@@ -1,4 +1,4 @@
-function [u1, u] = followPath(obj, tsteps, rpath, v)
+function [u1, u] = followPath(obj, tsteps, highway, v)
 % function [u1, u] = followPath(obj, tsteps, rpath, v)
 %
 % Computes the next control input to follow the path rpath
@@ -18,14 +18,11 @@ function [u1, u] = followPath(obj, tsteps, rpath, v)
 % Mo Chen, 2015-05-23
 
 % Find closest point on the path to current position
-s0 = firstPathPoint(obj, rpath);
+s0 = firstPathPoint(obj, highway.fn);
 
 % Reference velocity
 if numel(v) == 1  % Convert to velocity along the highway if needed
-    deltas = rpath(1) - rpath(0);
-    dirx = deltas(1)/norm(deltas);
-    diry = deltas(2)/norm(deltas);
-    vref = v * [dirx; diry];
+    vref = v * highway.ds;
 else
     vref = v;
 end
@@ -57,7 +54,7 @@ for i = 2:tsteps
     s(i) == s(i-1) + ds(i-1)                            % Advanced on path
 end
 
-r == rpath(s)
+r == highway.fn(s)
 obj.uMin <= u <= obj.uMax              % Control bounds
 % obj.vMin <= v <= obj.vMax                 % Velocity bounds
 0 <= s <= 1
