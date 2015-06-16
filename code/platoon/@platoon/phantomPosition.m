@@ -1,11 +1,10 @@
-function xPhantom = phantomPosition(obj, hw, idx)
+function xPhantom = phantomPosition(obj, idx)
 % function xPhantom = phantomPosition(obj, highwayPath, idx)
 %
 % Computes phantom position of a Follower
 %
 % Inputs:  obj      - current quadrotor object
-%          hw       - highway object
-%          idx      - position in platoon
+%          idx      - position in platoon (leader has idx = 1)
 % 
 % Output:  xPhantom - phantom position
 %
@@ -27,7 +26,7 @@ Leader = obj.vehicle{1};
 
 % Vehicle spacing is 3*2*sqrt(2) between each vehicle
 xPhantom = Leader.x(Leader.pdim) - ...
-    3*(2*sqrt(2)) * (idx-1) * hw.ds; %* obj.platoon.followTime;
+    3*(2*sqrt(2)) * (idx-1) * obj.hw.ds; %* obj.platoon.followTime;
 % xPhantom = obj.Leader.x(obj.pdim) - ...
 %     (obj.platoon.followTime * norm(obj.Leader.x(obj.vdim))+2*2+1) * (obj.idx-1) * platoonHeading;
 

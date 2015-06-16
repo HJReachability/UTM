@@ -4,10 +4,10 @@ classdef platoon < handle
         
         ID                      % ID of platoon 
         
-        IDvehicle    % IDs of all vehicles in platoon (global, unique)
-        
         vehicle     % Handles to all vehicles in platoon
-                                
+        
+        hw  % handle to the highway the platoon is on
+        
         n                       % Number of vehicles in platoon
         
         nmax                    % Maximum allowable number of vehicles in platoon
@@ -22,22 +22,26 @@ classdef platoon < handle
     end
     
     methods
-        function obj = platoon(leader,nmax,followTime)
+        function obj = platoon(leader, hw, nmax,followTime)
             % function obj = platoon(leader,nmax,followTime)
             % Constructor for platoon object
             %
-            if nargin<2, nmax = 5; end
+            % Must specify a leader and a highway
+            %
+            
+            if nargin<3, nmax = 5; end
 			obj.nmax = nmax;
 			
-            if nargin<3, followTime = 2; end
+            if nargin<4, followTime = 2; end
             obj.followTime = followTime;
 			
             % Preliminary
             obj.ID = leader.ID; 
             obj.n = 1;
 			
-            obj.IDvehicle{1} = leader.ID;
-            obj.vehicle{1} = leader;
+            obj.vehicle = leader;
+            
+            obj.hw = hw;
             
             % Set FQ to itself for leader
             leader.FQ = leader;

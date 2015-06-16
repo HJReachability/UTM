@@ -1,16 +1,13 @@
 function u = mergeWithQuadrotor(obj, other, hw, v)
-% function u = mergeOnHighway(x, v, highway)
+% function u = mergeWithQuadrotor(obj, other, hw, v)
 %
-% Inputs:  target  - target position on highway (row vector)
-%          v       - target speed on highway
-%          highway - highway to merge onto
-%                    should be a function handle that takes s as input and
-%                    outputs points on the path rpath(s); returns a column
-%                    vector
+% Inputs:  obj, other - quadrotor objects
+%          hw         - highway object
+%          v          - target speed on highway
 %
 % Output: u - control signal to merge onto highway
 %
-% Mar. 9, 2015, Mo
+% 2015-06-14, Mo
 
 pdim = obj.pdim;
 vdim = obj.vdim;

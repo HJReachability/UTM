@@ -1,10 +1,17 @@
-function [s, dist] = highwayPos(obj, z)
-% function s = highwayPos(obj, z)
+function [s, dist, x] = highwayPos(obj, z)
+% function [s, dist, x] = highwayPos(obj, z)
 %
 % Returns position on highway given absolute position z
 % (orthogonal projection)
 %
-% Mo Chen, 2015-05-25
+% Inputs:  obj  - highway object
+%          z    - absolute position (eg. current vehicle position)
+%
+% Outputs: s    - location on highway (highway parameter between 0 and 1)
+%          dist - distance from z nearest location on highway
+%          x    - absolute location on highway
+% 
+% Mo Chen, 2015-06-15
 
 % Unpack endpoints for convenience
 x1 = obj.z0(1); y1 = obj.z0(2);
@@ -47,6 +54,8 @@ else
         s = 1;
     end
 end
+
+x = [xi yi];
 
 % return
 % % Compute this numerically so that it's general enough for

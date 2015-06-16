@@ -48,8 +48,8 @@ end
 xlabel('x');    ylabel('y');
 
 ds = hw.ds;
-vx = v*ds(1)/norm(ds);
-vy = v*ds(2)/norm(ds);
+vx = v*ds(1);
+vy = v*ds(2);
 
 title(['t=' num2str(t(1))])
 axis equal
