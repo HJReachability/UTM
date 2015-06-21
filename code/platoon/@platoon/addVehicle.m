@@ -1,9 +1,22 @@
 function addVehicle(obj, reachInfo, nextID)
-% Adds a vehicle to the back of the platoon
+% function addVehicle(obj, reachInfo, nextID)
+%
+% Adds a vehicle to the back of the platoon. A new vehicle will be created!
+% (as opposed to assimVehicle(), careful!)
+% This function is mainly for conveniently initializing a platoon. Also see
+% popPlatoon.m
+%
+% Inputs: obj       - platoon object
+%         reachInfo - reachability information to put into the vehicle
+%                     being added
+%         nextID    - the ID of the new vehicle being added
+%
+% Mo Chen, 2015-06-21
 
 % Check maximum allowed number of quadrotors
 if obj.n >= obj.nmax
-    error('Maximum number of vehicles reached! Cannot add more!')
+    warning('Maximum number of vehicles reached! Cannot add more!')
+    return
 end
 
 % By default, the ID for the new quadrotor should be one after the maximum
@@ -15,21 +28,24 @@ end
 
 dt = 0.1; % Hard coded... might get dangerous later on
 
+% Create a quadrotor
+x = zeros(4,1);
 if nargin<2 % If no reachInfo is specified, use default
-    % Create quadrotor at the next phantom position
-    x = obj.phantomPosition(obj, obj.n + 1);
-    qr = quadrotor(nextID, dt, x);    
+    % Create quadrotor at the next phantom position at the same speed as
+    % the leader
+    x(obj.vehicle(1).pdim) = obj.phantomPosition(obj.n + 1);
+    x(obj.vehicle(1).vdim) = obj.vehicle(1).x(obj.vehicle(1).vdim);
     
-    % Update platoon fields
-    obj.n = obj.n + 1;
-    obj.vehicle = [obj.vehicle; qr];
+    qr = quadrotor(nextID, dt, x);        
 else
     % Create quadrotor at the next phantom position
-    x = obj.phantomPosition(obj, obj.n + 1);
+    x(obj.vehicle(1).pdim) = obj.phantomPosition(obj.n + 1);
+    x(obj.vehicle(1).vdim) = obj.vehicle(1).x(obj.vehicle(1).vdim);
+    
     qr = quadrotor(nextID, dt, x, reachInfo);    
     
-    % Update platoon fields
-    obj.n = obj.n + 1;
-    obj.vehicle = [obj.vehicle; qr];
 end
+
+% Assimilate the quadrotor into the platoon
+obj.assimVehicle(qr);
 end

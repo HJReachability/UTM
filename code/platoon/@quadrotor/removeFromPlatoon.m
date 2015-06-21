@@ -1,4 +1,5 @@
 function removeFromPlatoon(obj)
+% UNUSED???
 % Remove QR from platoon and treat as intruder
 
 

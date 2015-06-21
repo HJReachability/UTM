@@ -19,6 +19,7 @@ qr = [qr1; qr2];
 
 Nqr = length(qr);
 u = zeros(2,Nqr);
+colors = lines(Nqr);
 
 % Highway
 z0 = [-30 -15];
@@ -36,15 +37,15 @@ f2 = figure;
 figure(f1)
 % subplot(1,2,1)
 hw.hwPlot; hold on
-ht = plot(target(1), target(2), 'ro');
+ht = plot(target(1), target(2), 'color', colors(1,:,:));
 
-colors = {'r', 'b', 'k', [0 0.5 0], [1 0 1]};
+
 for j = 1:Nqr
-%     subplot(1,2,1)
-    qr(j).plotPosition(colors{j});
-%     
-%     subplot(1,2,2)
-%     qr(j).plotVelocity(colors{j});
+    %     subplot(1,2,1)
+    qr(j).plotPosition(colors(j,:,:));
+    %
+    %     subplot(1,2,2)
+    %     qr(j).plotVelocity(colors{j});
 end
 
 
@@ -73,86 +74,83 @@ spR = ceil(numPlots/spC);
 plotnum = 0;
 
 for i = 2:length(t)
-%     [qr(1).x(2) qr(1).x(4) sqrt(qr(1).x(2)^2 + qr(1).x(4)^2)]
     for j = 1:Nqr % Each quadrotor
-        
         % Check safety
-        
         if j>1, [safe, uSafe] = qr(j).isSafe(qr(j-1), safeV);
         else     safe         = 1;
         end
         
         if safe
-%             disp([num2str(j) 'is safe'])
-            
-            if ~isempty([qr.platoon]) % If there's a platoon
-%                 keyboard
-                disp('Platoon!')
-                p = [qr.platoon];
-                pj = p.ID;
-                
-                if j == pj
+            if ~isempty(hw.ps) % If there's a platoon
+                if strcmp(qr(j).q, 'Leader')
                     disp('Leading')
                     u(:,j) = qr(j).followPath(tsteps, hw, v);
-                else
-                    if isempty(qr(j).platoon)
+                    
+                else % if strcmp(qr(j).q, 'Leader')
+                    if strcmp(qr(j).q, 'Free')
                         disp('Merging into platoon')
-                        u(:,j) = qr(j).mergeWithQuadrotor( ...
-                            qr(pj).platoon.vehicle{qr(pj).platoon.n}, ...
-                            hw, v);
-                    else
+                        u(:,j) = qr(j).mergeWithPlatoon(hw.ps);
+                        
+                    elseif strcmp(qr(j).q, 'Follower') % if isempty(qr(j).platoon)
                         disp('Following platoon')
-                        u(:,j) = qr(j).followPlatoon(hw);
-                    end
-                end
-            else
+                        u(:,j) = qr(j).followPlatoon;
+                        
+                    else
+                        error('Unknown mode!')
+                        
+                    end % if isempty(qr(j).platoon)
+                    
+                end % if strcmp(qr(j).q, 'Leader')
+                
+            else % if ~isempty(hw.ps)
                 disp('No platoon.')
-                u(:,j) = qr(j).mergeOnHighway(hw, target, v);
-            end
-        else
+                u(:,j) = qr(j).mergeOnHighway(hw, target);
+                
+            end % if ~isempty(hw.ps)
+        else % if safe
             disp([num2str(j) 'is unsafe!'])
             u(:,j) = uSafe;
-        end
-    end
+        end % if safe
+    end % for j = 1:Nqr
     
     figure(f1)
     for j = 1:Nqr
         qr(j).updateState(u(:,j));
-        qr(j).plotPosition();
-        
-%         qr(j).plotVelocity();
-        
-        if j>1
-
-            if ~isempty(qr(1).platoon)
-                delete(qr(j-1).hsafeV{j});
-                delete(ht);
-                qr(j).plotSafeV(qr(j-1), safeV);
-                qr(j).plotMergePlatoonV(qr(1), hw);
-                
-                xPh = qr(1).platoon.phantomPosition(hw, qr(j).ID);
-                if ~exist('hph', 'var')
-                    hph = plot(xPh(1), xPh(2), 'bo');
-                else
-                    hph.XData = xPh(1);
-                    hph.YData = xPh(2);
-                end
-            else
-                qr(j-1).plotSafeV(qr(j), safeV, colors{j});
-
-            end
-        else
-            qr(j).plotMergeHighwayV(hw, target);
-        end
+        qr(j).plotPosition(colors(j,:,:));
     end
     
+    if ~isempty(hw.ps) % If there's a platoon
+        delete(qr(1).hsafeV{2});
+        delete(ht);
+        delete(qr(1).hmergeHighwayV);
+        
+        qr(2).plotSafeV(qr(1), safeV);
+        qr(2).plotMergePlatoonV(qr(1).p);
+        
+        xPh = qr(1).p.phantomPosition(qr(1).p.n + 1);
+        
+        if ~exist('hph', 'var')
+            hph = plot(xPh(1), xPh(2), 'color', colors(2,:,:));
+        else
+            hph.XData = xPh(1);
+            hph.YData = xPh(2);
+        end % ~exist('hph', 'var')
+        
+    else % ~isempty(hw.ps)
+        qr(1).plotMergeHighwayV(target);
+        qr(1).plotSafeV(qr(2), safeV);
+        
+    end % ~isempty(hw.ps)
+    
+    
+
 %     subplot(1,2,1)
 %     axis equal
-    xlim([-25 40])
-    ylim([-25 40])
+xlim([-25 40])
+ylim([-25 40])
 
-    title(['t=' num2str(t(i))])
-    drawnow;
+title(['t=' num2str(t(i))])
+drawnow;
 %     export_fig(['E:\Normal2\' num2str(i)], '-png')
 
 %     if ~isempty(tplot) && t(i) >= tplot(1)
@@ -161,13 +159,13 @@ for i = 2:length(t)
 %         s = subplot(spR,spC,plotnum);
 %         copyobj(f1.Children.Children, s);
 %         tplot(1) = [];
-%         
+%
 %         title(['t=' num2str(t(i))])
-%         
+%
 %         axis equal
 %         xlim([-30 40]); ylim([-30 40])
 %         if plotnum == 3; xlabel('x'); ylabel('y'); end
 %     end
-%     
+%
 %     drawnow;
-end
+end % for i = 2:length(t)

@@ -1,13 +1,13 @@
-function plotMergeHighwayV(obj, highway, target)
-% function plotSafeV(obj, other, t)
-% Plots the safe region around other that obj must stay out of in order to
-% be safe.
+function plotMergeHighwayV(obj, target)
+% function plotMergeHighwayV(obj, target)
 %
-% Inputs: obj   - this quadrotor
-%         other - other quadrotor
-%         safeV - Reachable set 
-%         t     - time horizon
+% Plots the zero sublevel set of value function for merging onto the
+% highway
 %
+% Inputs:  obj    - quadrotor object
+%          target - target state that quadrotor is aiming to reach
+%
+% Mo Chen, 2015-06-21
 
 % State dimensions for position and velocity
 pdim = obj.pdim;
@@ -75,5 +75,11 @@ else
     obj.hmergeHighwayV.ZData = value2D;
 end
 
-obj.hmergeHighwayV.LineColor = 'r';
+% Color
+if isempty(obj.hpxpyhist.Color)
+    obj.hmergeHighwayV.LineColor = 'r';
+else
+    obj.hmergeHighwayV.LineColor = obj.hpxpyhist.Color;
+end
+
 end

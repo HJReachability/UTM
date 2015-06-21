@@ -1,29 +1,32 @@
-function u = mergeOnHighway(obj, hw, target, v)
-% function u = mergeOnHighway(x, v, highway)
+function u = mergeOnHighway(obj, hw, target)
+% function u = mergeOnHighway(obj, hw, target)
 %
-% Inputs:  target  - target position on highway (row vector)
-%          v       - target speed on highway
-%          highway - highway to merge onto
-%                    should be a function handle that takes s as input and
-%                    outputs points on the path rpath(s); returns a column
-%                    vector
+% Inputs:  target  - target position on highway (2D vector or scalar
+%                    between 0 and 1
+%          hw      - highway object to merge onto
 %
-% Output: u - control signal to merge onto highway
+% Output:  u - control signal to merge onto highway
 %
-% Mar. 9, 2015, Mo
+% 2015-06-17, Mo Chen
 
 % Parse target state
 x = zeros(1,4);
-x([1 3]) = target;
 
-% Direction of highway
-ds = hw.ds; % Normalized direction
-x(2) = v*ds(1);
-x(4) = v*ds(2);
+if numel(target) == 1
+    s = target;
+    s = min(1,s);
+    s = max(0,s);
+    x(obj.pdim) = hw.fn(s);
+    
+elseif numel(target) == 2
+    x(obj.pdim) = target;
+    
+else
+    error('Invalid target!')
+end
 
-% Path to target
-% Input: s, output: 2x2 matrix; rows are endpoints
-pathToTarget = highway(obj.x(obj.pdim), target);
+% Target velocity (should be velocity along the highway)
+x(obj.vdim) = hw.speed * hw.ds;
 
 % Time horizon for MPC
 tsteps = 5;
@@ -49,36 +52,35 @@ switch obj.q
         % Perform merging maneuver until obj becomes leader
         % If we're close to the target set, form a platoon and become a leader
         if abs(x'-obj.x)<=1.1*[g.dx;g.dx]
-            obj.q = 'Leader';           % Change mode
-            obj.mergeHighwayV = [];            % Delete merge value function
+            obj.p = platoon(obj, hw);  % Create platoon
+            u = obj.followPath(tsteps, hw);
             
-            obj.platoon = platoon(obj); % Create platoon
-            obj.FQ = obj;               % Initialize quadrotor in front
-            obj.Leader = obj;           % Leader pointer
-            obj.idx = 1;
-            
-            u = obj.followPath(tsteps, hw, v);
         else
-        % Otherwise, compute V(t,obj.x) at the first t such at V(t,obj.x)<=0
+            % Otherwise, compute V(t,obj.x) at the first t such at V(t,obj.x)<=0
             [valuex, gradx] = recon2x2D(tau, g, datax, g, datay, obj.x);
-
+            
             if valuex <= 0 % If we're inside reachable set, start merging
                 disp('Locked-in')
                 ux = (gradx(2)>=0)*obj.uMin + (gradx(2)<0)*obj.uMax;
                 uy = (gradx(4)>=0)*obj.uMin + (gradx(4)<0)*obj.uMax;
                 u = [ux; uy];
+                
             else           % Otherwise, simply take a straight line to the target
                 disp('Open-loop')
-                u = obj.followPath(tsteps, pathToTarget, v);
+                % Path to target (for now written as a highway object, which isn't really
+                % "correct" in principle)
+                pathToTarget = highway(obj.x(obj.pdim), target);
+                
+                u = obj.followPath(tsteps, pathToTarget);
             end
         end
-
+        
     case 'Leader'
-        warning('Vehicle is already a leader!')
-        u = obj.followPath(tsteps, hw, v);
+        error('Vehicle cannot be a leader!') 
+        % Unless we're joining another highway... need to implement this
         
     case 'Follower'
-        error('Vehicle is already a follower!')
+        error('Vehicle cannot be a follower!')
         
     otherwise
         error('Unknown mode!')

@@ -1,6 +1,5 @@
 classdef highway < handle
-    %HIGHWAY Summary of this class goes here
-    %   Detailed explanation goes here
+    % Highway class
     
     properties
         % endpoints: z0, z1, always converted to 2x1 array
@@ -21,9 +20,11 @@ classdef highway < handle
         
         speed % highway travel speed
         
-        width
+        width % Width of highway
         
         h % plot handle
+        
+        ps % platoons on the highway
     end
     
     

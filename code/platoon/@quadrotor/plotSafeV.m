@@ -1,5 +1,6 @@
 function plotSafeV(obj, other, safeV, t)
 % function plotSafeV(obj, other, t)
+%
 % Plots the safe region around other that obj must stay out of in order to
 % be safe.
 %
@@ -8,6 +9,7 @@ function plotSafeV(obj, other, safeV, t)
 %         safeV - Reachable set 
 %         t     - time horizon
 %
+% Mo Chen, 2015-06-21
 
 % State dimensions for position and velocity
 pdim = obj.pdim;
@@ -56,8 +58,8 @@ if nargin<4
     % platoon AND (the platoons are the same OR one of the quadrotors is an
     % EmergLeader), then use internal separation time. 
     % Otherwise, use external separation time.
-    if ~isempty(obj.platoon) && ~isempty(other.platoon) && ...
-            (obj.platoon.ID == other.platoon.ID || ...
+    if ~isempty(obj.p) && ~isempty(other.p) && ...
+            (obj.p.ID == other.p.ID || ...
             strcmp(obj.q,'EmergLeader') || strcmp(other.q, 'EmergLeader'))
         t = obj.tauInt;
     else                     

@@ -1,5 +1,9 @@
 function p = popPlatoon(hw, leaderPos, numVehicles, ID1)
 % function p = popPlatoon(hw, leaderPos, numVehicles, ID1)
+%
+% Populate a platoon on a highway hw with numVehicles vehicles; the leader
+% has position leaderPos and ID ID1.
+%
 % ID1 - starting ID
 %
 
@@ -12,7 +16,7 @@ dt = 0.1;
 switch numel(leaderPos)
     case 2
         % If input is a 2D vector, find nearest position on the highway
-        [s, dist, x1] = hw.highwayPos(obj, leaderPos);
+        [~, ~, x1] = hw.highwayPos(leaderPos);
         
     case 1
         % If input position is a scalar, interpret as highway parameter and
@@ -27,15 +31,18 @@ switch numel(leaderPos)
 end
 
 % Create first vehicle and platoon
-[reachInfo, safeV] = generateReachInfo();
-qr = quadrotor(ID1, dt, x1, reachInfo);
+reachInfo = generateReachInfo();
+
+x = zeros(4,1);
+qr = quadrotor(ID1, dt, x, reachInfo);
+qr.x(qr.pdim) = x1;
+
 p = platoon(qr, hw); % Using default nmax and followTime
 
 for i = 2:numVehicles
     ID = ID1 + i - 1;
     
-    x = p.phantomPosition(obj, hw, i);
-    qr = [qr; quadrotor(ID, dt, x, reachInfo)];
+    p.addVehicle(reachInfo, ID);
 end
 
 

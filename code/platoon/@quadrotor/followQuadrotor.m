@@ -1,4 +1,6 @@
 function u = followQuadrotor(obj, other, tsteps)
+% ------ UNUSED??? ----
+% 
 % function u = followQuadrotor(obj, other, tsteps)
 %
 % Follows the "other" quadrotor with a look-ahead horizon of tsteps time

@@ -38,9 +38,10 @@ classdef quadrotor < handle
         B
                             
         msg         % Cell array of structures for V2V/V2I messages
-        idx         % Vehicle index in platoon
+        idx         % Vehicle index in platoon (determines phantom position)
         
-        platoon            % Pointer to platoon
+        p                  % Pointer to platoon
+        pJoin              % platoon that vehicle is trying to join
         Leader             % Pointer to leader of this quadrotor
         FQ                 % Pointer to quadrotor in front (self if leader)
         BQ                 % Pointer to quadrotor behind (self if tail)
@@ -148,7 +149,7 @@ classdef quadrotor < handle
             obj.uhist = obj.u;
             
             % Handle to platoon and index if appropriate
-            obj.platoon = [];
+            obj.p = [];
             obj.Leader = [];
             obj.FQ = [];
             obj.BQ = [];

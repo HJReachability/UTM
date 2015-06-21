@@ -12,8 +12,6 @@ function [safe, uSafe, valuex, valueCx] = isSafe(obj, other, safeV, t)
 %                  is safe
 %          uSafe - the optimal safe controller
 %          valuex -the value of levelset function
-%
-%
 % Dynamics:
 %    \dot{p}_{x,r}   = v_{x,r}
 %    \dot{v}_{x,r}   = obj.u_x - other.u_x
@@ -62,8 +60,8 @@ if nargin<4
     % platoon AND (the platoons are the same OR one of the quadrotors is an
     % EmergLeader), then use internal separation time. 
     % Otherwise, use external separation time.
-    if ~isempty(obj.platoon) && ~isempty(other.platoon) && ...
-            (obj.platoon.ID == other.platoon.ID || ...
+    if ~isempty(obj.p) && ~isempty(other.p) && ...
+            (obj.p.ID == other.p.ID || ...
             strcmp(obj.q,'EmergLeader') || strcmp(other.q, 'EmergLeader'))
         t = obj.tauInt+0.5;
     else                     
