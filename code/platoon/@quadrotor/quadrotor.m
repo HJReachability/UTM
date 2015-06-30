@@ -95,7 +95,7 @@ classdef quadrotor < handle
             %
             % Inputs:   ID        - unique ID of the quadrotor
             %           dt        - sampling time
-            %           x         - state: [xpos; ypos; xvel; yvel]
+            %           x         - state: [xpos; xvel; ypos; yvel]
             %           reachInfo - reachable set information
             %                    .uMax, .uMin - max and min inputs
             %                    .vMax, .vMin - max and min velocities
@@ -164,7 +164,7 @@ classdef quadrotor < handle
             obj.hpxpyhist = [];            % Position history
             obj.hvxvy = [];                % Velocity
             obj.hvxvyhist = [];            % Velocity history
-			obj.hsafeV = {[],[],[],[],[]}; % Safe reachable sets, up to 5
+			obj.hsafeV = {[],[],[],[],[]}; % Safe reachable sets, up to 5 (w.r.t to each vehicle in platoon)
             obj.hmergeHighwayV = [];       % merge highway reachable set
             obj.hmergePlatoonV = [];       % merge platoon reachable set
             

@@ -125,7 +125,12 @@ for i = 2:length(t)
         delete(qr(1).hmergeHighwayV);
         
         qr(2).plotSafeV(qr(1), safeV);
-        qr(2).plotMergePlatoonV(qr(1).p);
+        %%%%%%%%%%%%%%%%%%
+        % Modified QH
+%         qr(2).plotMergePlatoonV(qr(1).p);
+        qr(2).pJoin = qr(1).p; 
+        qr(2).plotMergePlatoonV; 
+        %%%%%%%%%%%%%%%%%%
         
         xPh = qr(1).p.phantomPosition(qr(1).p.n + 1);
         

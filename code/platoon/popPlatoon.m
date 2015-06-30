@@ -1,14 +1,15 @@
-function p = popPlatoon(hw, leaderPos, numVehicles, ID1)
-% function p = popPlatoon(hw, leaderPos, numVehicles, ID1)
+function p = popPlatoon(hw, leaderPos, leaderVel, numVehicles, ID1)
+% function p = popPlatoon(hw, leaderPos, leaderVel, numVehicles, ID1)
 %
 % Populate a platoon on a highway hw with numVehicles vehicles; the leader
-% has position leaderPos and ID ID1.
+% has position leaderPos, velocity leaderVel and ID ID1.
 %
 % ID1 - starting ID
 %
 
-if nargin<3, numVehicles = 1; end
-if nargin<4,         ID1 = 1; end
+if nargin<3, leaderVel = [0;0]; end
+if nargin<4, numVehicles = 1; end
+if nargin<5,         ID1 = 1; end
 
 % Hard code time discretization for now
 dt = 0.1;
@@ -30,12 +31,17 @@ switch numel(leaderPos)
         error('Invalid leader position!')
 end
 
+if numel(leaderPos) ~= 2
+    error('Invalid leader velocity!')
+end
+
 % Create first vehicle and platoon
 reachInfo = generateReachInfo();
 
 x = zeros(4,1);
 qr = quadrotor(ID1, dt, x, reachInfo);
 qr.x(qr.pdim) = x1;
+qr.x(qr.vdim) = leaderVel;
 
 p = platoon(qr, hw); % Using default nmax and followTime
 

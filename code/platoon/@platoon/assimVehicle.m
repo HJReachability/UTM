@@ -13,20 +13,20 @@ function assimVehicle(obj, vehicle)
 
 % Check if the platoon is already full
 if obj.n >= obj.nmax
-    printf('Platoon is already full!')
+    fprintf('Platoon is already full! \n')
     return
 end
 
 % Check if the vehicle is a leader or free
 if ~strcmp(vehicle.q, 'Free') && ~strcmp(vehicle.q, 'Leader')
-    printf('Vehicle must be in free or leader mode!')
+    fprintf('Vehicle must be in free or leader mode! \n')
     return
 end
 
 % Check to see if the vehicle is within highway width
 [~, dist] = obj.hw.highwayPos(vehicle.x(vehicle.pdim));
 if dist > obj.hw.width
-    printf('Vehicle is too far from the highway!')
+    fprintf('Vehicle is too far from the highway! \n')
     return
 end
 
@@ -36,7 +36,7 @@ end
 xPh = obj.phantomPosition(vehicle.idx);
 dtol = 2;                                  % Tolerance
 if norm(xPh - vehicle.x(vehicle.pdim)) >= dtol
-    printf('Vehicle is too far from its phantom position!')
+    fprintf('Vehicle is too far from its phantom position! \n')
     return
 end
 
