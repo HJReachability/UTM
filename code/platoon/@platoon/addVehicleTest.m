@@ -6,6 +6,12 @@ function addVehicleTest(obj, N)
 % Inputs: obj - platoon object
 %         N   - number of vehicles to add to the platoon
 %
+% Example usage in the command line:
+%   hw = highway([-100 0], [100 0])
+%   qr = quadrotor(1, 0.1)
+%   p = platoon(qr, hw)
+%   p.addVehicleTest
+%
 % Mo Chen, 2015-06-21
 
 % Default number of times to add vehicles

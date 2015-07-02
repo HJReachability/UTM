@@ -5,7 +5,7 @@ function addVehicle(obj, reachInfo, nextID)
 % (as opposed to assimVehicle(), careful!)
 % This function is mainly for conveniently initializing a platoon. Also see
 % popPlatoon.m
-%
+% 
 % Inputs: obj       - platoon object
 %         reachInfo - reachability information to put into the vehicle
 %                     being added
@@ -31,17 +31,20 @@ dt = 0.1; % Hard coded... might get dangerous later on
 
 % Create a quadrotor
 x = zeros(4,1);
+
 % Create quadrotor at the next phantom position at the same speed as
 % the leader
-x(obj.vehicle(1).pdim) = obj.phantomPosition(obj.n + 1);
-x(obj.vehicle(1).vdim) = obj.vehicle(1).x(obj.vehicle(1).vdim);
-
 if nargin<2 % If no reachInfo is specified, use default
-    qr = quadrotor(nextID, dt, x);        
+    qr = quadrotor(nextID, dt, zeros(4,1));        
 else
-    qr = quadrotor(nextID, dt, x, reachInfo);    
+    qr = quadrotor(nextID, dt, zeros(4,1), reachInfo);    
 end
 qr.idx = nextID;
+
+qr.x(qr.pdim) = obj.phantomPosition(obj.n + 1);
+qr.x(qr.vdim) = obj.vehicle(1).x(obj.vehicle(1).vdim);
+
+
 
 % Assimilate the quadrotor into the platoon
 obj.assimVehicle(qr);
