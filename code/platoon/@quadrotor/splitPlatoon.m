@@ -1,5 +1,8 @@
 function p = splitPlatoon(obj)
 % Split current platoon in two and become Leader of the trailing platoon
+% 2015-06-30 Qie Hu
+
+
 if ~strcmp(obj.q,'Follower')
     warning([
         sprintf('Cannot split from platoon.\n'),...
@@ -9,37 +12,53 @@ if ~strcmp(obj.q,'Follower')
     p = [];
     return
 end
-% Create new platoon (max size to allow re-joining, same followTime as existing platoon)
-p = platoon(obj, obj.platoon.nmax - (obj.idx-1), obj.platoon.followTime);
 
-% Update platoon pointers
-if obj.platoon.BP == obj.platoon,   
-    p.BP = p;
-else
-    p.BP = obj.platoon.BP; 
-    obj.platoon.BP.FP = p; 
+% Platoon before splitting
+% idx of vehicle in the original platoon before splitting 
+orig_p = obj.p;
+orig_q_idx = obj.idx;
+
+% Create new platoon (same followTime as existing platoon) with single
+% vehicle/leader
+% Platoon pointers initialized to itself
+% Vehicle pointers initialized to itself
+p = platoon(obj, obj.p.hw, obj.p.nmax - (obj.idx-1), obj.p.followTime);
+% p = platoon(obj, obj.p.hw);
+
+% If there was a platoon behind,
+% update pointers for new platoon and the platoon behind
+if orig_p.BP ~= orig_p   
+    p.BP            = orig_p.BP; 
+    orig_p.BP.FP    = p; 
 end
-obj.platoon.BP        = p;
-p.FP                  = obj.platoon;
+
+% Update pointer for new platoon and the original platoon in front
+orig_p.BP           = p;
+p.FP                = orig_p;
 
 % Split all lists and update info
-p.vehicle             = obj.platoon.vehicle(obj.idx:end);
-p.IDvehicle           = obj.platoon.IDvehicle(obj.idx:end);
-p.n                   = obj.platoon.n - (obj.idx - 1);
-obj.platoon.vehicle   = obj.platoon.vehicle(1:obj.idx-1);
-obj.platoon.IDvehicle = obj.platoon.IDvehicle(1:obj.idx-1);
-obj.platoon.n         = obj.idx - 1;
+p.vehicle                   = orig_p.vehicle(orig_q_idx:end);
+p.vList                     = orig_p.vList(orig_q_idx:end);
+% p.IDvehicle               = orig_p.IDvehicle(orig_q_idx:end);
+p.n                         = orig_p.n - (orig_q_idx - 1);
+orig_p.vehicle              = orig_p.vehicle(1:orig_q_idx-1);
+% orig_p.IDvehicle          = orig_p.IDvehicle(1:orig_q_idx-1);
+orig_p.vList(orig_q_idx:end)= 0;
+orig_p.n                    = orig_q_idx - 1;
 
 % Update vehicle pointers
-obj.platoon.vehicle{obj.platoon.n}.BQ = obj.platoon.vehicle{obj.platoon.n};
-obj.FQ                      = obj;
+orig_p.vehicle(orig_p.n).BQ = orig_p.vehicle(orig_p.n);
+if p.n > 1
+    obj.BQ                  = p.vehicle(2);
+end
 
-% Update follower vehicles in new trailing platoon
-% (after this point the function loses original platoon handle)
+% Update follower vehicles in new platoon
 obj.q = 'EmergLeader';
-for i = 1:p.n
-    p.vehicle{i}.platoon = p;
-    p.vehicle{i}.idx = i;
-    p.vehicle{i}.Leader = p.vehicle{1};
+for i = 2:p.n
+    p.vehicle(i).p          = p;
+    p.vehicle(i).idx        = i;
+    p.vehicle(i).Leader     = p.vehicle(1);
 end
+
 end
+

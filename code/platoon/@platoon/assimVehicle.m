@@ -10,6 +10,7 @@ function assimVehicle(obj, vehicle)
 %           vehicle - vehicle object to be assimilated
 %
 % Mo Chen, 2015-06-21
+% Modified: Qie Hu, 2015-07-01
 
 % Check if the platoon is already full
 if obj.n >= obj.nmax
@@ -17,9 +18,9 @@ if obj.n >= obj.nmax
     return
 end
 
-% Check if the vehicle is a leader or free
-if ~strcmp(vehicle.q, 'Free') && ~strcmp(vehicle.q, 'Leader')
-    fprintf('Vehicle must be in free or leader mode! \n')
+% Check if the vehicle is a leader or free or emergencyLeader
+if ~strcmp(vehicle.q, 'Free') && ~strcmp(vehicle.q, 'Leader') && ~strcmp(vehicle.q, 'EmergLeader')
+    fprintf('Vehicle must be in free, leader or emergency leader mode! \n')
     return
 end
 
@@ -33,13 +34,23 @@ end
 % Check to see if the vehicle is close to the phantom position
 % (This only checks position... may want to check all states including
 % velocity)
-xPh = obj.phantomPosition(vehicle.idx);
+xPh = obj.phantomPosition(vehicle.idxJoin);
 dtol = 2;                                  % Tolerance
 if norm(xPh - vehicle.x(vehicle.pdim)) >= dtol
     fprintf('Vehicle is too far from its phantom position! \n')
     return
 end
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Modified
+
 % Add to platoon
-obj.updateProps1(vehicle);
+if strcmp(vehicle.q, 'Free')
+    obj.updateVehicleProps(vehicle);
+else
+    % vehicle is a leader or emergLeader
+    obj.updatePlatoonProps(vehicle.p);
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 end

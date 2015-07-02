@@ -1,5 +1,5 @@
-function updateProps1(obj, vehicle)
-% function updateProps1(obj, vehicle)
+function updateVehicleProps(obj, vehicle)
+% function updateVehicleProps(obj, vehicle)
 %
 % Method of platoon class. Updates vehicle and platoon properties after adding a new vehicle has
 % successfully added to the platoon
@@ -8,6 +8,7 @@ function updateProps1(obj, vehicle)
 %         vehicle - vehicle that is added
 %
 % Mo Chen, 2015-06-20
+% Modified: Qie Hu, 2015-07-01
 
 
 % Update number of vehicles in platoon
@@ -48,18 +49,11 @@ end
 vehicle.idx = c_idx;
 
 % Update other vehicle fields
-
-%%%%%%%%%%%%%%%%
-% Modified QH
-% obj.vehicle(end).q = 'Follower';          % Mode
-% obj.vehicle(end).p = obj;                 % Platoon pointer
-% obj.vehicle(end).Leader = obj.vehicle(1); % Leader pointer
-% obj.vehicle(end).mergePlatoonV = [];      % merge platoon value function
 obj.vehicle(c_idx).q = 'Follower';          % Mode
 obj.vehicle(c_idx).p = obj;                 % Platoon pointer
 obj.vehicle(c_idx).Leader = obj.vehicle(1); % Leader pointer
 obj.vehicle(c_idx).mergePlatoonV = [];      % merge platoon value function
-%%%%%%%%%%%%%%%%%
+obj.vJoin{c_idx} = [];                      % pointer to vehicles attempting to join
 
 
 end

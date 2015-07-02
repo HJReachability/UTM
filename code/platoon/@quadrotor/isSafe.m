@@ -1,5 +1,5 @@
-function [safe, uSafe, valuex, valueCx] = isSafe(obj, other, safeV, t)
-% function [safe, uSafe, valuex, valueCx] = isSafe(obj, other, safeV, t)
+function [safe, uSafe, valuex, valueSx, valueCx] = isSafe(obj, other, safeV, t)
+% function [safe, uSafe, valuex, valueSx, valueCx] = isSafe(obj, other, safeV, t)
 %
 % Checks whether this vehicle is safe within a time horizon of t with
 % respect to the other vehicle
@@ -21,6 +21,7 @@ function [safe, uSafe, valuex, valueCx] = isSafe(obj, other, safeV, t)
 %    \dot{v}_{y,obj} = obj.u_y
 %
 % Mo Chen, 2015-05-23
+% Modified: Qie Hu, 2015-07-01
 
 % Unpack reachable set
 tau = safeV.tau;
@@ -89,9 +90,9 @@ end
 
 % Compute gradient of V(t,x) where t is the first t such that V(t,x) <= 0
 [~, ~, g6D, valueC, ~, ind] = recon2x3D(tau, g, dataC, g, dataC, x, t);
-valueSx = eval_u(g, dataS(:,:,:,ind), [g6D.xs{1}(:) g6D.xs{2}(:) g6D.xs{3}(:)]);
-valueSy = eval_u(g, dataS(:,:,:,ind), [g6D.xs{4}(:) g6D.xs{5}(:) g6D.xs{6}(:)]);
-valueS = min(valueSx, valueSy);
+valueSSx = eval_u(g, dataS(:,:,:,ind), [g6D.xs{1}(:) g6D.xs{2}(:) g6D.xs{3}(:)]);
+valueSSy = eval_u(g, dataS(:,:,:,ind), [g6D.xs{4}(:) g6D.xs{5}(:) g6D.xs{6}(:)]);
+valueS = min(valueSSx, valueSSy);
 valueS = reshape(valueS, g6D.shape);
 value = min(valueC, valueS);
 

@@ -7,6 +7,7 @@ function u = mergeWithPlatoon(obj, p)
 % Output:  u - control signal for the merge
 %
 % 2015-06-17, Mo
+% Modified: Qie Hu, 2015-07-01
 
 % Check if platoon is full (should never have to check if outside logic is
 % correct
@@ -21,19 +22,32 @@ vdim = obj.vdim;
 if isempty(obj.pJoin)
     % If current vehicle is not currently joining a platoon, then mark
     % p as the platoon to join and add to join list
-    obj.idx = find(~p.vList, 1, 'first');
-    p.vList(obj.idx) = -1;
+    obj.idxJoin = find(~p.vList, 1, 'first');
+    p.vList(obj.idxJoin) = -1;
+    p.vJoin{obj.idxJoin} = obj;
     obj.pJoin = p;
-    
+        
 else
     % Otherwise, empty previous marked platoon and remove from other
     % platoon's join list; also mark this platoon for joining
     if obj.pJoin ~= p
         obj.pJoin.vList(obj.idx) = 0;
-        obj.idx = find(~p.vList, 1, 'first');
-        p.vList(obj.idx) = -1;
+        obj.idxJoin = find(~p.vList, 1, 'first');
+        p.vList(obj.idxJoin) = -1;
+        p.vJoin{obj.idxJoin} = obj;
         obj.pJoin = p;
     end
+end
+
+% If vehicle has trailing vehicles inside the same platoon
+% update their info too
+vehicle = obj;
+while vehicle.BQ ~= vehicle
+    vehicle.BQ.idxJoin = vehicle.idxJoin + 1;
+    p.vList(vehicle.BQ.idxJoin) = -1;
+    p.vJoin{vehicle.BQ.idxJoin} = vehicle.BQ;
+    vehicle.BQ.pJoin = p;
+    vehicle = vehicle.BQ;
 end
 
 % Parse target state
@@ -41,7 +55,7 @@ x = zeros(4,1);
 x(vdim) = [0 0];
 
 % Determine phantom position (First free position)
-xPh = p.phantomPosition(obj.idx);
+xPh = p.phantomPosition(obj.idxJoin);
 x(pdim) = xPh - p.vehicle(1).x(p.vehicle(1).pdim);
 
 % Time horizon for MPC
@@ -105,7 +119,7 @@ elseif strcmp(obj.q, 'Follower')
     error('Vehicle cannot be a follower!')
     
 elseif strcmp(obj.q, 'Leader')
-    error('Vehicle cannot a leader!')
+    error('Vehicle cannot be a leader!')
     
 else
     error('Unknown mode!')

@@ -19,6 +19,12 @@ classdef platoon < handle
                                 %     attempting to occupy the slot by joining
                                 %     platoon
         
+        vJoin             % Cell array of handles to vehicles attempting to join platoon
+                                % -1:   No vehicle attempting to join this
+                                %       slot
+                                % otherwise: handle to vehicle attempting
+                                %       to join this slot
+        
         followTime              % Separation time for followers
         
         FP                      % Front platoon
@@ -30,7 +36,7 @@ classdef platoon < handle
     
     methods
         function obj = platoon(leader, hw, nmax,followTime)
-            % function obj = platoon(leader,nmax,followTime)
+            % function obj = platoon(leader,hw,nmax,followTime)
             % Constructor for platoon object
             %
             % Must specify a leader and a highway
@@ -49,6 +55,8 @@ classdef platoon < handle
             obj.vehicle = leader;
             obj.vList = zeros(nmax,1);
             obj.vList(1) = 1;
+            
+            obj.vJoin = {};
             
             obj.hw = hw; % Point to highway
             obj.hw.ps = [obj.hw.ps obj]; % make highway object point to this platoon

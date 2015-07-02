@@ -39,6 +39,7 @@ classdef quadrotor < handle
                             
         msg         % Cell array of structures for V2V/V2I messages
         idx         % Vehicle index in platoon (determines phantom position)
+        idxJoin     % Vehicle index in platoon it's trying to join 
         
         p                  % Pointer to platoon
         pJoin              % platoon that vehicle is trying to join

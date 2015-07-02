@@ -40,6 +40,7 @@ else
     qr = quadrotor(nextID, dt, zeros(4,1), reachInfo);    
 end
 qr.idx = nextID;
+qr.idxJoin = nextID;
 
 qr.x(qr.pdim) = obj.phantomPosition(obj.n + 1);
 qr.x(qr.vdim) = obj.vehicle(1).x(obj.vehicle(1).vdim);
@@ -48,4 +49,7 @@ qr.x(qr.vdim) = obj.vehicle(1).x(obj.vehicle(1).vdim);
 
 % Assimilate the quadrotor into the platoon
 obj.assimVehicle(qr);
+
+qr.idxJoin = [];
+
 end
