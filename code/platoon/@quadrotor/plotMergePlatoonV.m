@@ -6,13 +6,15 @@ function plotMergePlatoonV(obj)
 % Input: obj - quadrotor object
 %
 % Mo Chen, 2015-06-21
+% 
+% if isempty(obj.pJoin)
+%     warning('Vehicle already finished merging into platoon.')
+%     return
+% end
 
 % State dimensions for position and velocity
 pdim = obj.pdim;
 vdim = obj.vdim;
-
-% Trailer
-trailer = obj.pJoin.vehicle(end);
 
 % Unpack constants
 if ~isempty(obj.mergePlatoonV)
@@ -22,6 +24,9 @@ else
     obj.hmergePlatoonV = [];
     return
 end
+
+% Trailer
+trailer = obj.pJoin.vehicle(end); % Moved this down here after the return statement above
 
 tau = mergeV.tau;
 g1 = mergeV.g1;

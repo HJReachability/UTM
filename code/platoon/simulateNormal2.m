@@ -126,7 +126,9 @@ for i = 2:length(t)
         
         qr(2).plotSafeV(qr(1), safeV);
 
-        % qr(2).p already assigned inside qr(2).mergeWithPlatoon(hw.ps) in line 92
+        % qr(2).p already assigned inside qr(2).mergeWithPlatoon(hw.ps) on 
+        % line 92. This issue is that qr(2) is now a follower so there's
+        % nothing to plot, and qr(2).pJoin is now empty
         qr(2).plotMergePlatoonV; 
 
         
