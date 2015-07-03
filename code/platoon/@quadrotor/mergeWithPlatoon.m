@@ -61,8 +61,8 @@ x(pdim) = xPh - p.vehicle(1).x(p.vehicle(1).pdim);
 % Time horizon for MPC
 tsteps = 5;
 
-if strcmp(obj.q, 'Free') || strcmp(obj.q, 'EmergLeader')
-    % If vehicle is free or an emergency leader, then try to join the
+if strcmp(obj.q, 'Free') || strcmp(obj.q, 'Leader')
+    % If vehicle is free or a leader, then try to join the
     % platoon at the back
     
     % Reachable set from target state
@@ -118,8 +118,8 @@ if strcmp(obj.q, 'Free') || strcmp(obj.q, 'EmergLeader')
 elseif strcmp(obj.q, 'Follower')
     error('Vehicle cannot be a follower!')
     
-elseif strcmp(obj.q, 'Leader')
-    error('Vehicle cannot be a leader!')
+% elseif strcmp(obj.q, 'Leader')
+%     error('Vehicle cannot be a leader!')
     
 else
     error('Unknown mode!')

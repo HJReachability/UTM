@@ -19,7 +19,7 @@ if obj.n >= obj.nmax
 end
 
 % Check if the vehicle is a leader or free or emergencyLeader
-if ~strcmp(vehicle.q, 'Free') && ~strcmp(vehicle.q, 'Leader') && ~strcmp(vehicle.q, 'EmergLeader')
+if ~strcmp(vehicle.q, 'Free') && ~strcmp(vehicle.q, 'Leader')
     fprintf('Vehicle must be in free, leader or emergency leader mode! \n')
     return
 end
@@ -46,10 +46,10 @@ end
 
 % Add to platoon
 if strcmp(vehicle.q, 'Free')
-    obj.updateVehicleProps(vehicle);
+    obj.updateVPropsJoin(vehicle);
 else
-    % vehicle is a leader or emergLeader
-    obj.updatePlatoonProps(vehicle.p);
+    % vehicle is a leader
+    obj.updatePPropsJoin(vehicle.p);
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

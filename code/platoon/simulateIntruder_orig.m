@@ -108,9 +108,8 @@ for k = 2:length(t)
         
         
         % Check safety w.r.t. FQ
-        if strcmp(qr(j).q, 'Leader')
-            
-            % If it's a Leader, check w.r.t to trailing
+        if strcmp(qr(j).q, 'Leader') || strcmp(qr(j).q, 'EmergLeader')
+            % If it's a Leader or EmergLeader, check w.r.t to trailing
             % vehicle of front platoon
             if qr(j).p.FP == qr(j).p % If no platoon in front, set to safe
                 if valSx >= 0,  qr(j).safeFQ = true;
@@ -120,12 +119,8 @@ for k = 2:length(t)
                 [qr(j).safeFQ, uSafeFQ, ~, ~, valCx(2)] = ...
                     qr(j).isSafe(qr(j).p.FP.vehicle(qr(j).p.FP.n), safeV);
             end
-            
-        else
-            
-            % Follower
+        else % Follower
             [qr(j).safeFQ, uSafeFQ, ~, ~, valCx(2)] = qr(j).isSafe(qr(j).FQ, safeV);
-        
         end
         qr(j).safeFQhist = cat(2, qr(j).safeFQhist, qr(j).safeFQ);
 
@@ -154,21 +149,12 @@ for k = 2:length(t)
         
         if numUnsafeTargets == 0     
             %  Safe w.r.t. Intruder, FQ & BQ, can do anything
-            
-            if strcmp(qr(j).q, 'Leader') 
-                
-                if qr(j).p.FP ~= qr(j).p && qr(j).p.FP.n+qr(j).p.n<=qr(j).p.FP.nmax
-                    % There is another platoon in front and the total number 
-                    % of vehicles between this platoon and the one in front
-                    % is less than max number of vehicles. Join platoon in front.
-                    fprintf('Q%.0d merging with P%.0d \n', qr(j).ID, qr(j).p.FP.ID)
-                    qr(j).u = qr(j).mergeWithPlatoon(qr(j).p.FP);
-                
-                else 
-                    % Follow path
-                    qr(j).u = qr(j).followPath(tSteps, hw, qr(j).vMax);
-                end
-                
+            if strcmp(qr(j).q, 'Leader')
+                qr(j).u = qr(j).followPath(tSteps, hw, qr(j).vMax);
+            elseif strcmp(qr(j).q, 'EmergLeader') 
+                % Join platoon in front (original platoon)
+                fprintf('Q%.0d merging with P%.0d \n', qr(j).ID, qr(j).p.FP.ID)
+                qr(j).u = qr(j).mergeWithPlatoon(qr(j).p.FP);
             else
                 % Follower
                 qr(j).u = qr(j).followPlatoon();

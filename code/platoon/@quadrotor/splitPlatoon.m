@@ -53,7 +53,7 @@ if p.n > 1
 end
 
 % Update follower vehicles in new platoon
-obj.q = 'EmergLeader';
+obj.q = 'Leader';
 for i = 2:p.n
     p.vehicle(i).p          = p;
     p.vehicle(i).idx        = i;

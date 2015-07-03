@@ -1,5 +1,5 @@
-function updateVehicleProps(obj, vehicle)
-% function updateVehicleProps(obj, vehicle)
+function updateVPropsJoin(obj, vehicle)
+% function updateVPropsJoin(obj, vehicle)
 %
 % Method of platoon class. Updates vehicle and platoon properties after adding a new vehicle has
 % successfully added to the platoon

@@ -1,5 +1,5 @@
-function updatePlatoonProps(obj, platoon)
-% function updateVehicleProps(obj, vehicle)
+function updatePPropsJoin(obj, platoon)
+% function updatePPropsJoin(obj, vehicle)
 %
 % Method of platoon class. 
 % Platoon successfully joins obj

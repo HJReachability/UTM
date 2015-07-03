@@ -21,7 +21,6 @@ classdef quadrotor < handle
                     %   2: Follower
                     %   3: Leader
                     %   4: Faulty
-                    %   5: EmergLeader
                     
         nx          % Dimension of state
         nu          % Dimension of control
