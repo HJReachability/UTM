@@ -101,7 +101,7 @@ value = min(valueC, valueS);
 valuesd = signedDistanceIterative(g6D, value, 'veryHigh');
 
 % Now we can finally read off gradient
-gradsd = extractCostates(g6D, valuesd);
+gradsd = extractCostates(g6D, valuesd, @upwindFirstFirst);
 gradx = calculateCostate(g6D, gradsd, x);
 
 % Compute optimal safe controller
