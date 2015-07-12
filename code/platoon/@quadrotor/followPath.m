@@ -18,6 +18,8 @@ function [u1, u] = followPath(obj, tsteps, hw, v)
 % Mo Chen, 2015-05-23
 
 % Find closest point on the path to current position
+
+global K LQROn  %in case we want to use LQR controller
 s0 = firstPathPoint(obj, hw.fn);
 
 if nargin < 4
@@ -31,43 +33,54 @@ else
     vref = v;
 end
 
-% ----- BEGIN CVX -----
-cvx_begin
-variable p(2, tsteps)     % sequence of vehicle positions
-variable v(2, tsteps)     % sequence of vehicle velocities
-variable r(2, tsteps)     % sequence of reference positions
-variable s(1, tsteps)       % sequence of reference path indices
-variable ds(1,tsteps-1)     % sequence of speeds along the path
-variable u(obj.nu, tsteps)  % sequence of controls
-variable x(obj.nx, tsteps)  % sequence of states
+if ~LQROn   
 
-minimize sum(sum((r-p).^2)) + 5*sum(1-s) + sum(sum( (v(1,:)-vref(1)).^2 + (v(2,:)-vref(2)).^2 ))
+    % ----- BEGIN CVX -----
+    cvx_begin
+    variable p(2, tsteps)     % sequence of vehicle positions
+    variable v(2, tsteps)     % sequence of vehicle velocities
+    variable r(2, tsteps)     % sequence of reference positions
+    variable s(1, tsteps)       % sequence of reference path indices
+    variable ds(1,tsteps-1)     % sequence of speeds along the path
+    variable u(obj.nu, tsteps)  % sequence of controls
+    variable x(obj.nx, tsteps)  % sequence of states
 
-subject to
-% First time step
-x(:,1) == obj.computeState(u(:,1), obj.x)   % Dynamics
-p(:,1) == x(obj.pdim,1)                        % Position components
-v(:,1) == x(obj.vdim,1)
-s(1) == s0
+    minimize sum(sum((r-p).^2)) + 5*sum(1-s) + sum(sum( (v(1,:)-vref(1)).^2 + (v(2,:)-vref(2)).^2 ))
 
-%             All time steps afterwards
-for i = 2:tsteps
-    x(:,i) == obj.computeState(u(:,i), x(:,i-1))        % Dynamics
-    p(:,i) == x(obj.pdim,i)                                % Position components
-    v(:,i) == x(obj.vdim,i)                                % Position components
-    s(i) == s(i-1) + ds(i-1)                            % Advanced on path
-end
+    subject to
+    % First time step
+    x(:,1) == obj.computeState(u(:,1), obj.x)   % Dynamics
+    p(:,1) == x(obj.pdim,1)                        % Position components
+    v(:,1) == x(obj.vdim,1)
+    s(1) == s0
 
-r == hw.fn(s)
-obj.uMin <= u <= obj.uMax              % Control bounds
-% obj.vMin <= v <= obj.vMax                 % Velocity bounds
-0 <= s <= 1
-ds >= 0
+    %             All time steps afterwards
+    for i = 2:tsteps
+        x(:,i) == obj.computeState(u(:,i), x(:,i-1))        % Dynamics
+        p(:,i) == x(obj.pdim,i)                                % Position components
+        v(:,i) == x(obj.vdim,i)                                % Position components
+        s(i) == s(i-1) + ds(i-1)                            % Advanced on path
+    end
 
-cvx_end 
-% ----- END CVX -----
-if any(isnan(u(:))), keyboard; end
-u1 = u(:,1);
+    r == hw.fn(s)
+    obj.uMin <= u <= obj.uMax              % Control bounds
+    % obj.vMin <= v <= obj.vMax                 % Velocity bounds
+    0 <= s <= 1
+    ds >= 0
+
+    cvx_end 
+    % ----- END CVX -----
+    if any(isnan(u(:))), keyboard; end  %MPC just takes the first control
+    u1 = u(:,1);
+else
+    % ----- BEGIN LQR ---
+    sref=s0;
+    rref=hw.fn(sref);
+    u1=-K*(obj.x-[rref(1);vref(1);rref(2);vref(2)]);
+    max(min(u1,obj.uMax),obj.uMin);
+    % ----- END LQR -----
+end 
+
 end
 
 

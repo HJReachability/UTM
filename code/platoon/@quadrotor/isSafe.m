@@ -97,11 +97,14 @@ valueS = reshape(valueS, g6D.shape);
 value = min(valueC, valueS);
 
 % Convert to signed distance function for fair comparison of the two
-% criteria
-valuesd = signedDistanceIterative(g6D, value, 'veryHigh');
+% criteria (using default [medium] accuracy for faster speed)
+% Get rid of this
 
-% Now we can finally read off gradient
-gradsd = extractCostates(g6D, valuesd, @upwindFirstFirst);
+valuesd = signedDistanceIterative(g6D, value,'low'); %AKA modified 7/12/2015
+
+% Now we can finally read off gradient (Using first order derivative for
+% speed)
+gradsd = extractCostates(g6D, valuesd,'low'); %AKA modified 7/12/2015
 gradx = calculateCostate(g6D, gradsd, x);
 
 % Compute optimal safe controller

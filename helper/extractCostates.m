@@ -1,9 +1,29 @@
-function p = extractCostates(grid, data, derivFunc, upWind)
+function p = extractCostates(grid, data, accuracy, upWind)
 % function p = extractCostates(grid, data, upWind)
 % Estimates the costate p at position x for cost function data on grid g by
 % numerically taking partial derivatives along each grid direction.
 % Numerical derivatives are taken using the levelset toolbox
 % HACK ALERT: for now we assume 4-D system to save coding time
+
+if(nargin < 3)
+  accuracy = 'medium';
+end
+
+
+% Choose approximations at appropriate level of accuracy.
+switch(accuracy)
+ case 'low'
+  derivFunc = @upwindFirstFirst;
+ case 'medium'
+  derivFunc = @upwindFirstENO2;
+ case 'high'
+  derivFunc = @upwindFirstENO3;
+ case 'veryHigh'
+  derivFunc = @upwindFirstWENO5;
+ otherwise
+  error('Unknown accuracy level %s', accuracy);
+end
+
 
 if nargin<3
     derivFunc = @upwindFirstWENO5;
