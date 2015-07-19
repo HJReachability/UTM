@@ -1,64 +1,81 @@
 function p = splitPlatoon(obj)
 % Split current platoon in two and become Leader of the trailing platoon
-% 2015-06-30 Qie Hu
+%
+% Qie Hu, Jaime Fernandez-Fisac, 2015-Mar
+% Modified: Qie Hu, 2015-07-04
+% Modified: Qie Hu, 2015-07-17
 
 
 if ~strcmp(obj.q,'Follower')
     warning([
         sprintf('Cannot split from platoon.\n'),...
         sprintf('\t%s is currently in %s mode.\n',obj.ID,obj.q),...
-        sprintf('\tOnly Follower vehicles can split form a platoon.\n')
+        sprintf('\tOnly Follower vehicles can split from a platoon.\n')
         ]);
     p = [];
     return
 end
 
-% Platoon before splitting
-% idx of vehicle in the original platoon before splitting 
+% Pointer to old platoon before splitting
 orig_p = obj.p;
-orig_q_idx = obj.idx;
 
-% Create new platoon (same followTime as existing platoon) with single
-% vehicle/leader
-% Platoon pointers initialized to itself
-% Vehicle pointers initialized to itself
+% Index of obj in old platoon
+old_obj_idx = obj.idx;
+
+% Create new platoon w/ new leader only
+% max size to allow re-joining, same followTime as existing platoon)
 p = platoon(obj, obj.p.hw, obj.p.nmax - (obj.idx-1), obj.p.followTime);
-% p = platoon(obj, obj.p.hw);
 
-% If there was a platoon behind,
-% update pointers for new platoon and the platoon behind
-if orig_p.BP ~= orig_p   
-    p.BP            = orig_p.BP; 
-    orig_p.BP.FP    = p; 
+% Update platoon pointers
+if orig_p.BP == orig_p,  
+    p.BP = p;
+else
+    p.BP = orig_p.BP; 
+    orig_p.BP.FP = p; 
+end
+orig_p.BP = p;
+p.FP = orig_p;
+
+for i = old_obj_idx:orig_p.loIdx
+    % Update vehicle list
+    p.vehicles{i-old_obj_idx+1} = orig_p.vehicles{i};
+    orig_p.vehicles{i} = [];
+    
+    % Update vehicle slot status
+    p.slotStatus(i-old_obj_idx+1) = orig_p.slotStatus(i);
+    orig_p.slotStatus(i) = 0;
+    
+    % Update join list pointers
+    p.vJoin{i-old_obj_idx+1} = orig_p.vJoin{i};
+    orig_p.vJoin{i} = [];
+    
 end
 
-% Update pointer for new platoon and the original platoon in front
-orig_p.BP           = p;
-p.FP                = orig_p;
+% Update number of vehicles in platoon
+p.n = sum(p.slotStatus == 1);
+orig_p.n = orig_p.n - p.n;
 
-% Split all lists and update info
-p.vehicle                   = orig_p.vehicle(orig_q_idx:end);
-p.vList                     = orig_p.vList(orig_q_idx:end);
-% p.IDvehicle               = orig_p.IDvehicle(orig_q_idx:end);
-p.n                         = orig_p.n - (orig_q_idx - 1);
-orig_p.vehicle              = orig_p.vehicle(1:orig_q_idx-1);
-% orig_p.IDvehicle          = orig_p.IDvehicle(1:orig_q_idx-1);
-orig_p.vList(orig_q_idx:end)= 0;
-orig_p.n                    = orig_q_idx - 1;
+% Update last occupied index
+p.loIdx = find(p.slotStatus==1, 1, 'last');
+orig_p.loIdx = find(orig_p.slotStatus==1, 1, 'last');
 
-% Update vehicle pointers
-orig_p.vehicle(orig_p.n).BQ = orig_p.vehicle(orig_p.n);
-if p.n > 1
-    obj.BQ                  = p.vehicle(2);
+% Update vehicle pointer for obj
+obj.BQ = p.vehicles{2};
+obj.FQ = obj;
+
+% Update vehicle pointers for trailing vehicle in original platoon
+orig_p.vehicles{orig_p.loIdx}.BQ = orig_p.vehicles{orig_p.loIdx};
+
+% Update follower vehicles in new trailing platoon
+for i = find(p.slotStatus==1)'
+    p.vehicles{i}.p = p;
+    p.vehicles{i}.Leader = p.vehicles{1};
+    p.vehicles{i}.idx = i;
+    if ~isempty(p.vehicles{i}.pJoin)
+        p.vehicles{i}.pJoin = [];
+        p.vehicles{i}.idxJoin = [];
+        p.vehicles{i}.mergePlatoonV = [];
+    end
 end
 
-% Update follower vehicles in new platoon
-obj.q = 'Leader';
-for i = 2:p.n
-    p.vehicle(i).p          = p;
-    p.vehicle(i).idx        = i;
-    p.vehicle(i).Leader     = p.vehicle(1);
 end
-
-end
-

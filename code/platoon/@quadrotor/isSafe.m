@@ -1,7 +1,6 @@
-function [safe, uSafe, valuex, valueSx, valueCx] = ...
+function [safe, uSafe, valuex] = ...
   isSafe(obj, other, safeV, t)
-% function [safe, uSafe, valuex, valueSx, valueCx]
-%                                            = isSafe(obj, other, safeV, t)
+% function [safe, uSafe, valuex] = isSafe(obj, other, safeV, t)
 %
 % Checks whether this vehicle is safe within a time horizon of t with
 % respect to the other vehicle
@@ -53,7 +52,8 @@ if safeV.g.dim == 3
     valuex = valueCx;
     return
   end
-  
+
+
   if any(x' >= [g.max-g.dx; g.max-g.dx])
     safe = 1;
     uSafe = [0; 0];
@@ -81,7 +81,8 @@ if safeV.g.dim == 3
   if valuex <= 0, safe = false;
   else            safe = true;
   end
-  
+
+
   % Compute gradient of V(t,x) where t is the first t such that V(t,x) <= 0
   [~, ~, g6D, valueC, ~, ind] = recon2x3D(tau, g, dataC, g, dataC, x, t);
   valueSSx = eval_u(g, dataS(:,:,:,ind), [g6D.xs{1}(:) g6D.xs{2}(:) g6D.xs{3}(:)]);
@@ -133,8 +134,8 @@ elseif safeV.g.dim == 2
   end
   
   t = obj.tauInt+0.5; % Migrate towards a single safety time window?
-  
-  % Compute value at current state
+
+    % Compute value at current state
   % Value according to collision criterion
   [valuex, gradx] = recon2x2D(tau, g, dataC, g, dataC, x, t);  
   
@@ -146,7 +147,7 @@ elseif safeV.g.dim == 2
   % Compute optimal safe controller
   uSafe = [(gradx(2)>=0)*obj.uMax + (gradx(2)<0)*obj.uMin; ...
     (gradx(4)>=0)*obj.uMax + (gradx(4)<0)*obj.uMin];  
-  
+    
 else
   error('Safety value function must be 2 or 3D!')
 end

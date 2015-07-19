@@ -1,178 +1,226 @@
-% Simulates a platoon behavior with intruder
+function simulateIntruder(from_checkpoint, save_graphics, output_directory)
+% function simulateIntruder(from_checkpoint, save_graphics, output_directory)
+%
+% Simulates Simulates a platoon behavior with intruder.
+%
+% Inputs:  from_checkpoint  - whether to load previous checkpoint
+%          save_graphics    - whether to export graphics (for making an
+%                            animation)
+%          output_directory - for graphics export
+%                             - requires export_fig package
+%                             - don't include a "/" at the end
+%
+% Author: Qie Hu, 07-14-2015
 
-clear; close all;
+% Default input parameters
+if nargin<1
+    from_checkpoint = false;
+end
 
+if nargin<2
+    save_graphics = false;
+end
 
-cvx_quiet true
+if nargin<3
+    output_directory = 'saved_graphics';
+end
+
+cvx_quiet true % Shuts cvx up if using MPC controller in followPath
 warning('off','all')
 
-tEnd = 7;                                % End of simulation time
-dt = 0.1;                                   % Sampling time
-t = 0:dt:tEnd;                              % Time horizon
-tSteps = 5;                                 % MPC horizon in followPath
+% Checkpoint directory and file
+check_point_dir = 'checkpoints';
+check_point = [check_point_dir '/' mfilename '.mat'];
 
-gridSize = 70;
-v = 3.5;                                    % Target highway speed
+%% Initialization
+if from_checkpoint
+    disp('Loading from last checkpoint')
+    load(check_point)
+    
+else
+    % Make directory if needed
+    system(['mkdir ' check_point_dir]);
+    
+    tEnd = 7;                 % End of simulation time
+    dt = 0.1;                 % Sampling time
+    t = 0:dt:tEnd;            % Time horizon
+    tSteps = 5;               % MPC horizon in followPath
+    gridSize = 70;
+    v = 3.5;                  % Target highway speed
+    
+    % Get reachability information
+    [reachInfo, safeV] = generateReachInfo();
+    
+    
+    % ===== Create highway here =====
+    z1 = [0 0];
+    z2 = [gridSize gridSize];
+    hw = highway(z1, z2, v);
+    
+    % ===== Create intruder here =====
+    qiX0 = [40;30];       % Initial position
+    qiXt = [10;20];       % Final position
+    qi = quadrotor(0, [qiX0(1);-4;qiX0(2);-2], reachInfo);
+    qiPath = highway(qiX0, qiXt, v);
+    
+    
+    % ===== Create a platoon of quadrotors on the highway =====
+    leaderPos = [23;23];
+    leaderVel = [4;4];
+    Nqr = 4;
+    p = popPlatoon(hw, leaderPos, leaderVel, Nqr, 1);
+    
+    qrs = cell({});
+    for j = 1:Nqr
+        qrs{j} = p.vehicles{j};
+    end
+    
+    u = zeros(2,Nqr);
+    
+    
+    % % Set up video writer
+    % writerObj = VideoWriter(sprintf('Intruder1.mp4'),'MPEG-4');    % Create object for writing video
+    % writerObj.FrameRate = 10;                   % Number of frames / sec
+    % open(writerObj);                            % Start videoWriter
+    
+    % Set up plotting
+    f1 = figure;    % Normal version
+    f2 = figure;    % Visualize vehicles
+    f3 = figure;    % Snapshots
+    
+    % Figure 1
+    figure(f1)
+    hw.hwPlot; hold on
+    
+    colors = lines(Nqr);
+    for j = 1:Nqr
+        qrs{j}.plotPosition(colors(j,:,:));
+    end
+    qi.plotPosition('red');                   % Intruder in red
+    
+    xlabel('x');    ylabel('y');
+    
+    ds = hw.ds;
+    vx = v*ds(1);
+    vy = v*ds(2);
+    
+    title(sprintf('t = %.01d',t(1)));
+    axis([0, gridSize, 0, gridSize]); %axis equal;
+    
+    % Figure 2. Visualize initial vehicle properties
+    figure(f2)
+    visualizeVehicles(qrs);
+    title(['t=' num2str(t(1))])
+    drawnow;
+    
+    % Save graphics if needed
+    if save_graphics
+        system(['mkdir ' output_directory])
+        export_fig([output_directory '/' mfilename '1'], '-png') % Export figure as png
+        
+        % Figure 3. Set up variables for plotting snap shots
+        f3 = figure;
+        tplot = [1 3.3 6.2];
+        numPlots = length(tplot);
+        spC = ceil(sqrt(numPlots));
+        spR = ceil(numPlots/spC);
+        plotnum = 0;
+    end
+    
+    % % Record videos
+    % ax = f1.CurrentAxes;
+    % ax.Units = 'pixels';
+    % pos = ax.Position;
+    % ti = ax.TightInset;
+    % rect = [-ti(1), -ti(2), pos(3)+ti(1)+ti(3), pos(4)+ti(2)+ti(4)+10];
+    % frame = getframe(ax,rect);
+    % writeVideo(writerObj,frame);
+    
+    % Starting index in the simulation loop (needed for saving checkpoints)
+    kStart = 2;
+    
+end % end if from_checkpoint
 
-% Get reachability information
-[reachInfo, safeV] = generateReachInfo();
 
-
-% Highway
-z1 = [0 0];
-z2 = [gridSize gridSize];
-hw = highway(z1, z2, v);
-
-% intruding quadrotor
-qiX0 = [40;30];       % Initial position
-qiXt = [10;20];       % Final position
-qi = quadrotor(0, dt, [qiX0(1);-4;qiX0(2);-2], reachInfo);
-qiPath = highway(qiX0, qiXt, v);
-
-
-% create a platoon of quadrotors on the highway
-leaderPos = [23;23];
-leaderVel = [4;4];
-Nqr = 4;
-p = popPlatoon(hw, leaderPos, leaderVel, Nqr, 1);
-
-qr = [];
-for j = 1:Nqr
-    qr = [qr,p.vehicle(j)];
-end
-
-u = zeros(2,Nqr);
-
-
-% % Set up video writer
-% writerObj = VideoWriter(sprintf('Intruder1.mp4'),'MPEG-4');    % Create object for writing video
-% writerObj.FrameRate = 10;                   % Number of frames / sec
-% open(writerObj);                            % Start videoWriter
-
-% Set up plotting
-f1 = figure;                                    % Normal version
-f2 = figure;                                    % Snapshots
-
-% Figure 1
-figure(f1)
-hw.hwPlot; hold on
-
-colors = lines(Nqr);
-for j = 1:Nqr
-    qr(j).plotPosition(colors(j,:,:));
-end
-qi.plotPosition('red');                   % Intruder in red
-
-xlabel('x');    ylabel('y');
-
-ds = hw.ds;
-vx = v*ds(1);
-vy = v*ds(2);
-
-title(sprintf('t = %.01d',t(1)));
-axis([0, gridSize, 0, gridSize]); %axis equal;
-
-% Set up variables for plotting snap shots
-tplot = [0 3.3 6.2];
-spC = 2;
-spR = 2;
-plotnum = 0;
-
-
-% % Record videos
-% ax = f1.CurrentAxes;
-% ax.Units = 'pixels';
-% pos = ax.Position;
-% ti = ax.TightInset;
-% rect = [-ti(1), -ti(2), pos(3)+ti(1)+ti(3), pos(4)+ti(2)+ti(4)+10];
-% frame = getframe(ax,rect);
-% writeVideo(writerObj,frame);
-
-
-for k = 2:length(t)
+for k = kStart:length(t)
     
     fprintf('t = %.01f \n', t(k))
     qAb = [];
     
     for j = 1:Nqr % for each quadrotor
-
-        valCx = zeros(1,3);      % Safety value due to collision
-        
-        fprintf('Q%.0d is %s, in P%.0d \n', qr(j).ID, qr(j).q, qr(j).p.ID)
+                
+        fprintf('Q%.0d is %s, in P%.0d \n', qrs{j}.ID, qrs{j}.q, qrs{j}.p.ID)
         
         % ------------- Check Safety ------------- %
         
         % Check safety w.r.t. Intruder
-        [qr(j).safeI, uSafeI, ~, valSx, valCx(1)] = qr(j).isSafe(qi, safeV);
-        qr(j).safeIhist = cat(2, qr(j).safeIhist, qr(j).safeI);
+        [qrs{j}.safeI, uSafeI] = qrs{j}.isSafe(qi, safeV);
+        qrs{j}.safeIhist = cat(2, qrs{j}.safeIhist, qrs{j}.safeI);
         
         
         % Check safety w.r.t. FQ
-        if strcmp(qr(j).q, 'Leader')
+        if strcmp(qrs{j}.q, 'Leader')
             
             % If it's a Leader, check w.r.t to trailing
             % vehicle of front platoon
-            if qr(j).p.FP == qr(j).p % If no platoon in front, set to safe
-                if valSx >= 0,  qr(j).safeFQ = true;
-                else            qr(j).safeFQ = false;
-                end
+            if qrs{j}.p.FP == qrs{j}.p % If no platoon in front, set to safe
+                qrs{j}.safeFQ = true;
             else
-                [qr(j).safeFQ, uSafeFQ, ~, ~, valCx(2)] = ...
-                    qr(j).isSafe(qr(j).p.FP.vehicle(qr(j).p.FP.n), safeV);
+                [qrs{j}.safeFQ, uSafeFQ] = ...
+                    qrs{j}.isSafe(qrs{j}.p.FP.vehicles{qrs{j}.p.FP.n}, safeV);
             end
             
         else
             
             % Follower
-            [qr(j).safeFQ, uSafeFQ, ~, ~, valCx(2)] = qr(j).isSafe(qr(j).FQ, safeV);
-        
+            [qrs{j}.safeFQ, uSafeFQ] = qrs{j}.isSafe(qrs{j}.FQ, safeV);
+            
         end
-        qr(j).safeFQhist = cat(2, qr(j).safeFQhist, qr(j).safeFQ);
-
+        qrs{j}.safeFQhist = cat(2, qrs{j}.safeFQhist, qrs{j}.safeFQ);
+        
         
         % Check safety w.r.t. BQ
-        if qr(j).idx == qr(j).p.n 
-%             % Trailing quadrotor, check w.r.t. leader of back platoon
-%             BP = qr(j).platoon.BP;
-%             if BP == qr(j).platoon % If no platoon at back, set to safe
-                    if valSx >= 0,  qr(j).safeBQ = true;
-                    else            qr(j).safeBQ = false;
-                    end
-%             else
-%                 [qr(j).safeBQ, uSafeBQ] = qr(j).isSafe(BP.vehicle(1), safeV);
-%             end
+        if qrs{j}.idx == find(qrs{j}.p.slotStatus==1,1,'last')
+            %             % Trailing quadrotor, check w.r.t. leader of back platoon
+            %             BP = qrs{j}.platoon.BP;
+            %             if BP == qrs{j}.platoon % If no platoon at back, set to safe
+            qrs{j}.safeBQ = true;
+            %             else
+            %                 [qrs{j}.safeBQ, uSafeBQ] = qrs{j}.isSafe(BP.vehicles{1}, safeV);
+            %             end
         else
-            [qr(j).safeBQ, uSafeBQ, ~, ~, valCx(3)] = qr(j).isSafe(qr(j).BQ, safeV);
+            [qrs{j}.safeBQ, uSafeBQ] = qrs{j}.isSafe(qrs{j}.BQ, safeV);
         end
-        qr(j).safeBQhist = cat(2, qr(j).safeBQhist, qr(j).safeBQ);
-
+        qrs{j}.safeBQhist = cat(2, qrs{j}.safeBQhist, qrs{j}.safeBQ);
+        
         % Total number of unsafe targets
-        numUnsafeTargets = ~qr(j).safeI + ~qr(j).safeFQ + ~qr(j).safeBQ;
+        numUnsafeTargets = ~qrs{j}.safeI + ~qrs{j}.safeFQ + ~qrs{j}.safeBQ;
         
         
         % ------------- Compute Control ------------- %
         
-        if numUnsafeTargets == 0     
+        if numUnsafeTargets == 0
             %  Safe w.r.t. Intruder, FQ & BQ, can do anything
             
-            if strcmp(qr(j).q, 'Leader') 
+            if strcmp(qrs{j}.q, 'Leader')
                 
-                if qr(j).p.FP ~= qr(j).p && qr(j).p.FP.n+qr(j).p.n<=qr(j).p.FP.nmax
-                    % There is another platoon in front and the total number 
+                if qrs{j}.p.FP ~= qrs{j}.p && ...
+                        qrs{j}.p.FP.loIdx + qrs{j}.p.loIdx <= qrs{j}.p.FP.nmax
+                    % There is another platoon in front and the total number
                     % of vehicles between this platoon and the one in front
                     % is less than max number of vehicles. Join platoon in front.
-                    fprintf('Q%.0d merging with P%.0d \n', qr(j).ID, qr(j).p.FP.ID)
-                    qr(j).u = qr(j).mergeWithPlatoon(qr(j).p.FP);
+                    fprintf('Q%.0d merging with P%.0d \n', qrs{j}.ID, qrs{j}.p.FP.ID)
+                    qrs{j}.u = qrs{j}.mergeWithPlatoon(qrs{j}.p.FP);
                 
                 else 
                     % Follow path
-                    qr(j).u = qr(j).followPath(tSteps, hw, qr(j).vMax);
+                    qrs{j}.u = qrs{j}.followPath(tSteps, hw, qrs{j}.vMax);
                 end
                 
             else
                 % Follower
-                qr(j).u = qr(j).followPlatoon();
-            end
+                qrs{j}.u = qrs{j}.followPlatoon();
+            end % if strcmp(qrs{j}.q, 'Leader')
         
             
         elseif numUnsafeTargets == 1
@@ -182,49 +230,26 @@ for k = 2:length(t)
             % If quadrotor is a Leader, it stays a Leader 
             % If quadrotor is a Follower, it becomes an EmergLeader and
             % splits platoon
-            if strcmp(qr(j).q, 'Follower')
-                fprintf('Q%.0d splits P%.0d \n', qr(j).ID, qr(j).p.ID)
-                qr(j).splitPlatoon();
+            if strcmp(qrs{j}.q, 'Follower')
+                fprintf('Q%.0d splits P%.0d \n', qrs{j}.ID, qrs{j}.p.ID)
+                qrs{j}.splitPlatoon();
             end
-            % from this point, qr(j) is EmergLeader
-            if ~qr(j).safeI
-                qr(j).u = uSafeI;
-            elseif ~qr(j).safeFQ
-                qr(j).u = uSafeFQ;
-            elseif ~qr(j).safeBQ
-                qr(j).u = uSafeBQ;
+            % from this point, qrs{j} is EmergLeader
+            if ~qrs{j}.safeI
+                qrs{j}.u = uSafeI;
+            elseif ~qrs{j}.safeFQ
+                qrs{j}.u = uSafeFQ;
+            elseif ~qrs{j}.safeBQ
+                qrs{j}.u = uSafeBQ;
             end
-                        
-        elseif valSx<0 && sum(valCx<0) == 0
-            % It's unsafe because it exceeded speed limit, but no potential
-            % collision, apply any safe control to slow down
-            qr(j).u = uSafeI;
-           
-        elseif valSx<0 && sum(valCx<0) == 1
-            % It's unsafe because it exceeded speed limit and one potential
-            % collision, if uSafe to avoid collision also slows down
-            % vehicle, then it's OK
-            cMode = find(valCx<0);
-            switch cMode
-                case 1, uSafe = uSafeI;
-                case 2, uSafe = uSafeFQ;
-                case 3, uSafe = uSafeBQ;
-            end
-            if qr(j).x(qr(j).vdim)+uSafe < qr(j).vMax
-                qr(j).u = uSafe;
-            else
-                qr(j).p.removeVehicle(qr(j));
-                qAb = [qAb, j];
-                fprintf('Q%.0d descends \n', qr(j).ID)
-            end
-            
+                                               
         else
             % Number of potential collisions more than 1. Change height.
             keyboard
-            qr(j).p.removeVehicle(qr(j));
+            qrs{j}.p.removeVehicle(qrs{j});
             qAb = [qAb, j];
-            fprintf('Q%.0d descends \n', qr(j).ID)
-        end
+            fprintf('Q%.0d descends \n', qrs{j}.ID)
+        end % if numUnsafeTargets == 0
             
     end %for j = 1:Nqr
     
@@ -234,58 +259,75 @@ for k = 2:length(t)
     
     % ------------------ Plot simulation ------------------ %
 
-    % ------- Normal --------- %
+    % ------- Normal View --------- %
     figure(f1)
     % Unplot abandoned quadrotors
     for i = 1:length(qAb)
-        qr(qAb(i)).unplotPosition();
+        qrs{qAb(i).idx}.unplotPosition();
+        % Remove abandoned quadrotors from list of quadrotors
+        qrs{qAb(i).idx} = [];
     end
     
-    % Remove abandoned quadrotors from list of quadrotors
-    qr(qAb) = [];
     Nqr = Nqr-length(qAb);
     fprintf('Number of quadrotors remaining: %.0d \n', Nqr)
 
-    
-    % Plot remaining quadrotors
-    for j = 1:Nqr
-        qr(j).plotPosition(colors(j,:,:));
-    end
+    % Update remaining vehicles' state, plot vehicle positions and position history
+    qi.updateState(qi.u);
     qi.plotPosition('red');
+    for j = 1:Nqr
+        qrs{j}.updateState(qrs{j}.u);
+        qrs{j}.plotPosition(colors(j,:,:));
+    end    
     title(sprintf('t = %.01f',t(k)));
     drawnow;
 %     savefig(sprintf('fig/Intruder1_%.0d.fig',k)); 
 %     print(sprintf('fig/Intruder1_%.0d.pdf',k), '-dpdf'); 
     
-       
-    % ----- Snapshots ----- %
-    if ~isempty(tplot) && t(k) >= tplot(1)
-        plotnum = plotnum+1;
-        figure(f2)
-        s = subplot(spR,spC,plotnum);
-        copyobj(f1.Children.Children, s);
-        tplot(1) = [];
-        title(sprintf('t = %.01f',t(k))); 
-        axis equal; axis([0, gridSize, 0, gridSize]);%box on;
-        if plotnum == 3, xlabel('x'); ylabel('y'); end
-    end
+    % ----- Visualize vehicle properties ----- %
+    figure(f2)
+    clf(f2)
+    visualizeVehicles(qrs);
+    title(sprintf('t = %.01f',t(k)));
+    drawnow;    
     
-    drawnow;
+    %     % ----- Record video ----- %
+    %     frame = getframe(ax,rect);
+    %     writeVideo(writerObj,frame);
     
-%     % ----- Record video ----- %
-%     frame = getframe(ax,rect);
-%     writeVideo(writerObj,frame);
     
-    % ----- Update states for all quadrotors ----- %
-    qi.updateState(qi.u);
-    for j = 1:Nqr
-        qr(j).updateState(qr(j).u);
-    end
-
+    % ---- Save graphics if specified ---- %
+    if save_graphics
+        % Export large figure as fig and pdf
+        savefig(sprintf('%s/%s_%.0d.fig',output_directory,mfilename,k)); 
+        print(sprintf('%s/%s_%.0d.pdf',output_directory,mfilename,k), '-dpdf');
+        % export_fig([output_directory '/' mfilename num2str(i)], '-png')
+        
+        % Create figure with subplots
+        if ~isempty(tplot) && t(k) >= tplot(1)
+            plotnum = plotnum+1;
+            figure(f3)
+            s = subplot(spR,spC,plotnum);
+            copyobj(f1.Children.Children, s);
+            tplot(1) = [];
+            title(sprintf('t = %.01f',t(k)));
+            axis equal; axis([0, gridSize, 0, gridSize]);%box on;
+            if plotnum == 3, xlabel('x'); ylabel('y'); end
+        end % end if ~isempty(tplot) && t(i) >= tplot(1)
+        drawnow;
+        
+        
+    end % end if save_graphics
     
-end
+    disp('Saving checkpoint...')
+    save(check_point)
+    
+end % end main simulation loop
 
 % close(writerObj);
+
+end % end function
+
+
 
 
 

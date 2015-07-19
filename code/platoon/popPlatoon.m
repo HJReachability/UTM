@@ -11,8 +11,8 @@ if nargin<3, leaderVel = [0;0]; end
 if nargin<4, numVehicles = 1; end
 if nargin<5,         ID1 = 1; end
 
-% Hard code time discretization for now
-dt = 0.1;
+% % Hard code time discretization for now
+% dt = 0.1;
 
 switch numel(leaderPos)
     case 2
@@ -39,7 +39,7 @@ end
 reachInfo = generateReachInfo();
 
 x = zeros(4,1);
-qr = quadrotor(ID1, dt, x, reachInfo);
+qr = quadrotor(ID1, x, reachInfo);
 qr.x(qr.pdim) = x1;
 qr.x(qr.vdim) = leaderVel;
 
@@ -48,7 +48,7 @@ p = platoon(qr, hw); % Using default nmax and followTime
 for i = 2:numVehicles
     ID = ID1 + i - 1;
     
-    p.addVehicle(reachInfo, ID);
+    p.addVehicle(ID, reachInfo);
 end
 
 

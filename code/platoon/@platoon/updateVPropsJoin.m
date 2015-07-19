@@ -14,46 +14,47 @@ function updateVPropsJoin(obj, vehicle)
 % Update number of vehicles in platoon
 obj.n = obj.n + 1;
 
-% Update vehicle pointer list
-if vehicle.idx == obj.vehicle(end).idx
-    % If the new vehicle's position index already exists, something went
-    % terribly wrong...
-    error('The vehicle joining the platoon is already in the platoon?')
-    
-else
-    % Otherwise, recreate vehicle list by inserting vehicle
-    % after the last vehicle in the current list with position index
-    % smaller than the current vehicle to be added
-    l_idx = find([obj.vehicle.idx] < vehicle.idx, 1, 'last');
-    obj.vehicle = [obj.vehicle(1:l_idx); vehicle; obj.vehicle(l_idx+1:end)];
-end
+% Update last occupied slot index
+obj.loIdx = max(obj.loIdx, vehicle.idxJoin);
+
+% Confirm vehicle position in platoon
+vehicle.idx = vehicle.idxJoin;
+vehicle.idxJoin = [];
+
+% Update vehicles pointers and join list pointers
+obj.vehicles{vehicle.idx} = vehicle;
+obj.vJoin{vehicle.idx} = [];
 
 % Update vehicle list in platoon
-obj.vList(vehicle.idx) = 1;
+obj.slotStatus(vehicle.idx) = 1;
+
+% Empty platoon join pointer
 vehicle.pJoin = [];
 
-% Update pointers to front and behind vehicles for this vehicle and the
-% vehicle in front
-obj.vehicle(l_idx).BQ = vehicle; % Point previous trailer
-vehicle.FQ = obj.vehicle(l_idx);
-
-% If there's a vehicle behind, update front and behind pointers for this
-% vehicle and the vehicle behind
-c_idx = l_idx + 1;
-if ~isempty(obj.vehicle(c_idx+1:end))
-    obj.vehicle(c_idx+1).FQ = vehicle;
-    vehicle.BQ = obj.vehicle(c_idx+1);
+% Update pointers to and from the vehicle behind this vehicle 
+BQ_idx = find(obj.slotStatus==1 & (1:obj.nmax)'>vehicle.idx, 1, 'first');
+if isempty(BQ_idx)
+  % If there are no vehicles behind this one, then the BQ pointer is to the
+  % vehicle itself
+  vehicle.BQ = vehicle;
+else
+  % Otherwise, update both the BQ pointer of this vehicle and the FQ
+  % pointer of the vehicle behind it
+  vehicle.BQ = obj.vehicles{BQ_idx};
+  vehicle.BQ.FQ = vehicle;
 end
 
-% Update current vehicle position index
-vehicle.idx = c_idx;
+% Update pointers to and from the vehicle in front of this vehicle
+% (Should be guaranteed to exist, since the platoon must have at least one 
+% vehicle to begin with)
+FQ_idx = find(obj.slotStatus==1 & (1:obj.nmax)'<vehicle.idx, 1, 'last');
+vehicle.FQ = obj.vehicles{FQ_idx};
+vehicle.FQ.BQ = vehicle;
 
 % Update other vehicle fields
-obj.vehicle(c_idx).q = 'Follower';          % Mode
-obj.vehicle(c_idx).p = obj;                 % Platoon pointer
-obj.vehicle(c_idx).Leader = obj.vehicle(1); % Leader pointer
-obj.vehicle(c_idx).mergePlatoonV = [];      % merge platoon value function
-obj.vJoin{c_idx} = [];                      % pointer to vehicles attempting to join
-
+vehicle.q = 'Follower';          % Mode
+vehicle.p = obj;                 % Platoon pointer
+vehicle.Leader = obj.vehicles{1}; % Leader pointer
+vehicle.mergePlatoonV = [];      % merge platoon value function
 
 end
