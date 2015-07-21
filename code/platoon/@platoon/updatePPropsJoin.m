@@ -10,13 +10,13 @@ function updatePPropsJoin(obj, platoon)
 %         platoon - platoon that is added
 %
 % Mo Chen, Qie Hu, 2015-07-01
-% Modified: Qie Hu, 2015-07-17
+% Modified: Qie Hu, 2015-07-22
 
 % Update number of vehicles in platoon
 obj.n = obj.n + platoon.n;
 
 % Update last occupied slot index
-obj.loIdx = platoon.vehicles{end}.idxJoin;
+obj.loIdx = platoon.vehicles{platoon.loIdx}.idxJoin;
 
 % Occupied slots in platoon
 occup_slot = find(platoon.slotStatus == 1)';
@@ -50,15 +50,15 @@ else
     if platoon.BP.vehicles{1}.pJoin == platoon
         % Platoon behind it is attempting to join this platoon
         if obj.loIdx + platoon.BP.loIdx <= obj.nmax
-            % update the platoon.BP to join obj instead (at the end of 
-            % obj or behind platoon?)
-            for i = BP_occup_slot
+            % If there are available slots in obj,
+            % update platoon.BP to join obj (at the end)
+            for i = find(platoon.BP.slotStatus == 1)'
                 platoon.BP.vehicles{i}.pJoin = obj;
                 platoon.BP.vehicles{i}.idxJoin = obj.loIdx+i; % Join at the end
             end
         else
             % update platoon.BP to not join platoon
-            for i = BP_occup_slot
+            for i = find(platoon.BP.slotStatus == 1)'
                 platoon.BP.vehicles{i}.pJoin = [];
                 platoon.BP.vehicles{i}.idxJoin = [];
             end

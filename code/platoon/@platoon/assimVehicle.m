@@ -12,7 +12,7 @@ function assimVehicle(obj, vehicle)
 %
 % Mo Chen, 2015-07-03
 % Modified: Qie Hu, 2015-07-01
-% Modified: Qie Hu, 2015-07-17
+% Modified: Qie Hu, 2015-07-22
 
 % If vehicle is 'Free', assimilating 1 vehicle
 % If vehicle is 'Leader', assimilating a platoon of vehicles
@@ -67,10 +67,13 @@ end
 
 xPh = obj.phantomPosition(idxJoin);
 
-dtol = 2; % Tolerance in distance to phantom position
-if norm(xPh - vehicle.x(vehicle.pdim)) >= dtol
-  fprintf('Vehicle is too far from its phantom position! \n')
-  return
+tol = 0.63; % Tolerance in distance to target state (g1.dx = g2.dx = [0.6250;0.6176])
+x = zeros(4,1);
+x(vehicle.vdim) = obj.hw.speed*obj.hw.ds;   % Target velocity is highway velocity
+x(vehicle.pdim) = xPh;  % Target positin is phantom position
+if abs(vehicle.x-x) >= 1.1*tol
+    fprintf('Vehicle is too far from its target state! \n')
+    return
 end
 
 % Add to platoon

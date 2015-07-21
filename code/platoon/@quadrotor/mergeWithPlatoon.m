@@ -116,7 +116,6 @@ if strcmp(obj.q, 'Free') || strcmp(obj.q, 'Leader')
   if abs(x-(obj.x-p.vehicles{1}.x))<=1.1*[g1.dx;g2.dx]
     % if relative state is within one grid point of target relative
     % state, roughly, then vehicle gets assimilated into platoon
-    keyboard
     p.assimVehicle(obj);
     u = obj.followPlatoon;
     
