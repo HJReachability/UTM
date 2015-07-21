@@ -1,12 +1,6 @@
-function pVisualize(obj, f)
+function pVisualize(obj)
 % function pVisualize(obj)
 % Visualizes platoon
-% f - figure handle
-
-if nargin<2
-    f = figure;
-end
-
-visualizeVehicles(obj.vehicle, f)
+visualizeVehicles(obj.vehicles(1:obj.n));
 
 end

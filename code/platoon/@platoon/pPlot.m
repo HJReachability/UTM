@@ -8,7 +8,7 @@ function pPlot(obj, cMap, hwcolor)
 %         cMap    - color map for the vehicles
 %         hwcolor - color of the highway
 % 
-% Mo Chen, 2015-06-21
+% Mo Chen, 2015-07-21
 
 % Default colormap for vehicles
 if nargin<2, cMap = lines(obj.n); end
@@ -22,8 +22,7 @@ obj.hw.hwPlot(hwcolor); hold on
 % Plot the vehicles
 for i = 1:obj.n
     color = cMap(i,:);
-    obj.vehicle(i).plotPosition(color); hold on
-    
+    obj.vehicles{i}.plotPosition(color); hold on
 end
 
 end

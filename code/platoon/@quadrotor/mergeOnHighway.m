@@ -69,8 +69,7 @@ switch obj.q
                 disp('Open-loop')
                 % Path to target (for now written as a highway object, which isn't really
                 % "correct" in principle)
-                pathToTarget = highway(obj.x(obj.pdim), target);
-                
+                pathToTarget = linpath(obj.x(obj.pdim), target);
                 u = obj.followPath(tsteps, pathToTarget);
             end
         end

@@ -140,7 +140,7 @@ if strcmp(obj.q, 'Free') || strcmp(obj.q, 'Leader')
       disp('Open-loop')
       
       % Path to target
-      pathToOther = highway(obj.x(pdim), xPh);
+      pathToOther = linpath(obj.x(pdim), xPh);
       u = obj.followPath(tsteps, pathToOther);
       
     end

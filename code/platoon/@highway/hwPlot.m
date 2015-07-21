@@ -7,9 +7,11 @@ function hwPlot(obj, color)
 % 
 % Mo Chen, 2015-06-21
 
-if nargin<2, color = 'k'; end
+if nargin<2
+  color = 'k'; 
+end
 
-pts = obj.fn([0 1]);
-obj.h = plot(pts(1,:), pts(2,:), '--', 'color', color);
+% call the plot method from the superclass lpPath (linear path)
+obj.lpPlot(color);
 
 end

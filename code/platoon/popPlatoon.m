@@ -15,24 +15,34 @@ if nargin<5,         ID1 = 1; end
 % dt = 0.1;
 
 switch numel(leaderPos)
-    case 2
-        % If input is a 2D vector, find nearest position on the highway
-        [~, ~, x1] = hw.highwayPos(leaderPos);
-        
     case 1
         % If input position is a scalar, interpret as highway parameter and
         % project it onto the interval [0, 1]
         s = leaderPos;
         s = min(s,1);
         s = max(s,0);
-        
         x1 = hw.fn(s);
+        
+    case 2
+        % If input is a 2D vector, find nearest position on the highway
+        [~, ~, x1] = hw.highwayPos(leaderPos);
+
     otherwise
         error('Invalid leader position!')
 end
 
-if numel(leaderPos) ~= 2
-    error('Invalid leader velocity!')
+switch numel(leaderVel)
+    case 1
+        % If input velocity is scalar, multiply by the highway heading to
+        % create a vector of the same magnitude as the input
+        v1 = leaderVel * hw.ds;
+        
+    case 2
+        % If input is a 2D vector, find nearest position on the highway
+        v1 = leaderVel;
+
+    otherwise
+        error('Invalid leader velocity!')
 end
 
 % Create first vehicle and platoon
@@ -41,7 +51,7 @@ reachInfo = generateReachInfo();
 x = zeros(4,1);
 qr = quadrotor(ID1, x, reachInfo);
 qr.x(qr.pdim) = x1;
-qr.x(qr.vdim) = leaderVel;
+qr.x(qr.vdim) = v1;
 
 p = platoon(qr, hw); % Using default nmax and followTime
 

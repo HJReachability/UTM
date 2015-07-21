@@ -10,10 +10,17 @@ function [sThis, sOther] = hwInt(obj, other)
 % Mo Chen, 2015-05-25
 
 % Unpack highway endpoints for convenience
-x1 = obj.z1(1); y1 = obj.z1(2);
-x2 = obj.z2(1); y2 = obj.z2(2);
-x3 = other.z1(1); y3 = other.z1(2);
-x4 = other.z2(1); y4 = other.z2(2);
+x1 = obj.z0(1); 
+y1 = obj.z0(2);
+
+x2 = obj.z1(1); 
+y2 = obj.z1(2);
+
+x3 = other.z0(1); 
+y3 = other.z0(2);
+
+x4 = other.z1(1); 
+y4 = other.z1(2);
 
 % MATLAB's built-in function for line intersection (returns empty if
 % intersection is not found
