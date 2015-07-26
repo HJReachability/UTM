@@ -78,15 +78,14 @@ else
     u = zeros(2,Nqr);
     
     
-    % % Set up video writer
-    % writerObj = VideoWriter(sprintf('Intruder1.mp4'),'MPEG-4');    % Create object for writing video
-    % writerObj.FrameRate = 10;                   % Number of frames / sec
-    % open(writerObj);                            % Start videoWriter
+    % Set up video writer
+    writerObj = VideoWriter(sprintf('Intruder1.mp4'),'MPEG-4');    % Create object for writing video
+    writerObj.FrameRate = 10;                   % Number of frames / sec
+    open(writerObj);                            % Start videoWriter
     
     % Set up plotting
     f1 = figure;    % Normal version
     f2 = figure;    % Visualize vehicles
-    f3 = figure;    % Snapshots
     
     % Figure 1
     figure(f1)
@@ -116,10 +115,13 @@ else
     % Save graphics if needed
     if save_graphics
         system(['mkdir ' output_directory])
-        export_fig([output_directory '/' mfilename '1'], '-png') % Export figure as png
+        % Export large figure as fig and pdf
+        savefig(f1,sprintf('%s/%s_1.fig',output_directory,mfilename)); 
+        print(f1,sprintf('%s/%s_1.pdf',output_directory,mfilename), '-dpdf');
+%         export_fig([output_directory '/' mfilename '1'], '-png') % Export figure as png
         
         % Figure 3. Set up variables for plotting snap shots
-        f3 = figure;
+        f3 = figure;    
         tplot = [1 3.3 6.2];
         numPlots = length(tplot);
         spC = ceil(sqrt(numPlots));
@@ -127,14 +129,14 @@ else
         plotnum = 0;
     end
     
-    % % Record videos
-    % ax = f1.CurrentAxes;
-    % ax.Units = 'pixels';
-    % pos = ax.Position;
-    % ti = ax.TightInset;
-    % rect = [-ti(1), -ti(2), pos(3)+ti(1)+ti(3), pos(4)+ti(2)+ti(4)+10];
-    % frame = getframe(ax,rect);
-    % writeVideo(writerObj,frame);
+    % Record videos
+    ax = f1.CurrentAxes;
+    ax.Units = 'pixels';
+    pos = ax.Position;
+    ti = ax.TightInset;
+    rect = [-ti(1), -ti(2), pos(3)+ti(1)+ti(3), pos(4)+ti(2)+ti(4)+10];
+    frame = getframe(ax,rect);
+    writeVideo(writerObj,frame);
     
     % Starting index in the simulation loop (needed for saving checkpoints)
     kStart = 2;
@@ -290,16 +292,16 @@ for k = kStart:length(t)
     title(sprintf('t = %.01f',t(k)));
     drawnow;    
     
-    %     % ----- Record video ----- %
-    %     frame = getframe(ax,rect);
-    %     writeVideo(writerObj,frame);
+    % ----- Record video ----- %
+    frame = getframe(ax,rect);
+    writeVideo(writerObj,frame);
     
     
     % ---- Save graphics if specified ---- %
     if save_graphics
         % Export large figure as fig and pdf
-        savefig(sprintf('%s/%s_%.0d.fig',output_directory,mfilename,k)); 
-        print(sprintf('%s/%s_%.0d.pdf',output_directory,mfilename,k), '-dpdf');
+        savefig(f1,sprintf('%s/%s_%.0d.fig',output_directory,mfilename,k)); 
+        print(f1,sprintf('%s/%s_%.0d.pdf',output_directory,mfilename,k), '-dpdf');
         % export_fig([output_directory '/' mfilename num2str(i)], '-png')
         
         % Create figure with subplots
@@ -323,7 +325,7 @@ for k = kStart:length(t)
     
 end % end main simulation loop
 
-% close(writerObj);
+close(writerObj);
 
 end % end function
 

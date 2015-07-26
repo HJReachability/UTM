@@ -8,25 +8,35 @@ function updateVPropsAbandon(obj, vehicle)
 %         vehicle - vehicle to be removed
 %
 % Qie Hu, 2015-07-02
+% Modified: Qie Hu, 2015-07-25
+
+% Occupied slots in platoon
+occup_slot = find(obj.slotStatus == 1)';
 
 if obj.n == 1
-    
     % Vehicle is the only vehicle in its platoon, so when it abandons, its
-    % platoon disappears. Update platoon pointers
-    obj.FP.BP = obj.BP;
-    obj.BP.FP = obj.FP; 
-    delete(obj)
+    % platoon disappears. Update pointers to platoon in front and behind
+    if ~isempty(obj.FP)
+        obj.FP.BP = obj.BP;
+    end
+    
+    if ~isempty(obj.BP)
+        obj.BP.FP = obj.FP; 
+    end
+    
+    delete(obj) 
 
 else
     
      % Platoon has more than one vehicle
-    
     if vehicle.idx == 1 % Leader abandons platoon
-        obj.vehicle(2).q = 'Leader'; % Designate first follower as new leader
-        obj.ID = obj.vehicle(2).ID;
+        % Designate first follower as new leader
+        nextIdx = occup_slot(2);
+        obj.vehicles{nextIdx}.q = 'Leader'; 
+        obj.ID = obj.vehicles{nextIdx}.ID;
         vehicle.BQ.FQ = vehicle.BQ;
         
-    elseif vehicle.idx == obj.n  % Trailing vehicle abandons platoon
+    elseif vehicle.idx == obj.loIdx  % Trailing vehicle abandons platoon
         vehicle.FQ.BQ = vehicle.FQ;
         
     else   % A vehicle in the middle abandons platoon
@@ -34,29 +44,36 @@ else
         vehicle.BQ.FQ = vehicle.FQ;
     end
     
-    % Update index for trailing vehicles
-    for i = vehicle.idx+1:obj.n
-        obj.vehicle(i).idx = i-1;
+    % Update slotStatus for vehicle
+    obj.slotStatus(vehicle.idx) = 0;
+    
+    for i = vehicle.idx+1:obj.loIdx
+        if obj.slotStatus(i) == 1
+            % Update index for trailing vehicles
+            obj.vehicles{i}.idx = i-1;
+        end
+        
+        % Update vehicle positions 
+        obj.vehicles{i-1} = obj.vehicles{i};
+        
+        % join list pointers
+        if ~isempty(obj.vJoin{i})
+            obj.vJoin{i}.idxJoin = obj.vJoin{i}.idxJoin - 1;
+        end
+        obj.vJoin{i-1} = obj.vJoin{i};
     end
     
-    % Update platoon lists
-    obj.vehicle = [obj.vehicle(1:vehicle.idx-1), obj.vehicle(vehicle.idx+1:end)];
-%     obj.IDvehicle = [obj.IDvehicle(1:vehicle.idx-1), obj.IDvehicle(vehicle.idx+1:end)];
+    % Update number of vehicles
     obj.n = obj.n - 1;
-    obj.vList = [obj.vList(1:vehicle.idx-1), obj.vList(vehicle.idx+1:end), 0];
     
-    % If there are vehicles trying to join this platoon,
-    % update their idxJoin
-    vs_tf = ismember(obj.vList, -1);
-    if max(vs_tf)>0
-        vs_idx = find(vs_tf);
-        for i = 1:length(vs_idx)
-            v_idx = vs_idx(i);
-            if v_idx > vehicle.idx
-                obj.vJoin(v_idx).idxJoin = obj.vJoin(v_idx).idxJoin - 1;
-            end
-        end
-    end    
+    % Update last occupied vehicle position
+    obj.vehicles{obj.loIdx} = [];
+    obj.vJoin{obj.loIdx} = [];
+    obj.loIdx = obj.loIdx-1;
+    
+    % Update vehicle list in obj
+    obj.slotStatus(vehicle.idx:end-1) = obj.slotStatus(vehicle.idx+1:end);
+    obj.slotStatus(end) = 0;
     
 end
 
@@ -71,7 +88,7 @@ vehicle.idxJoin = [];
 
 % If vehicle was attempting to join another platoon, free up the slot
 if ~isempty(vehicle.pJoin)
-    vehicle.pJoin.vList(vehicle.idxJoin) = 0;
+    vehicle.pJoin.slotStatus(vehicle.idxJoin) = 0;
     vehicle.pJoin.vJoin{vehicle.idxJoin} = [];
     vehicle.pJoin = [];
 end
