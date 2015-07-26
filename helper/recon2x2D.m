@@ -1,4 +1,4 @@
-function [valuex, gradx, g, value, grad, ind] = recon2x2D(tau, g1, data1, g2, data2, x, t)
+function [valuex, gradx, g, value, grad,valueTTR,gradTTR, ind] = recon2x2D(tau, g1, data1, g2, data2, x, t)
 % function [valuex, gradx, g, value, grad] = recon2x2D(tau, g1, data1, g2,
 %                                                                 data2, x)
 %
@@ -15,6 +15,8 @@ function [valuex, gradx, g, value, grad, ind] = recon2x2D(tau, g1, data1, g2, da
 % Outputs: valuex, gradx - value and gradient at state x
 %          g             - 4D grid structure
 %          value, grad   - values and gradients around state x
+%          valueTTR, gradTTR   - values and gradients around state x for minimum time to reach
+         
 
 if nargin<7, t = tau(end); end
 
@@ -93,6 +95,10 @@ data2_4D = repmat(data2_4D(1,1,:,:), gs4D.N(1), gs4D.N(2), 1, 1);
 % Create initial conditions
 data4Ds = max(data1_4D, data2_4D);
 
+valueTTR=data4Ds*0+10^5;
+
+valueTTR(data4Ds<=0)=0;
+
 for i = 2:length(tau)
     data4Ds_last = data4Ds;
     
@@ -109,6 +115,9 @@ for i = 2:length(tau)
     if nargin<7 && size(x,2) == 1
         if eval_u(gs4D, data4Ds, x') <= 0, break; end
     end
+    
+    valueTTR((data4Ds<0)&(data4Ds_last>=0))=tau(i);
+    
 end
 % disp(['Final time is ' num2str(tau(i))])
 
@@ -118,7 +127,9 @@ end
 
 value = data4Ds;
 g = gs4D;
+
 grad = extractCostates(g, value);
+gradTTR=extractCostates(g, valueTTR);
 
 if size(x,2)>1, gradx = [];
 else            gradx = calculateCostate(g, grad, x');
