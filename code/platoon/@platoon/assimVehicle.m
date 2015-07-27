@@ -17,11 +17,11 @@ function assimVehicle(obj, vehicle)
 % If vehicle is 'Free', assimilating 1 vehicle
 % If vehicle is 'Leader', assimilating a platoon of vehicles
     
-% Check if the vehicle is a leader or free
-if ~strcmp(vehicle.q, 'Free') && ~strcmp(vehicle.q, 'Leader')
-  fprintf('Vehicle must be in free or leader mode! \n')
-  return
-end
+% % Check if the vehicle is a leader or free
+% if ~strcmp(vehicle.q, 'Free') && ~strcmp(vehicle.q, 'Leader')
+%   fprintf('Vehicle must be in free or leader mode! \n')
+%   return
+% end
 
 % Check if the platoon is already full
 if strcmp(vehicle.q, 'Free')

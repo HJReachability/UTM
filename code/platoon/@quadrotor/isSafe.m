@@ -1,5 +1,5 @@
 function [safe, uSafe, valuex] = ...
-  isSafe(obj, other, safeV, t)
+  isSafe(obj, other, safeV)
 % function [safe, uSafe, valuex] = isSafe(obj, other, safeV, t)
 %
 % Checks whether this vehicle is safe within a time horizon of t with
@@ -7,7 +7,7 @@ function [safe, uSafe, valuex] = ...
 %
 % Inputs:  obj   - this vehicle
 %          other - other vehicle
-%          t     - time horizon
+%          safeV - safety reachable set value function
 %
 % Outputs: safe  - boolean variable indicating whether the relative state
 %                  is safe
@@ -23,7 +23,15 @@ function [safe, uSafe, valuex] = ...
 %
 % Mo Chen, 2015-05-23
 % Modified: Qie Hu, 2015-07-01
-% Modified: Mo Chen. 2015-07-14
+% Modified: Mo Chen. 2015-07-21
+
+% A vehicle is always safe with respect to itself or to nothing
+if isempty(other) || (obj == other)
+  safe = 1;
+  uSafe = [];
+  valuex = inf;
+  return
+end
 
 % Unpack reachable set
 tau = safeV.tau;
@@ -32,7 +40,6 @@ g = safeV.g;
 if safeV.g.dim == 3
   dataC = safeV.dataC;
   dataS = safeV.dataS;
-  
   
   % States in 6D reachable set
   xr = obj.x(1) - other.x(1);
@@ -47,16 +54,15 @@ if safeV.g.dim == 3
   % then the relative system is safe
   if any(x' <= [g.min+g.dx; g.min+g.dx])
     safe = 1;
-    uSafe = [0; 0];
+    uSafe = [];
     valueCx = max(dataC(:));
     valuex = valueCx;
     return
   end
 
-
   if any(x' >= [g.max-g.dx; g.max-g.dx])
     safe = 1;
-    uSafe = [0; 0];
+    uSafe = [];
     valueCx = max(dataC(:));
     valuex = valueCx;
     return

@@ -55,6 +55,6 @@ vehicle.FQ.BQ = vehicle;
 vehicle.q = 'Follower';          % Mode
 vehicle.p = obj;                 % Platoon pointer
 vehicle.Leader = obj.vehicles{1}; % Leader pointer
-vehicle.mergePlatoonV = [];      % merge platoon value function
+% vehicle.mergePlatoonV = [];      % merge platoon value function
 
 end

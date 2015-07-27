@@ -1,176 +1,235 @@
-clear all; close all
+function simulateNormal2(from_checkpoint, save_graphics, output_directory)
+% function simulateNormal2(from_checkpoint, save_graphics,
+%                                                         output_directory)
+%
+% Simulates two vehicles merging onto the highway. The first vehicle forms
+% a platoon on the highway, and the second vehicle joins the platoon.
+%
+% Inputs:  from_checkpoint  - whether to load previous checkpoint
+%          save_graphics    - whether to export graphics (for making an
+%                            animation)
+%          output_directory - for graphics export
+%                             - requires export_fig package
+%                             - don't include a "/"
+%
+% Mo Chen, 2015-07-06
 
-cvx_quiet true
-
-tEnd = 20;                  % End of simulation time
-dt = 0.1;                   % Sampling time
-t = 0:dt:tEnd;              % Time horizon
-tsteps = 5;                 % time steps to look ahead in MPC
-v = 3;
-
-% Get reachability information
-[reachInfo, safeV] = generateReachInfo();
-
-% put some quadrotors in a horizontal line and !!create a platoon!!
-qr1 = quadrotor(1, dt, [0; 0; -20; 0], reachInfo);
-qr2 = quadrotor(2, dt, [-25; 0; 35; 0], reachInfo);
-qr2.idx = 2;
-qr = [qr1; qr2];
-
-Nqr = length(qr);
-u = zeros(2,Nqr);
-colors = lines(Nqr);
-
-% Highway
-z0 = [-30 -15];
-z1 = [80 40];
-hw = highway(z0, z1, v);
-
-xt = 6;
-target = [xt 0.5*xt];
-
-
-% Visualize initial set
-f1 = figure;
-f2 = figure;
-
-figure(f1)
-% subplot(1,2,1)
-hw.hwPlot; hold on
-ht = plot(target(1), target(2), 'color', colors(1,:,:));
-
-
-for j = 1:Nqr
-    %     subplot(1,2,1)
-    qr(j).plotPosition(colors(j,:,:));
-    %
-    %     subplot(1,2,2)
-    %     qr(j).plotVelocity(colors{j});
+if nargin<1
+  from_checkpoint = false;
 end
 
+if nargin<2
+  save_graphics = false;
+end
 
+if nargin<3
+  output_directory = 'saved_graphics';
+end
 
-% subplot(1,2,1)
-% qr(2).plotSafeV(qr(1), safeV);
-% xlim([-10 25]); ylim([-10 10]);
-xlabel('x');    ylabel('y');
+cvx_quiet true % Shuts cvx up if using MPC controller in followPath
 
-ds = hw.ds;
-vx = v*ds(1)/norm(ds);
-vy = v*ds(2)/norm(ds);
+% Checkpoint directory and file
+check_point_dir = 'checkpoints';
+check_point = [check_point_dir '/' mfilename '.mat'];
 
-title(['t=' num2str(t(1))])
-% axis equal
-xlim([-25 40])
-ylim([-25 40])
-% return
-drawnow;
+%% Initialization
+if from_checkpoint
+  disp('Loading from last checkpoint')
+  load(check_point)
+  
+else
+  tEnd = 20;                  % End of simulation time
+  dt = 0.1;                   % Sampling time (this has to be 0.1!)
+  t = 0:dt:tEnd;              % Time horizon
+  tsteps = 5;                 % time steps to look ahead in MPC
+  v = 3;
+  
+  f1 = figure;
+  f2 = figure;
+  
+  % Get reachability information
+  [reachInfo, safeV] = generateReachInfo();
+  
+  % Highway
+  z0 = [-30 -15];
+  z1 = [80 40];
+  hw = highway(z0, z1, v);
+  
+%   % put some quadrotors in a horizontal line and !!create a platoon!!
+%   qr1 = quadrotor(1, [0; 0; -20; 0], reachInfo);
+% %   qr2 = quadrotor(2, [-25; 0; 35; 0], reachInfo);
+%   qr2 = quadrotor(2, [-30; 0; -15; 0], reachInfo);
+%   qrs = {qr1; qr2};
+  p = popPlatoon(hw, 0.2, hw.speed, 2, 1);
+  qrs = p.vehicles(1:p.n);
+  qrs{2}.x(qrs{2}.pdim) = p.phantomPosition(5);
+  
+  Nqr = length(qrs);
+  u = zeros(2,Nqr);
+  colors = lines(Nqr);
+  
 
-% export_fig('E:\Normal2\1', '-png')
-tplot = [1.5 2.8 7 12];
-numPlots = length(tplot);
-spC = ceil(sqrt(numPlots));
-spR = ceil(numPlots/spC);
-plotnum = 0;
-
-for i = 2:length(t)
-    for j = 1:Nqr % Each quadrotor
-        % Check safety
-        if j>1, [safe, uSafe] = qr(j).isSafe(qr(j-1), safeV);
-        else     safe         = 1;
-        end
-        
-        if safe
-            if ~isempty(hw.ps) % If there's a platoon
-                if strcmp(qr(j).q, 'Leader')
-                    disp('Leading')
-                    u(:,j) = qr(j).followPath(tsteps, hw, v);
-                    
-                else % if strcmp(qr(j).q, 'Leader')
-                    if strcmp(qr(j).q, 'Free')
-                        disp('Merging into platoon')
-                        u(:,j) = qr(j).mergeWithPlatoon(hw.ps);
-                        
-                    elseif strcmp(qr(j).q, 'Follower') % if isempty(qr(j).platoon)
-                        disp('Following platoon')
-                        u(:,j) = qr(j).followPlatoon;
-                        
-                    else
-                        error('Unknown mode!')
-                        
-                    end % if isempty(qr(j).platoon)
-                    
-                end % if strcmp(qr(j).q, 'Leader')
-                
-            else % if ~isempty(hw.ps)
-                disp('No platoon.')
-                u(:,j) = qr(j).mergeOnHighway(hw, target);
-                
-            end % if ~isempty(hw.ps)
-        else % if safe
-            disp([num2str(j) 'is unsafe!'])
-            u(:,j) = uSafe;
-        end % if safe
-    end % for j = 1:Nqr
+  
+  % Target for entering highway
+  xt = 6;
+  target = [xt 0.5*xt];
+  
+  % Visualize initial set
+  figure(f1)
+  hw.hwPlot; hold on
+  ht = plot(target(1), target(2), 'color', colors(1,:,:));
+  
+  for j = 1:Nqr
+    qrs{j}.plotPosition(colors(j,:,:));
+  end
+  
+  xlabel('x');
+  ylabel('y');
+  title(['t=' num2str(t(1))])
+  
+  xlim([-25 40])
+  ylim([-25 40])
+  
+  % Visualize initial vehicle properties
+  figure(f2)
+  visualizeVehicles(qrs);
+  title(['t=' num2str(t(1))])
+  drawnow;
+  
+  % Save graphics if needed
+  if save_graphics
+    system(['mkdir ' output_directory])
+    export_fig([output_directory '/' mfilename '1'], '-png') % Export figure as png    
     
-    figure(f1)
-    for j = 1:Nqr
-        qr(j).updateState(u(:,j));
-        qr(j).plotPosition(colors(j,:,:));
+    % Create figure with subplots
+    f3 = figure;
+    tplot = [1.5 2.8 7 12];
+    numPlots = length(tplot);
+    spC = ceil(sqrt(numPlots));
+    spR = ceil(numPlots/spC);
+    plotnum = 0;
+  end
+  
+  % Starting index in the simulation loop (needed for saving checkpoints)
+  iStart = 2;
+end
+
+%% Main simulation loop
+for i = iStart:length(t)
+  for j = 1:Nqr % Each quadrotor
+    % Check safety
+    if j>1
+      [safe, uSafe] = qrs{j}.isSafe(qrs{j-1}, safeV);
+    else
+      safe = 1;
     end
     
-    if ~isempty(hw.ps) % If there's a platoon
-        delete(qr(1).hsafeV{2});
-        delete(ht);
-        delete(qr(1).hmergeHighwayV);
+    if safe
+      if ~isempty(hw.ps) % If there's a platoon
+        if strcmp(qrs{j}.q, 'Leader')
+          disp('Leading')
+          u(:,j) = qrs{j}.followPath(tsteps, hw, v);
+          
+        else % if strcmp(qr(j).q, 'Leader')
+          if strcmp(qrs{j}.q, 'Free')
+            disp('Merging into platoon')
+            u(:,j) = qrs{j}.mergeWithPlatoon(hw.ps);
+            
+          elseif strcmp(qrs{j}.q, 'Follower') % if isempty(qr(j).platoon)
+            disp('Following platoon')
+            u(:,j) = qrs{j}.followPlatoon;
+            
+          else
+            error('Unknown mode!')
+            
+          end % if strcmp(qr(j).q, 'Free')
+        end % if strcmp(qr(j).q, 'Leader')
         
-        qr(2).plotSafeV(qr(1), safeV);
-
-        % qr(2).p already assigned inside qr(2).mergeWithPlatoon(hw.ps) on 
-        % line 92. This issue is that qr(2) is now a follower so there's
-        % nothing to plot, and qr(2).pJoin is now empty
-        qr(2).plotMergePlatoonV; 
-
+      else % if ~isempty(hw.ps)
+        disp('No platoon.')
+        u(:,j) = qrs{j}.mergeOnHighway(hw, target);
         
-        xPh = qr(1).p.phantomPosition(qr(1).p.n + 1);
-        
-        if ~exist('hph', 'var')
-            hph = plot(xPh(1), xPh(2), 'color', colors(2,:,:));
-        else
-            hph.XData = xPh(1);
-            hph.YData = xPh(2);
-        end % ~exist('hph', 'var')
-        
-    else % ~isempty(hw.ps)
-        qr(1).plotMergeHighwayV(target);
-        qr(1).plotSafeV(qr(2), safeV);
-        
-    end % ~isempty(hw.ps)
+      end % if ~isempty(hw.ps)
+      
+    else % if safe
+      disp([num2str(j) 'is unsafe!'])
+      u(:,j) = uSafe;
+    end % if safe
+  end % for j = 1:Nqr
+  
+  figure(f1)
+  for j = 1:Nqr
+    qrs{j}.updateState(u(:,j));
+    qrs{j}.plotPosition(colors(j,:,:));
+  end
+  
+  if ~isempty(hw.ps) % If there's a platoon
+%     delete(qrs{1}.hsafeV{2});
+%     delete(ht);
+%     delete(qrs{1}.hmergeHighwayV);
+    
+%     qrs{2}.plotSafeV(qrs{1}, safeV);
+    
+    % qr(2).p already assigned inside qr(2).mergeWithPlatoon(hw.ps) on
+    % line 92. This issue is that qr(2) is now a follower so there's
+    % nothing to plot, and qr(2).pJoin is now empty
+%     qrs{2}.plotMergePlatoonV;
     
     
-
-%     subplot(1,2,1)
-%     axis equal
-xlim([-25 40])
-ylim([-25 40])
-
-title(['t=' num2str(t(i))])
-drawnow;
-%     export_fig(['E:\Normal2\' num2str(i)], '-png')
-
-%     if ~isempty(tplot) && t(i) >= tplot(1)
-%         plotnum = plotnum+1;
-%         figure(f2)
-%         s = subplot(spR,spC,plotnum);
-%         copyobj(f1.Children.Children, s);
-%         tplot(1) = [];
-%
-%         title(['t=' num2str(t(i))])
-%
-%         axis equal
-%         xlim([-30 40]); ylim([-30 40])
-%         if plotnum == 3; xlabel('x'); ylabel('y'); end
-%     end
-%
-%     drawnow;
+    xPh = qrs{1}.p.phantomPosition(qrs{1}.p.n + 1);
+    
+    if ~exist('hph', 'var')
+      hph = plot(xPh(1), xPh(2), 'color', colors(2,:,:));
+    else
+      hph.XData = xPh(1);
+      hph.YData = xPh(2);
+    end % ~exist('hph', 'var')
+    
+  else % ~isempty(hw.ps)
+%     qrs{1}.plotMergeHighwayV(target);
+%     qrs{1}.plotSafeV(qrs{2}, safeV);
+    
+  end % ~isempty(hw.ps)
+  
+  figure(f1)
+  xlim([-25 40])
+  ylim([-25 40])
+  
+  title(['t=' num2str(t(i))])
+  drawnow;
+  
+  % Save graphics if specified
+  if save_graphics
+    % Export large figure as png
+    export_fig([output_directory '/' mfilename num2str(i)], '-png')
+    
+    % Create figure with subplots
+    if ~isempty(tplot) && t(i) >= tplot(1)
+      plotnum = plotnum+1;
+      figure(f3)
+      s = subplot(spR,spC,plotnum);
+      copyobj(f1.Children.Children, s);
+      tplot(1) = [];
+      
+      title(['t=' num2str(t(i))])
+      
+      axis equal
+      xlim([-30 40]); ylim([-30 40])
+      if plotnum == 3; xlabel('x'); ylabel('y'); end
+    end
+  end
+  
+  % Visualize vehicle properties
+  figure(f2)
+  clf(f2)
+  visualizeVehicles(qrs);
+  title(['t=' num2str(t(i))])
+  drawnow;
+  
+  % Save checkpoint
+  iStart = i+1;
+  disp('Saving checkpoint...')
+%   save(check_point)
 end % for i = 2:length(t)
+keyboard
+end % end of function

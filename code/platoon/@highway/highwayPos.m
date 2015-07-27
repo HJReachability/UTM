@@ -4,6 +4,9 @@ function [s, dist, x] = highwayPos(obj, z)
 % Returns position on highway given absolute position z
 % (orthogonal projection)
 %
+% WARNING: THERE'S SOMETHING WRONG... doesn't work in 
+%          simulateHighwayMerge.m 
+%
 % Inputs:  obj  - highway object
 %          z    - absolute position (eg. current vehicle position)
 %

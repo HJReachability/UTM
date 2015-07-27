@@ -28,10 +28,10 @@ end
 
 cvx_quiet true % Shuts cvx up if using MPC controller in followPath
 
-global K LQROn % In case we want to use LQR control instead of MPC (computationally cheaper)
-
-LQROn=1;
-K=createLQR();  %creating an LQR controller for the quad
+% global K LQROn % In case we want to use LQR control instead of MPC (computationally cheaper)
+% 
+% LQROn=1;
+% K=createLQR();  %creating an LQR controller for the quad
 
 % Checkpoint directory and file
 check_point_dir = 'checkpoints';
@@ -46,7 +46,7 @@ else
   % Make directory if needed
   system(['mkdir ' check_point_dir]);
 
-  tEnd = 4;                  % End of simulation time
+  tEnd = 50;                  % End of simulation time
   dt = 0.1;                   % Sampling time
   t = 0:dt:tEnd;              % Time horizon
   tsteps = 5;                 % time steps to look ahead in MPC
@@ -68,7 +68,8 @@ else
   
   % ===== Create highway here =====
   z1 = [-30 -15];
-  z2 = [80 40];
+  z2 = [160 80];
+  
   hw = highway(z1, z2, v);
   
   % ===== Create platoon here =====
@@ -132,6 +133,11 @@ for i = iStart:length(t)
       safe         = 1;
     end
     
+    if t(i)==10 && j == 4
+      qrs{j}.abandonPlatoon
+%       delete(qrs{j});
+    end
+    
     % Compute control
     if safe
       % Control if safe depends on mode
@@ -144,8 +150,11 @@ for i = iStart:length(t)
         u(:,j) = qrs{j}.followPlatoon;
         
       elseif strcmp(qrs{j}.q, 'Free')
+        if t(i)<10
         disp('Merging into platoon')
         u(:,j) = qrs{j}.mergeWithPlatoon(hw.ps);
+
+        end
         
       else
         error('Invalid mode!')
@@ -163,22 +172,24 @@ for i = iStart:length(t)
   % Update vehicle state, plot vehicle positions and position history
   figure(f1)
   for j = 1:Nqr
+    if ~(t(i)>=10 && j==4)
     qrs{j}.updateState(u(:,j));
     qrs{j}.plotPosition(colors(j,:,:));
+    end
   end
   title(['t=' num2str(t(i))])
   
-  % Visualize vehicle properties
-  figure(f2)
-  clf(f2)
-  visualizeVehicles(qrs);
-  title(['t=' num2str(t(i))])
+%   % Visualize vehicle properties
+%   figure(f2)
+%   clf(f2)
+%   visualizeVehicles(qrs);
+%   title(['t=' num2str(t(i))])
   drawnow;
   
   % Save graphics if specified
   if save_graphics
     % Export large figure as png
-    export_fig([output_directory '/' mfilename num2str(i)], '-png')
+    export_fig([output_directory '/' mfilename num2str(i)], f1, '-png')
     
     % Create figure with subplots
     if ~isempty(tplot) && t(i) >= tplot(1)
@@ -201,6 +212,6 @@ for i = iStart:length(t)
   
   iStart = i+1;
   disp('Saving checkpoint...')
-  save(check_point)
+  %save(check_point)
 end % end main simulation loop
 end % end function
