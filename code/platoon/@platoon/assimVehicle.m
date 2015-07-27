@@ -67,11 +67,21 @@ end
 
 xPh = obj.phantomPosition(idxJoin);
 
-tol = 0.63; % Tolerance in distance to target state (g1.dx = g2.dx = [0.6250;0.6176])
-x = zeros(4,1);
-x(vehicle.vdim) = obj.hw.speed*obj.hw.ds;   % Target velocity is highway velocity
-x(vehicle.pdim) = xPh;  % Target positin is phantom position
-if abs(vehicle.x-x) >= 1.1*tol
+%state on liveness reachable set grid
+liveV=obj.liveV;
+x_liveV = zeros(4,1);
+x_liveV(vehicle.pdim) = xPh;  % Target positin is phantom position
+x_liveV(vehicle.vdim) = vehicle.x(vehicle.vdim)-obj.vehicles{1}.x(obj.vehicles{1}.vdim); %tracking velocity of leader
+
+if liveV.gdim==2
+    pause
+    tol=1.1*[liveV.g1.dx;liveV.g2.dx];
+else
+    tol=1.1*[liveV.g.dx];
+end
+
+if abs(x_liveV)>tol
+    keyboard
     fprintf('Vehicle is too far from its target state! \n')
     return
 end

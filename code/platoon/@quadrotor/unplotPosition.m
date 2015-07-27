@@ -1,5 +1,9 @@
 function unplotPosition(obj)
-% Unplot position of quadrotor 
+% function unplotPosition(obj)
+% Unplot the current state and the trajectory of obj
+%
+%
+% Qie Hu, 2015-03-20
 
 if ~isempty(obj.hpxpyhist)
     set(obj.hpxpyhist, 'Visible','off');

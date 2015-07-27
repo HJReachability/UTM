@@ -1,4 +1,4 @@
-function simulateIntruder(from_checkpoint, save_graphics, output_directory)
+function simulateIntruder(from_checkpoint, save_graphics, output_directory, visualize_vehicle_on)
 % function simulateIntruder(from_checkpoint, save_graphics, output_directory)
 %
 % Simulates Simulates a platoon behavior with intruder.
@@ -10,7 +10,7 @@ function simulateIntruder(from_checkpoint, save_graphics, output_directory)
 %                             - requires export_fig package
 %                             - don't include a "/" at the end
 %
-% Author: Qie Hu, 07-14-2015
+% Author: Qie Hu, 2015-07-14
 
 % Default input parameters
 if nargin<1
@@ -23,6 +23,10 @@ end
 
 if nargin<3
     output_directory = 'saved_graphics';
+end
+
+if nargin<4
+    visualize_vehicle_on= false;
 end
 
 cvx_quiet true % Shuts cvx up if using MPC controller in followPath
@@ -41,12 +45,12 @@ else
     % Make directory if needed
     system(['mkdir ' check_point_dir]);
     
-    tEnd = 7;                 % End of simulation time
+    tEnd = 8;                 % End of simulation time
     dt = 0.1;                 % Sampling time
     t = 0:dt:tEnd;            % Time horizon
     tSteps = 5;               % MPC horizon in followPath
-    gridSize = 70;
-    v = 3.5;                  % Target highway speed
+    gridSize = 50;
+    v = 3;                  % Target highway speed
     
     % Get reachability information
     [reachInfo, safeV] = generateReachInfo();
@@ -58,25 +62,22 @@ else
     hw = highway(z1, z2, v);
     
     % ===== Create intruder here =====
-    qiX0 = [40;30];       % Initial position
-    qiXt = [10;20];       % Final position
-    qi = quadrotor(0, [qiX0(1);-4;qiX0(2);-2], reachInfo);
+    qiX0 = [25;17];       % Initial position
+    qiXt = [-5;17];       % Final position
+    qi = quadrotor(6, [qiX0(1);-3;qiX0(2);0], reachInfo);
     qiPath = highway(qiX0, qiXt, v);
     
     
     % ===== Create a platoon of quadrotors on the highway =====
-    leaderPos = [23;23];
-    leaderVel = [4;4];
+    leaderPos = [18;18];
+    leaderVel = [2;2];
     Nqr = 4;
     p = popPlatoon(hw, leaderPos, leaderVel, Nqr, 1);
     
     qrs = cell({});
     for j = 1:Nqr
         qrs{j} = p.vehicles{j};
-    end
-    
-    u = zeros(2,Nqr);
-    
+    end    
     
     % Set up video writer
     writerObj = VideoWriter(sprintf('Intruder1.mp4'),'MPEG-4');    % Create object for writing video
@@ -85,7 +86,6 @@ else
     
     % Set up plotting
     f1 = figure;    % Normal version
-    f2 = figure;    % Visualize vehicles
     
     % Figure 1
     figure(f1)
@@ -98,19 +98,17 @@ else
     qi.plotPosition('red');                   % Intruder in red
     
     xlabel('x');    ylabel('y');
-    
-    ds = hw.ds;
-    vx = v*ds(1);
-    vy = v*ds(2);
-    
     title(sprintf('t = %.01d',t(1)));
     axis([0, gridSize, 0, gridSize]); %axis equal;
     
     % Figure 2. Visualize initial vehicle properties
-    figure(f2)
-    visualizeVehicles(qrs);
-    title(['t=' num2str(t(1))])
-    drawnow;
+    if visualize_vehicle_on
+        f2 = figure;
+        figure(f2)
+        visualizeVehicles(qrs);
+        title(['t=' num2str(t(1))])
+        drawnow;
+    end
     
     % Save graphics if needed
     if save_graphics
@@ -122,7 +120,7 @@ else
         
         % Figure 3. Set up variables for plotting snap shots
         f3 = figure;    
-        tplot = [1 3.3 6.2];
+        tplot = [0.1 1.1 2.0 6.0];
         numPlots = length(tplot);
         spC = ceil(sqrt(numPlots));
         spR = ceil(numPlots/spC);
@@ -247,7 +245,6 @@ for k = kStart:length(t)
                                                
         else
             % Number of potential collisions more than 1. Change height.
-            keyboard
             qrs{j}.p.removeVehicle(qrs{j});
             qAb = [qAb, j];
             fprintf('Q%.0d descends \n', qrs{j}.ID)
@@ -286,15 +283,17 @@ for k = kStart:length(t)
 %     print(sprintf('fig/Intruder1_%.0d.pdf',k), '-dpdf'); 
     
     % ----- Visualize vehicle properties ----- %
-    figure(f2)
-    clf(f2)
-    visualizeVehicles(qrs);
-    title(sprintf('t = %.01f',t(k)));
-    drawnow;    
+    if visualize_vehicle_on
+        figure(f2)
+        clf(f2)
+        visualizeVehicles(qrs);
+        title(sprintf('t = %.01f',t(k)));
+        drawnow;
+    end
     
-    % ----- Record video ----- %
-    frame = getframe(ax,rect);
-    writeVideo(writerObj,frame);
+%     % ----- Record video ----- %
+%     frame = getframe(ax,rect);
+%     writeVideo(writerObj,frame);
     
     
     % ---- Save graphics if specified ---- %
@@ -320,12 +319,12 @@ for k = kStart:length(t)
         
     end % end if save_graphics
     
-    disp('Saving checkpoint...')
-    save(check_point)
+%     disp('Saving checkpoint...')
+%     save(check_point)
     
 end % end main simulation loop
 
-close(writerObj);
+% close(writerObj);
 
 end % end function
 
