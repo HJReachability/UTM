@@ -31,9 +31,9 @@ else
      % Platoon has more than one vehicle
     if vehicle.idx == 1 % Leader abandons platoon
         % Designate first follower as new leader
-        nextIdx = occup_slot(2);
-        obj.vehicles{nextIdx}.q = 'Leader'; 
-        obj.ID = obj.vehicles{nextIdx}.ID;
+        noIdx = occup_slot(2);  % Next occupied slot index
+        obj.vehicles{noIdx}.q = 'Leader'; 
+        obj.ID = obj.vehicles{noIdx}.ID;
         vehicle.BQ.FQ = vehicle.BQ;
         
     elseif vehicle.idx == obj.loIdx  % Trailing vehicle abandons platoon
@@ -84,12 +84,12 @@ vehicle.FQ = [];
 vehicle.BQ = [];
 vehicle.Leader = [];
 vehicle.idx = 0;
-vehicle.idxJoin = [];
 
 % If vehicle was attempting to join another platoon, free up the slot
 if ~isempty(vehicle.pJoin)
     vehicle.pJoin.slotStatus(vehicle.idxJoin) = 0;
     vehicle.pJoin.vJoin{vehicle.idxJoin} = [];
+    vehicle.idxJoin = [];
     vehicle.pJoin = [];
 end
 

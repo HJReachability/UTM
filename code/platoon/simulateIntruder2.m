@@ -46,12 +46,13 @@ else
     % Make directory if needed
     system(['mkdir ' check_point_dir]);
     
-    tEnd = 5;                 % End of simulation time
+    tEnd = 8;                 % End of simulation time
     dt = 0.1;                 % Sampling time
     t = 0:dt:tEnd;            % Time horizon
     tSteps = 5;               % MPC horizon in followPath
     gridSize = 50;
     v = 3;                  % Target highway speed
+    d = 2;                  % Safe separation distance
     
     % Get reachability information
     [reachInfo, safeV] = generateReachInfo();
@@ -81,7 +82,7 @@ else
     end
     
     % Set up video writer
-    writerObj = VideoWriter(sprintf('Intruder1.mp4'),'MPEG-4');    % Create object for writing video
+    writerObj = VideoWriter(sprintf('Intruder2.mp4'),'MPEG-4');    % Create object for writing video
     writerObj.FrameRate = 10;                   % Number of frames / sec
     open(writerObj);                            % Start videoWriter
     
@@ -147,15 +148,16 @@ else
     % Starting index in the simulation loop (needed for saving checkpoints)
     kStart = 2;
     
+    qRem = 1:Nqr;   % Index of vehicles remaining in this altitude
+    qAb = [];       % Index of vehicles that abandoned this altitude
+
 end % end if from_checkpoint
 
 
 for k = kStart:length(t)
-    
     fprintf('t = %.01f \n', t(k))
-    qAb = [];
     
-    for j = 1:Nqr % for each quadrotor
+    for j = qRem % for each vehicle remaining
                 
         fprintf('Q%.0d is %s, in P%.0d \n', qrs{j}.ID, qrs{j}.q, qrs{j}.p.ID)
         
@@ -164,7 +166,6 @@ for k = kStart:length(t)
         % Check safety w.r.t. Intruder
         [qrs{j}.safeI, uSafeI] = qrs{j}.isSafe(qi, safeV);
         qrs{j}.safeIhist = cat(2, qrs{j}.safeIhist, qrs{j}.safeI);
-        
         
         % Check safety w.r.t. FQ
         if strcmp(qrs{j}.q, 'Leader')
@@ -186,7 +187,6 @@ for k = kStart:length(t)
         end
         qrs{j}.safeFQhist = cat(2, qrs{j}.safeFQhist, qrs{j}.safeFQ);
         
-        
         % Check safety w.r.t. BQ
         if qrs{j}.idx == find(qrs{j}.p.slotStatus==1,1,'last')
             %             % Trailing quadrotor, check w.r.t. leader of back platoon
@@ -204,7 +204,7 @@ for k = kStart:length(t)
         % Total number of unsafe targets
         numUnsafeTargets = ~qrs{j}.safeI + ~qrs{j}.safeFQ + ~qrs{j}.safeBQ;
         
-        
+
         % ------------- Compute Control ------------- %
         
         if numUnsafeTargets == 0
@@ -254,14 +254,28 @@ for k = kStart:length(t)
         else
             % Number of potential collisions more than 1. Change height.
             qrs{j}.p.removeVehicle(qrs{j});
+            qRem(qRem == j) = [];
             qAb = [qAb, j];
-            fprintf('Q%.0d descends \n', qrs{j}.ID)
+            fprintf('Q%.0d abandons altitude. \n', qrs{j}.ID)
         end % if numUnsafeTargets == 0
             
-    end %for j = 1:Nqr
+    end %for j = qRem
     
     qi.u = qi.followPath(tSteps, qiPath, qi.vMax);
     
+    
+    % --------- Check safe separation distance w.r.t. intruder --------- %
+    
+    for j = qRem
+        if qrs{j}.sepDist(qi) < d
+            % Within safe separation distance. Change height.
+            fprintf('Collision between Q%.0d and Intruder. \n', qrs{j}.ID);
+            qrs{j}.p.removeVehicle(qrs{j});
+            % Remove abandoned quadrotors from list of quadrotors
+            qRem(qRem == j) = [];
+            qAb = [qAb, j]; 
+        end
+    end
     
     
     % ------------------ Plot simulation ------------------ %
@@ -269,22 +283,24 @@ for k = kStart:length(t)
     % ------- Normal View --------- %
     figure(f1)
     % Unplot abandoned quadrotors
-    for i = 1:length(qAb)
-        qrs{qAb(i).idx}.unplotPosition();
-        for ii = 1:length(qrs{qAb(i).idx}.hsafeV)
-            qrs{qAb(i).idx}.unplotSafeV(qrs{ii});
+    while ~isempty(qAb)
+        qrs{qAb(1)}.unplotPosition();
+        for ii = 1:(length(qrs{qAb(1)}.hsafeV)-1)
+            if ~isempty(qrs{qAb(1)}.hsafeV{ii})
+                qrs{qAb(1)}.unplotSafeV(qrs{ii});
+            end
         end
-        % Remove abandoned quadrotors from list of quadrotors
-        qrs{qAb(i).idx} = [];
+        if ~isempty(qrs{qAb(1)}.hsafeV{end})
+            qrs{qAb(1)}.unplotSafeV(qi);
+        end
+        qAb(1) = [];
     end
-    
-    Nqr = Nqr-length(qAb);
-    fprintf('Number of quadrotors remaining: %.0d \n', Nqr)
+    fprintf('Number of quadrotors remaining: %.0d \n', length(qRem))
 
     % Update remaining vehicles' state, plot vehicle positions and position history
     qi.updateState(qi.u);
     qi.plotPosition('red');
-    for j = 1:Nqr
+    for j = qRem
         qrs{j}.updateState(qrs{j}.u);
         qrs{j}.plotPosition(colors(j,:,:));
     end    
@@ -308,9 +324,9 @@ for k = kStart:length(t)
         drawnow;
     end
     
-%     % ----- Record video ----- %
-%     frame = getframe(ax,rect);
-%     writeVideo(writerObj,frame);
+    % ----- Record video ----- %
+    frame = getframe(ax,rect);
+    writeVideo(writerObj,frame);
     
     
     % ---- Save graphics if specified ---- %

@@ -19,8 +19,14 @@ vdim = obj.vdim;
 % Unpack constants
 tau = safeV.tau;
 g = safeV.g;
-dataC = safeV.dataC;
-dataS = safeV.dataS;
+
+if g.dim==3
+    dataC = safeV.dataC;
+    dataS = safeV.dataS;
+else
+    dataC = safeV.dataC;
+end
+
 
 % ----- Construct grid -----
 % Position domain should cover all grid positions around the OTHER vehicle
