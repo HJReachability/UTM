@@ -140,14 +140,34 @@ elseif safeV.g.dim == 2
   end
   
   t = obj.tauInt+0.5; % Migrate towards a single safety time window?
+ 
+  % Compute value at current state
 
-    % Compute value at current state
+  dataC_cons_x=min(dataC,[],3);
+  dataC_cons_y=min(dataC,[],3);
+
+
+  x_value=eval_u(g,dataC_cons_x,x(1:2));
+  y_value=eval_u(g,dataC_cons_y,x(3:4));
+  
+  if max(x_value,y_value)>0
+    safe = 1;
+    uSafe = [0; 0];
+    valueCx = max(dataC(:));
+    valuex = valueCx;
+    return
+  end
+
   % Value according to collision criterion
-  [valuex, gradx] = recon2x2D(tau, g, dataC, g, dataC, x, t);  
+  TD_out_x = recon2x2D(tau, {g; g}, {dataC; dataC}, x, t);  
+  valuex = TD_out_x.value;
+  gradx = TD_out_x.grad;
   
   % Is the value safe?
-  if valuex <= 0, safe = false;
-  else            safe = true;
+  if valuex <= 0
+    safe = false;
+  else
+    safe = true;
   end
   
   % Compute optimal safe controller

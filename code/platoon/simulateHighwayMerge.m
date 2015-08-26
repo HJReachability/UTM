@@ -19,7 +19,7 @@ if nargin<1
 end
 
 if nargin<2
-  save_graphics = true;
+  save_graphics = false;
 end
 
 if nargin<3
@@ -73,7 +73,7 @@ else
   % Second platoon on hw2
   ID1 = 4;
   numVehicles = 4;
-  p2 = popPlatoon(hw2, 0.15, hw1.speed, numVehicles, ID1);
+  p2 = popPlatoon(hw2, 0.14, hw1.speed, numVehicles, ID1);
   
   % Specify which of the 4 quadrotors in p2 will join p1
   IDjoin = [4 6];

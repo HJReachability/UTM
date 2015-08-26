@@ -1,3 +1,7 @@
 /code/platoon/@platoon/*.asv
 *.asv
+*.png
+checkpoints
+*.mp4
+*.wlmp
 *.mat

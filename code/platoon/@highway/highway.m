@@ -5,8 +5,10 @@ classdef highway < linpath
     % width of highway
     width
     
+    liveV % liveness value function for steering UAVs to points on highway
+    
     % highway connections/segways
-    connections 
+    connections
     % CURRENTLY:
     % n by 1 vector where the ith element is the s parameter on the current
     % highway where it intersects with the ith highway
@@ -14,14 +16,14 @@ classdef highway < linpath
     % ALTERNATIVE OPTION FOR THE FUTURE:
     % n by 2 cell structure
     % {s0, i/o, {hw0, s_onhw0};
-    %  s1, i/o, {hw1, s_onhw1}; 
+    %  s1, i/o, {hw1, s_onhw1};
     %  ... }
     
     ps % platoons on the highway
   end
   
   methods
-    function obj = highway(z0, z1, speed, width)
+    function obj = highway(z0, z1, speed, fourD, width)
       % function obj = highway(z0, z1, speed, width)
       % Constructor for highway class
       %
@@ -39,11 +41,43 @@ classdef highway < linpath
       if nargin<3
         speed = 3;
       end
-
+      
+      if nargin<4
+        fourD=1;
+      end
+      
       % call constructor of the superclass linpath
       obj@linpath(z0, z1, speed);
       
-      if nargin<4
+      %% Compute liveness reachable set for joining the highway
+      % highway direction and speed
+      velocity = obj.ds * obj.speed;
+      
+      % Compute 2D value function that could be used to reconstruct the 4D
+      % value function
+      [grids, datas, tau] = quad2D_liveness( ...
+                                         [0 velocity(1) 0 velocity(2)], 0);
+      
+      % If 4D reachable set is specified, then reconstruct it; otherwise,
+      % simply store the 2D reachable sets and reconstruct later
+      if fourD
+        gridLim = ...
+          [grids{1}.min-1 grids{1}.max+1; grids{2}.min-1 grids{2}.max+1];
+        [~, ~, TTR_out] = recon2x2D(tau, grids, datas, gridLim, tau(end));
+        
+        obj.liveV.g = TTR_out.g;
+        obj.liveV.data = TTR_out.value;
+        obj.liveV.grad = TTR_out.grad;
+        obj.liveV.tau = tau;
+        
+      else
+        obj.liveV.g = grids;
+        obj.liveV.data = datas;
+        obj.liveV.tau = tau;
+        obj.liveV.grad = [];
+      end
+      
+      if nargin<5
         obj.width = 6;
       else
         obj.width = width;
@@ -52,6 +86,5 @@ classdef highway < linpath
       warning('Need to specify connections property')
     end
   end
-  
 end
 

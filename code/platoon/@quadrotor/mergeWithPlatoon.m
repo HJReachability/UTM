@@ -14,6 +14,7 @@ function u = mergeWithPlatoon(obj, p)
 % 2015-06-17, Mo
 % Modified: Qie Hu, 2015-07-01
 % Modified: Mo Chen, 2015-07-06
+% Modified: Mo Chen, 2015-08-26
 
 % Check if the current vehicle is a follower
 switch obj.q
@@ -96,9 +97,9 @@ if strcmp(obj.q, 'Free') || strcmp(obj.q, 'Leader')
   % platoon at the back
   
   % Reachable set from target state
-  [ datax, datay, g1, g2, tau ] = obj.computeV_relDyn(x);
+  [grids, datas, tau] = obj.computeV_relDyn(x);
   
-  if abs(x-(obj.x-p.vehicles{1}.x))<=1.1*[g1.dx;g2.dx]
+  if abs(x-(obj.x-p.vehicles{1}.x))<=1.1*[grids{1}.dx; grids{2}.dx]
     % if relative state is within one grid point of target relative
     % state, roughly, then vehicle gets assimilated into platoon
     p.assimVehicle(obj);
@@ -110,7 +111,7 @@ if strcmp(obj.q, 'Free') || strcmp(obj.q, 'Leader')
 %     speed = p.hw.speed;
     speed = obj.vMax;
     u = obj.computeCtrl_relDyn(p.vehicles{1}.x, xPh, ...
-      datax, datay, g1, g2, tau, speed);
+      grids, datas, tau, speed);
   end
   
 else

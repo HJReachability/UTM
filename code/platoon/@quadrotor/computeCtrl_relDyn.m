@@ -1,10 +1,11 @@
 function u = computeCtrl_relDyn(obj, refState, mvTarget, ... 
-  datax, datay, g1, g2, tau, speed)
+  grids, datas, tau, speed)
 
 % if relative state is not close enough, then try to head towards
 % the relative target state
-[valuex, gradx] = recon2x2D(tau, g1, datax, g2, ...
-  datay, obj.x-refState);
+TD_out_x = recon2x2D(tau, grids, datas, obj.x-refState);
+valuex = TD_out_x.value;
+gradx = TD_out_x.grad;
 
 if valuex <= 0
   % if vehicle is in the reachable set of target relative state,
@@ -22,11 +23,13 @@ else
   % Path to target
   pathToOther = linpath(obj.x(obj.pdim), mvTarget);
   tsteps = 5;
+  
   if speed~=3
     LQROn = 0;
   else
     LQROn = 1;
   end
+
   u = obj.followPath(tsteps, pathToOther, speed, LQROn);
   
 end

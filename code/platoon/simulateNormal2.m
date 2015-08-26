@@ -1,4 +1,4 @@
-function simulateNormal2(from_checkpoint, save_graphics, output_directory)
+function simulateNormal2(from_checkpoint, save_graphics, output_directory, visualize_vehicle_on)
 % function simulateNormal2(from_checkpoint, save_graphics,
 %                                                         output_directory)
 %
@@ -11,7 +11,7 @@ function simulateNormal2(from_checkpoint, save_graphics, output_directory)
 %          output_directory - for graphics export
 %                             - requires export_fig package
 %                             - don't include a "/"
-%
+%          visualize_vehicle_on -debugging tool
 % Mo Chen, 2015-07-06
 
 if nargin<1
@@ -24,6 +24,10 @@ end
 
 if nargin<3
   output_directory = 'saved_graphics';
+end
+
+if nargin<4
+  visualize_vehicle_on = 0;
 end
 
 cvx_quiet true % Shuts cvx up if using MPC controller in followPath
@@ -56,19 +60,17 @@ else
   hw = highway(z0, z1, v);
   
 %   % put some quadrotors in a horizontal line and !!create a platoon!!
-%   qr1 = quadrotor(1, [0; 0; -20; 0], reachInfo);
-% %   qr2 = quadrotor(2, [-25; 0; 35; 0], reachInfo);
+  qr1 = quadrotor(1, [0; 0; -20; 0], reachInfo);
+  qr2 = quadrotor(2, [-25; 0; 35; 0], reachInfo);
 %   qr2 = quadrotor(2, [-30; 0; -15; 0], reachInfo);
-%   qrs = {qr1; qr2};
-  p = popPlatoon(hw, 0.2, hw.speed, 2, 1);
-  qrs = p.vehicles(1:p.n);
-  qrs{2}.x(qrs{2}.pdim) = p.phantomPosition(5);
+  qrs = {qr1; qr2};
+%   p = popPlatoon(hw, 0.2, hw.speed, 2, 1);
+%   qrs = p.vehicles(1:p.n);
+%   qrs{2}.x(qrs{2}.pdim) = p.phantomPosition(5);
   
   Nqr = length(qrs);
   u = zeros(2,Nqr);
   colors = lines(Nqr);
-  
-
   
   % Target for entering highway
   xt = 6;
@@ -91,10 +93,13 @@ else
   ylim([-25 40])
   
   % Visualize initial vehicle properties
-  figure(f2)
-  visualizeVehicles(qrs);
-  title(['t=' num2str(t(1))])
-  drawnow;
+  if visualize_vehicle_on
+    figure(f2)
+    visualizeVehicles(qrs);
+    title(['t=' num2str(t(1))])
+    drawnow;
+  end
+
   
   % Save graphics if needed
   if save_graphics
@@ -123,7 +128,7 @@ for i = iStart:length(t)
     else
       safe = 1;
     end
-    
+
     if safe
       if ~isempty(hw.ps) % If there's a platoon
         if strcmp(qrs{j}.q, 'Leader')
@@ -148,7 +153,7 @@ for i = iStart:length(t)
       else % if ~isempty(hw.ps)
         disp('No platoon.')
         u(:,j) = qrs{j}.mergeOnHighway(hw, target);
-        
+       
       end % if ~isempty(hw.ps)
       
     else % if safe
@@ -220,12 +225,18 @@ for i = iStart:length(t)
   end
   
   % Visualize vehicle properties
-  figure(f2)
-  clf(f2)
-  visualizeVehicles(qrs);
-  title(['t=' num2str(t(i))])
-  drawnow;
+
   
+  if visualize_vehicle_on
+    figure(f2)
+    clf(f2)
+    visualizeVehicles(qrs);
+    title(['t=' num2str(t(i))])
+    drawnow;
+  
+  end
+  
+
   % Save checkpoint
   iStart = i+1;
   disp('Saving checkpoint...')

@@ -55,11 +55,11 @@ else
   disp('Catch-up')
   
   % Get value function
-  [datax, datay, g1, g2, tau] = obj.computeV_relDyn(x);  
+  [grids, datas, tau] = obj.computeV_relDyn(x);  
   
   % Catch up to platoon if too far away
   u = obj.computeCtrl_relDyn(obj.Leader.x, xPh, ...
-    datax, datay, g1, g2, tau, obj.vMax);
+    grids, datas, tau, obj.vMax);
 
 end
 

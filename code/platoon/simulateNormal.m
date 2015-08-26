@@ -1,4 +1,4 @@
-function simulateNormal(from_checkpoint, save_graphics, output_directory)
+function simulateNormal(from_checkpoint, save_graphics, output_directory,visualize_vehicle_on)
 % function simulateNormal(from_checkpoint, save_graphics, output_directory)
 %
 % Simulates 4 quadrotors joining a platoon that initially has a single 
@@ -26,12 +26,11 @@ if nargin<3
   output_directory = 'saved_graphics';
 end
 
-cvx_quiet true % Shuts cvx up if using MPC controller in followPath
+if nargin<4
+  visualize_vehicle_on = 0;
+end
 
-% global K LQROn % In case we want to use LQR control instead of MPC (computationally cheaper)
-% 
-% LQROn=1;
-% K=createLQR();  %creating an LQR controller for the quad
+cvx_quiet true % Shuts cvx up if using MPC controller in followPath
 
 % Checkpoint directory and file
 check_point_dir = 'checkpoints';
@@ -70,7 +69,8 @@ else
   z1 = [-30 -15];
   z2 = [160 80];
   
-  hw = highway(z1, z2, v);
+  
+  hw = highway(z1, z2,1,v,1);
   
   % ===== Create platoon here =====
   % Put first vehicle in platoon
@@ -78,7 +78,10 @@ else
   
   % Visualize initial setup
   f1 = figure;
-  f2 = figure;
+  
+  if visualize_vehicle_on
+    f2 = figure;
+  end
   
   figure(f1)
   % Plot highway
@@ -89,7 +92,6 @@ else
   for j = 1:Nqr
     qrs{j}.plotPosition(colors(j,:,:));
   end
-  
   xlabel('x');
   ylabel('y');
   title(['t=' num2str(t(1))])
@@ -97,11 +99,13 @@ else
   drawnow;
   
   % Visualize initial vehicle properties
-  figure(f2)
-  visualizeVehicles(qrs);
-  title(['t=' num2str(t(1))])
-  drawnow;
-  
+  if visualize_vehicle_on
+      figure(f2)
+      visualizeVehicles(qrs);
+      title(['t=' num2str(t(1))])
+      drawnow;
+  end
+
   % Save graphics if needed
   if save_graphics
     system(['mkdir ' output_directory])
@@ -123,19 +127,13 @@ end
 
 for i = iStart:length(t)
   for j = 1:Nqr % Each quadrotor
-    
     % Check safety
     % For simplicity (for now), assume qr1 is always safe, and
     % subsequent qr(j)s check safety only with qr(j-1)
     if j>1
       [safe, uSafe] = qrs{j}.isSafe(qrs{j-1}, safeV);
     else
-      safe         = 1;
-    end
-    
-    if t(i)==10 && j == 4
-      qrs{j}.abandonPlatoon
-%       delete(qrs{j});
+      safe = 1;
     end
     
     % Compute control
@@ -150,11 +148,8 @@ for i = iStart:length(t)
         u(:,j) = qrs{j}.followPlatoon;
         
       elseif strcmp(qrs{j}.q, 'Free')
-        if t(i)<10
         disp('Merging into platoon')
         u(:,j) = qrs{j}.mergeWithPlatoon(hw.ps);
-
-        end
         
       else
         error('Invalid mode!')
@@ -172,10 +167,8 @@ for i = iStart:length(t)
   % Update vehicle state, plot vehicle positions and position history
   figure(f1)
   for j = 1:Nqr
-    if ~(t(i)>=10 && j==4)
     qrs{j}.updateState(u(:,j));
     qrs{j}.plotPosition(colors(j,:,:));
-    end
   end
   title(['t=' num2str(t(i))])
   
@@ -211,7 +204,8 @@ for i = iStart:length(t)
   end % end if save_graphics
   
   iStart = i+1;
-  disp('Saving checkpoint...')
+  
+  %disp('Saving checkpoint...')
   %save(check_point)
 end % end main simulation loop
 end % end function
