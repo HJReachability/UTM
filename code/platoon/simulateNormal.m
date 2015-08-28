@@ -1,7 +1,7 @@
 function simulateNormal(from_checkpoint, save_graphics, output_directory,visualize_vehicle_on)
 % function simulateNormal(from_checkpoint, save_graphics, output_directory)
 %
-% Simulates 4 quadrotors joining a platoon that initially has a single 
+% Simulates 4 quadrotors joining a platoon that initially has a single
 % quadrotor. This file is a good template for new simulations!
 %
 % Inputs:  from_checkpoint  - whether to load previous checkpoint
@@ -35,7 +35,7 @@ cvx_quiet true % Shuts cvx up if using MPC controller in followPath
 % Checkpoint directory and file
 check_point_dir = 'checkpoints';
 check_point = [check_point_dir '/' mfilename '.mat'];
-  
+
 %% Initialization
 if from_checkpoint
   disp('Loading from last checkpoint')
@@ -44,7 +44,7 @@ if from_checkpoint
 else
   % Make directory if needed
   system(['mkdir ' check_point_dir]);
-
+  
   tEnd = 50;                  % End of simulation time
   dt = 0.1;                   % Sampling time
   t = 0:dt:tEnd;              % Time horizon
@@ -63,14 +63,13 @@ else
   qrs = {qr1; qr2; qr3; qr4; qr5};
   Nqr = length(qrs);
   u = zeros(2,Nqr);
-
+  
   
   % ===== Create highway here =====
   z1 = [-30 -15];
   z2 = [160 80];
   
-  
-  hw = highway(z1, z2,1,v,1);
+  hw = highway(z1, z2, 1, v, 1);
   
   % ===== Create platoon here =====
   % Put first vehicle in platoon
@@ -78,14 +77,14 @@ else
   
   % Visualize initial setup
   f1 = figure;
-  
+  keyboard
   if visualize_vehicle_on
     f2 = figure;
   end
   
   figure(f1)
   % Plot highway
-  hw.hwPlot; hold on 
+  hw.hwPlot; hold on
   
   % Plot quadrotor positions
   colors = lines(Nqr);
@@ -100,12 +99,12 @@ else
   
   % Visualize initial vehicle properties
   if visualize_vehicle_on
-      figure(f2)
-      visualizeVehicles(qrs);
-      title(['t=' num2str(t(1))])
-      drawnow;
+    figure(f2)
+    visualizeVehicles(qrs);
+    title(['t=' num2str(t(1))])
+    drawnow;
   end
-
+  
   % Save graphics if needed
   if save_graphics
     system(['mkdir ' output_directory])
@@ -172,11 +171,11 @@ for i = iStart:length(t)
   end
   title(['t=' num2str(t(i))])
   
-%   % Visualize vehicle properties
-%   figure(f2)
-%   clf(f2)
-%   visualizeVehicles(qrs);
-%   title(['t=' num2str(t(i))])
+  %   % Visualize vehicle properties
+  %   figure(f2)
+  %   clf(f2)
+  %   visualizeVehicles(qrs);
+  %   title(['t=' num2str(t(i))])
   drawnow;
   
   % Save graphics if specified

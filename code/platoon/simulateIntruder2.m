@@ -81,10 +81,10 @@ else
         qrs{j} = p.vehicles{j};
     end
     
-    % Set up video writer
-    writerObj = VideoWriter(sprintf('Intruder2.mp4'),'MPEG-4');    % Create object for writing video
-    writerObj.FrameRate = 10;                   % Number of frames / sec
-    open(writerObj);                            % Start videoWriter
+%     % Set up video writer
+%     writerObj = VideoWriter(sprintf('Intruder2.mp4'),'MPEG-4');    % Create object for writing video
+%     writerObj.FrameRate = 10;                   % Number of frames / sec
+%     open(writerObj);                            % Start videoWriter
     
     % Set up plotting
     f1 = figure;    % Normal version
@@ -136,14 +136,14 @@ else
         plotnum = 0;
     end
     
-    % Record videos
-    ax = f1.CurrentAxes;
-    ax.Units = 'pixels';
-    pos = ax.Position;
-    ti = ax.TightInset;
-    rect = [-ti(1), -ti(2), pos(3)+ti(1)+ti(3), pos(4)+ti(2)+ti(4)+10];
-    frame = getframe(ax,rect);
-    writeVideo(writerObj,frame);
+%     % Record videos
+%     ax = f1.CurrentAxes;
+%     ax.Units = 'pixels';
+%     pos = ax.Position;
+%     ti = ax.TightInset;
+%     rect = [-ti(1), -ti(2), pos(3)+ti(1)+ti(3), pos(4)+ti(2)+ti(4)+10];
+%     frame = getframe(ax,rect);
+%     writeVideo(writerObj,frame);
     
     % Starting index in the simulation loop (needed for saving checkpoints)
     kStart = 2;
@@ -324,9 +324,9 @@ for k = kStart:length(t)
         drawnow;
     end
     
-    % ----- Record video ----- %
-    frame = getframe(ax,rect);
-    writeVideo(writerObj,frame);
+%     % ----- Record video ----- %
+%     frame = getframe(ax,rect);
+%     writeVideo(writerObj,frame);
     
     
     % ---- Save graphics if specified ---- %
@@ -357,7 +357,7 @@ for k = kStart:length(t)
     
 end % end main simulation loop
 
-close(writerObj);
+% close(writerObj);
 
 end % end function
 
