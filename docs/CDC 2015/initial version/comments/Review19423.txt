@@ -1,0 +1,42 @@
+Reviewer 6 of CDC15 submission 1615
+
+Comments to the author
+======================
+
+This paper presents an automated method to achieve a safe
+automated air highway, were multiple UAV form platoons. The
+idea is similar to what is done in previous work for normal
+highways. Safety of the platoon is guaranteed using
+reachability analysis, using similar ideas as in air
+traffic management.
+
+The paper easy to follow and nicely structured.
+
+The main concern is that nearly all the results do only
+hold if the highway is a straight line. And that some
+proposed algorithms do not give safety guarantees.
+
+IV.A. Moving in a straight line towards the target point
+does not guarantee to ever reach the reachable set (but for
+the used model it is a very reasonable heuristic).
+
+IV.B. Unless the highway is a straight line the traget
+point does not always lay on the highway, thus it is not
+possible to calculate everything offline.
+
+IV.C.1 Here it is stated that the highway has to be a
+straight line otherwise the problem is not convex. Maybe
+give a reference to a paper proposing such a mpc to follow
+a given trajectory.
+
+IV.C.2 The proportional controller also assumes that the
+highway is straight, in a curve the leaders acceleration is
+a strong disturbance (for example if leader is already
+flying a curve and the followers should still fly
+straight).
+
+V.A. Why do you choose a box as unsafe set and not a circle
+as usual in air traffic control?
+
+The concern about the straight highway is only minor, as it
+is a reasonable assumption to have a straight high way. 

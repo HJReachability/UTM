@@ -1,0 +1,55 @@
+Reviewer 5 of CDC15 submission 1615
+
+Comments to the author
+======================
+
+The article applies Hamiltonian-Jacobi reachability to
+platooning of UAV. The vehicles are considered to travel
+along pre-specified paths (highways) in the air-space. The
+vehicles form platoons on these highways in order to
+organize traffic of a large number of vehicles. Several
+basic modes of operation is specified to facilitate
+platooning and for each mode a continuous controller is
+designed to fulfil the purpose of this mode. This is
+complemented by safety controllers handling malfunctions of
+individual vehicles. The method is demonstrated in a case
+study. 
+
+In my opinion this work is interesting and relevant. I have
+a number of suggestions how the article could be improved
+before publication.
+
+* The first time it is explicitly stated why UAV's should
+travel in platoons is at the end of Section V. I think this
+could be make clearer earlier in the paper.
+
+* There should be a discussion on what are the limitations
+of the system. The article gives the impression that safety
+and liveness can be guaranteed by the system. I think of a
+number of cases where the method could still lead to
+undesirable results. Examples include: How can it be
+guaranteed that a UAV cannot collide with the UAV two
+positions ahead in case of a safety breach? In Figure 4
+also Q5 avoids Q3. Therefore it faulty behavior has first
+to be identified and it is not clear how that happens.
+Another issue is whether the approach manoeuvre guarantees
+that the UAV reaches the safety reachable set. Could there
+be cases when an UAV tries to merge with an platoon that it
+simply cannot reach? Could there be cases where the UAV
+gets trapped between executing its liveness controller and
+its safety controller? Could there be chain reactions in
+the platoon leading to a large number of safety breaches?
+What happens outside the highway when there is a large
+number of vehicles?
+
+* How does the proposed method compare to results in
+conventional air traffic management?
+
+* Section III-B should be moved to Section II
+
+* The maximum speed in x and y direction is limited
+according to the vehicle dynamics. How does this relate to
+that they are considered in the computation of the unsafe
+set. I would also expect that normally the absolute forward
+velocity is limited and not the velocity in x and y
+direction individually. The authors should comment on this.

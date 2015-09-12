@@ -1,0 +1,9 @@
+All the reviewers agree that this is a nice contribution
+that is worth presenting. 
+However, they also point out several aspects that deserve
+some better clarification.
+The authors should account for the reviewers' comments in
+their final paper.
+They should in particular explain the novelty of their work
+with respect to other works where reachability-based
+control is applied to hybrid systems.	  

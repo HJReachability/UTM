@@ -1,0 +1,26 @@
+This is pdfTeX, Version 3.1415926-2.3-1.40.12 (MiKTeX 2.9 64-bit) (preloaded format=pdftex 2013.5.25)  16 MAR 2015 22:20
+entering extended mode
+**D:/Dropbox/Optimal*Control/NASA*UTM/docs/CDC*2015/references.bib
+("D:/Dropbox/Optimal Control/NASA UTM/docs/CDC 2015/references.bib"
+! Missing $ inserted.
+<inserted text> 
+                $
+<to be read again> 
+                   \mathinner 
+\ldots ->\mathinner 
+                    {\ldotp \ldotp \ldotp }
+l.57 journal = {SIAM Journal on Control and \ldots
+                                                  },
+? 
+! Emergency stop.
+<inserted text> 
+                $
+<to be read again> 
+                   \mathinner 
+\ldots ->\mathinner 
+                    {\ldotp \ldotp \ldotp }
+l.57 journal = {SIAM Journal on Control and \ldots
+                                                  },
+End of file on the terminal!
+
+!  ==> Fatal error occurred, no output PDF file produced!
