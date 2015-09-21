@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.12.2)  11 SEP 2015 16:46
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9) (preloaded format=pdflatex 2014.12.2)  17 SEP 2015 11:55
 entering extended mode
 **C:/Users/mochen72/Desktop/Research/NASA_UTM/docs/CDC*2015/final*version/plato
 oning.tex
@@ -395,7 +395,10 @@ y.
 ("C:\Users\mochen72\Desktop\Research\NASA_UTM\docs\CDC 2015\final version\intro
 duction.tex")
 ("C:\Users\mochen72\Desktop\Research\NASA_UTM\docs\CDC 2015\final version\formu
-lation.tex" [1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
+lation.tex"
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [1{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}
 
 
 ]
@@ -458,21 +461,21 @@ File: "fig/Intruder1".pdf Graphic file (type pdf)
 <use "fig/Intruder1".pdf>
 Package pdftex.def Info: "fig/Intruder1".pdf used on input line 69.
 (pdftex.def)             Requested size: 177.06458pt x 209.64697pt.
- [6 <C:/Users/mochen72/Desktop/Research/NASA_UTM/docs/CDC 2015/final version/fi
-g/normal2.pdf> <C:/Users/mochen72/Desktop/Research/NASA_UTM/docs/CDC 2015/final
- version/fig/normal5.pdf> <C:/Users/mochen72/Desktop/Research/NASA_UTM/docs/CDC
- 2015/final version/fig/faultyRsets.pdf>]
-<"fig/intruder2".pdf, id=93, 449.68pt x 571.13374pt>
+ <"fig/intruder2".pdf, id=66, 449.68pt x 571.13374pt>
 File: "fig/intruder2".pdf Graphic file (type pdf)
- <use "fig/intruder2".pdf>
+
+<use "fig/intruder2".pdf>
 Package pdftex.def Info: "fig/intruder2".pdf used on input line 76.
 (pdftex.def)             Requested size: 177.06458pt x 224.8851pt.
 )
 ("C:\Users\mochen72\Desktop\Research\NASA_UTM\docs\CDC 2015\final version\concl
-usion.tex")
+usion.tex") [6 <C:/Users/mochen72/Desktop/Research/NASA_UTM/docs/CDC 2015/final
+ version/fig/normal2.pdf> <C:/Users/mochen72/Desktop/Research/NASA_UTM/docs/CDC
+ 2015/final version/fig/normal5.pdf> <C:/Users/mochen72/Desktop/Research/NASA_U
+TM/docs/CDC 2015/final version/fig/faultyRsets.pdf>]
 ("C:\Users\mochen72\Desktop\Research\NASA_UTM\docs\CDC 2015\final version\plato
 oning.bbl"
-Underfull \hbox (badness 10000) in paragraph at lines 77--79
+Underfull \hbox (badness 10000) in paragraph at lines 80--82
 []\OT1/ptm/m/n/8 I. Mitchell, \OT1/ptm/m/it/8 A Tool-box of Level Set Meth-ods\
 OT1/ptm/m/n/8 , 2009,
  []
@@ -500,8 +503,8 @@ LaTeX Warning: There were multiply-defined labels.
  ) 
 Here is how much of TeX's memory you used:
  5398 strings out of 493921
- 80944 string characters out of 3144867
- 168432 words of memory out of 3000000
+ 80946 string characters out of 3144867
+ 168553 words of memory out of 3000000
  8620 multiletter control sequences out of 15000+200000
  40662 words of font info for 86 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
@@ -522,7 +525,7 @@ ype1/public/amsfonts/symbols/msbm10.pfb><C:/Program Files (x86)/MiKTeX 2.9/font
 s/type1/urw/times/utmb8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw
 /times/utmbi8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utm
 r8a.pfb><C:/Program Files (x86)/MiKTeX 2.9/fonts/type1/urw/times/utmri8a.pfb>
-Output written on platooning.pdf (7 pages, 756878 bytes).
+Output written on platooning.pdf (7 pages, 757247 bytes).
 PDF statistics:
  165 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)

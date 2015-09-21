@@ -37,19 +37,20 @@ J.~Stewart. (2014) {Google tests drone deliveries in Project Wing trials}.
   [Online]. Available: \url{http://www.bbc.com/news/technology-28964260}
 \BIBentrySTDinterwordspacing
 
+\bibitem{Debusk10}
+W.~M. Debusk, ``Unmanned aerial vehicle systems for disaster relief: Tornado
+  alley,'' in \emph{Infotech@Aerospace Conferences}, 2010.
+
 \bibitem{FAA13}
 {Jointed Planning and Development Office (JPDO)}, ``Unmanned aircraft systems
   {(UAS)} comprehensive plan -- a report on the nation's {UAS} path forward,''
   Federal Aviation Administration, Tech. Rep., 2013.
 
-\bibitem{Debusk10}
-W.~M. Debusk, ``Unmanned aerial vehicle systems for disaster relief: Tornado
-  alley,'' in \emph{Infotech@Aerospace Conferences}, 2010.
-
 \bibitem{Bokanowski10}
 O.~Bokanowski, N.~Forcadel, and H.~Zidani, ``{Reachability and minimal times
   for state constrained nonlinear problems without any controllability
-  assumption},'' \emph{SIAM Journal on Control and \ldots}, pp. 1--24, 2010.
+  assumption},'' \emph{SIAM Journal on Control and Optimization}, pp. 1--24,
+  2010.
 
 \bibitem{Mitchell05}
 I.~Mitchell, A.~Bayen, and C.~Tomlin, ``A time-dependent {Hamilton-Jacobi}
@@ -61,7 +62,9 @@ E.~Barron and H.~Ishii, ``{The Bellman equation for minimizing the maximum
   cost},'' \emph{Nonlinear Analysis: Theory, Methods \& Applications}, 1989.
 
 \bibitem{Fisac15}
-``Reach-avoid problems with time-varying dynamics, targets and constraints.''
+J.~F. Fisac, M.~Chen, C.~J. Tomlin, and S.~S. Sastry, ``{Reach-Avoid Problems
+  with Time-Varying Dynamics, Targets and Constraints.}'' in \emph{18th
+  International Conference on Hybrid Systems: Computation and Controls}.
 
 \bibitem{Chen14}
 M.~Chen, Z.~Zhou, and C.~Tomlin, ``Multiplayer reach-avoid games via low
@@ -97,11 +100,12 @@ D.~McMahon, J.~Hedrick, and S.~Shladover, ``Vehicle modelling and control for
   1990, pp. 297--303.
 
 \bibitem{Hedrick92}
-J.~Hedrick, G.~Zhang, V.~Narendran, K.~Chang, P.~for Advanced~Transit,
-  H.~(Calif.), and B.~I. o. T.~S. University~of California, \emph{Transitional
-  Platoon Maneuvers in an Automated Highway System}.\hskip 1em plus 0.5em minus
-  0.4em\relax California PATH Program, Institute of Transportation Studies,
-  University of California at Berkeley, 1992.
+J.~Hedrick, G.~Zhang, V.~Narendran, K.~Chang, and {Partners for Advanced
+  Transit and Highways (Calif.) and University of California, Berkeley.
+  Institute of Transportation Studies}, \emph{Transitional Platoon Maneuvers in
+  an Automated Highway System}.\hskip 1em plus 0.5em minus 0.4em\relax
+  California PATH Program, Institute of Transportation Studies, University of
+  California at Berkeley, 1992.
 
 \bibitem{Lygeros98}
 J.~Lygeros, D.~Godbole, and S.~Sastry, ``Verified hybrid controllers for
@@ -133,11 +137,8 @@ M.~G. Crandall, L.~C. Evans, and P.~L. Lions, ``Some properties of viscosity
   Mathematical Society}, vol. 282, no.~2, p. 487, Apr. 1984.
 
 \bibitem{Chen15}
-\BIBentryALTinterwordspacing
 M.~Chen and C.~J. Tomlin, ``Exact and efficient hamilton-jacobi reachability
-  for decoupled systems,'' \emph{Submitted to 54th IEEE Conference on Decision
-  and Control}, 2015. [Online]. Available:
-  \url{http://arxiv.org/abs/1503.05933}
-\BIBentrySTDinterwordspacing
+  for decoupled systems,'' \emph{54th IEEE Conference on Decision and Control},
+  2015.
 
 \end{thebibliography}

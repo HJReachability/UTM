@@ -16,7 +16,7 @@ Consider a differential game between two players described by the system
 \end{aligned}
 \end{equation}
 
-In our differential game, the goal of Player 2 is to drive the system into some target set $\mathcal{L}$, and the goal of Player 1 is to drive the system away from it. The set $\mathcal{L}$ is represented as the zero sublevel set of a bounded, Lipschitz continuous function $l:\mathbb{R}^n\rightarrow\mathbb{R}$. We call $l(\cdot)$ the \textit{implicit surface function} representing the set $\mathcal L: \mathcal{L}=\{x\in\mathbb{R}^n \mid l(x)\le 0\}$.
+In our differential game, the goal of Player 2 is to drive the system into some target set $\mathcal{L}$, and the goal of Player 1 is to drive the system away from it. The set $\mathcal{L}$ is represented as the zero sublevel set of a bounded, Lipschitz continuous function $l:\mathbb{R}^n\rightarrow\mathbb{R}$. We call $l(\cdot)$ the \textit{implicit surface function} representing the set $\mathcal{L}=\{x\in\mathbb{R}^n \mid l(x)\le 0\}$.
 
 Given the dynamics \eqref{eq:dyn} and the target set $\mathcal{L}$, we would like to compute the backwards reachable set, $\mathcal{V}(t)$:
 
@@ -26,7 +26,7 @@ Given the dynamics \eqref{eq:dyn} and the target set $\mathcal{L}$, we would lik
 &\exists s \in [t,0], \xi_f(s; t, x, u_1(\cdot), \gamma[u_1](\cdot)) \in \mathcal{L} \}
 \end{aligned}
 \end{equation}
-where $\xi_f$ is the trajectory of the system satisfying initial conditions $\xi_f(t; x, t, u_1(\cdot), u_2(\cdot))=x$ and the following differential equation almost everywhere on $[-t, 0]$
+where $\xi_f$ is the trajectory of the system satisfying initial conditions $\xi_f(t; x, t, u_1(\cdot), u_2(\cdot))=x$ and the following differential equation almost everywhere on $[-t, 0]$:
 \begin{equation}
 \begin{aligned}
 \frac{d}{ds}&\xi_f(s; x, t, u_1(\cdot), u_2(\cdot)) \\
@@ -52,7 +52,7 @@ u_2^*(t,x) &= \arg \min_{u_2\in\mathcal{U}_2} D_x V(t,x) \cdot f(x,u_1^*,u_2)
 \end{aligned}
 \end{equation}
 
-In the special case where there is only one player (player 2 does not exist), we obtain an optimal control problem for a system with dynamics
+In the special case where there is only one player (Player 2 does not exist), we obtain an optimal control problem for a system with dynamics
 
 \begin{equation} \label{eq:dyn_d}
 \dot{x} = f(x, u), t\in [-T,0], u\in\mathcal U.
@@ -77,7 +77,7 @@ For our application, we will use a several decoupled system models and utilize t
 
 \section{Liveness Controllers \label{sec:liveness}}
 \subsection{Merging onto a Highway \label{subsec:highway_merge}}
-We model the merging of a vehicle onto an air highway as a path planning problem, where we specify a target position and velocity along the highway. Thus, a quadrotor would aim to drive the system \eqref{eq:dyn} to a state $\bar{x}_H=(\bar{p}_x, \bar{v}_x, \bar{p}_y, \bar{v}_y)$, or a small range of states defined by the set
+We model the merging of a vehicle onto an air highway as a path planning problem, where we specify a target position and velocity along the highway. Thus, a vehicle would aim to drive the system \eqref{eq:dyn} to a state $\bar{x}_H=(\bar{p}_x, \bar{v}_x, \bar{p}_y, \bar{v}_y)$, or a small range of states defined by the set
 
 \begin{equation}
 \begin{aligned}
@@ -89,12 +89,12 @@ We model the merging of a vehicle onto an air highway as a path planning problem
 In this reachability problem, $\mathcal{L}_H$ is the target set, represented by the zero sublevel set of the function $l_H(x)$, which specifies the terminal condition of the HJB PDE to be solved. The solution we obtain, $V_H(t,x)$, is the implicit surface function representing the reachable set $\mathcal V_H(t)$; $V_H(-T,x)\le 0$, then, specifies the reachable set $\mathcal{V}_H(T)$, the set of states from which the system can be driven to the target $\mathcal{L}_H$ within a duration of $T$. This gives the algorithm for merging onto the highway:
 
 \begin{enumerate}
-\item Move towards $\bar{x}_H$ in a straight line until $V_H(-T,x)\le 0$. This heuristic works well in practice. 
+\item Move towards $\bar{x}_H$ in a straight line until $V_H(-T,x)\le 0$. This simple controller is chosen heuristically.
 \item Apply the optimal control extracted from $V_H(-T,x)$ according to \eqref{eq:HJB_ctrl_syn} until $\mathcal{L}_H$ is reached.
 \end{enumerate}
 
 \subsection{Merging into a Platoon \label{subsec:platoon_merge}}
-We again pose the merging of a quadrotor into a platoon on an air highway as a reachability problem. Here, we would like quadrotor $Q_i$ to merge onto the highway and follow another quadrotor $Q_j$ in a platoon. Thus, we would like to drive the system given by \eqref{eq:rel_dyn_aug} to a specific $\bar{x}_P = (\bar{p}_{x,r}, \bar{v}_{x,r}, \bar{p}_{y,r}, \bar{v}_{y,r})$, or a small range of relative states defined by the set
+We again pose the merging of a vehicle into a platoon on an air highway as a reachability problem. Here, we would like quadrotor $Q_i$ to merge onto the highway and follow another vehicle $Q_j$ in a platoon. Thus, we would like to drive the system given by \eqref{eq:rel_dyn_aug} to a specific $\bar{x}_P = (\bar{p}_{x,r}, \bar{v}_{x,r}, \bar{p}_{y,r}, \bar{v}_{y,r})$, or a small range of relative states defined by the set
 
 \begin{equation}
 \begin{aligned}
@@ -103,7 +103,7 @@ We again pose the merging of a quadrotor into a platoon on an air highway as a r
 \end{aligned}
 \end{equation}
 
-The target set $\mathcal{L}_P$ is represented by the implicit surface function $l_P(x)$, which specifies the terminal condition of the HJI PDE \eqref{eq:HJIPDE}. The zero sublevel set of the solution to \eqref{eq:HJIPDE}, $V_P(-T,x)$, gives us the set of relative states from which $Q_i$ can reach the target and join the platoon following $Q_j$ within a duration of $T$. We assume that $Q_j$ moves along the highway at constant speed, so that $u_j(t)$ = 0. The following is a suitable algorithm for a quadrotor merging onto a highway and joining a platoon to follow $Q_j$:
+The target set $\mathcal{L}_P$ is represented by the implicit surface function $l_P(x)$, which specifies the terminal condition of the HJI PDE \eqref{eq:HJIPDE}. The zero sublevel set of the solution to \eqref{eq:HJIPDE}, $V_P(-T,x)$, gives us the set of relative states from which $Q_i$ can reach the target and join the platoon following $Q_j$ within a duration of $T$. We assume that $Q_j$ moves along the highway at constant speed, so that $u_j(t)$ = 0. The following is a suitable algorithm for a vehicle merging onto a highway and joining a platoon to follow $Q_j$:
 
 \begin{enumerate}
 \item Move towards $\bar{x}_P$ in a straight line until $V_P(-T,x)\le 0$.
@@ -131,9 +131,9 @@ where $b$ is the spacing between vehicles along the platoon. and $\frac{v_{P_1}}
 
 \section{Safety Controllers \label{sec:safety}}
 \subsection{Wrapping Reachability Around Existing Controllers}
-A quadrotor can use a liveness controller when it is not in any danger of collision with other quadrotors or obstacles. If the quadrotor could potentially be involved in a collision within the next short period of time, it must switch to a safety controller. In this section, we will demonstrate how HJ reachability can be used to both detect imminent danger and synthesize a controller that guarantees safety within a specified time horizon. For our safety analysis, we will use the model in Equation \eqref{eq:rel_dyn_aug}.
+A quadrotor can use a liveness controller when it is not in any danger of collision with other quadrotors or obstacles. If the quadrotor could potentially be involved in a collision within the next short period of time, it must switch to a safety controller. In this section, we will demonstrate how HJ reachability can be used to both detect imminent danger and synthesize a controller that guarantees safety within a specified time horizon. For our safety analysis, we will use the model in \eqref{eq:rel_dyn_aug}.
 
-We begin by defining the target set $\mathcal{L}_S$, which characterizes configurations in relative coordinates for which quadrotors $Q_i,Q_j$ are considered to be in collision:
+We begin by defining the target set $\mathcal{L}_S$, which characterizes configurations in relative coordinates for which vehicles $Q_i,Q_j$ are considered to be in collision:
 
 \begin{equation}
 \begin{aligned}
@@ -141,7 +141,7 @@ We begin by defining the target set $\mathcal{L}_S$, which characterizes configu
 \end{aligned}
 \end{equation}
 
-With this definition, $Q_i$ is considered to be unsafe if $Q_i$ and $Q_j$ are within a distance $d$ in both $x$- and $y$-directions simultaneously, or if $Q_i$ has exceeded some maximum speed $v_\text{max}$ in either $x$- or $y$-direction. For illustration purposes, we choose $d=2$ meters, and $v_\text{max}= 5$ m/s.
+With this definition, $Q_i$ is considered to be unsafe if $Q_i$ and $Q_j$ are within a distance $d$ in both $x$ and $y$ directions simultaneously, or if $Q_i$ has exceeded some maximum speed $v_\text{max}$ in either $x$ or $y$ direction. For illustration purposes, we choose $d=2$ meters, and $v_\text{max}= 5$ m/s.
 
 We can now define the implicit surface function $l_S(x)$ corresponding to $\mathcal{L}_S$, and solve the HJI PDE \eqref{eq:HJIPDE} using $l_S(x)$ as the terminal condition. As before, the zero sublevel set of the solution $V_S(t,x)$ specifies the reachable set $\mathcal{V}_S(t)$, which characterizes the states in the augmented relative coordinates, as defined in \eqref{eq:rel_dyn_aug}, from which $Q_i$ \textit{cannot} avoid $\mathcal{L}_S$ for a time period of $t$, if $Q_j$ uses the worst case control. To avoid collisions, $Q_i$ must apply the safety controller according to \eqref{eq:HJI_ctrl_syn} on the boundary of the reachable set in order to avoid going into the reachable set. The following algorithm wraps our safety controller around liveness controllers:
 
@@ -158,7 +158,7 @@ If $\exists j\in \mathcal{Q}(i),V_S(-t,x_i-x_j)\le 0$, then $Q_i,Q_j$ are in pot
 \subsection{Platoon Safety Guarantees \label{subsec:safety_guarantees}}
 Under normal operations in a single platoon, each follower quadrotor $Q_{P_i},i>1$ checks whether it is in the safety reachable set with respect to $Q_{P_{i-1}}$ and $Q_{P_{i+1}}$. So $\mathcal{Q}(i) = \{P_{i+1}, P_{i-1}\}$ for $i=P_2,\ldots,P_{N-1}$. Assuming there are no nearby quadrotors outside of the platoon, the platoon leader $Q_{P_1}$ checks safety against $Q_{P_2}$, and the platoon trailer $Q_{P_N}$ checks safety against $Q_{P_{N-1}}$. So $\mathcal{Q}(P_1)=\{P_2\}, \mathcal{Q}(P_N)=\{P_{N-1}\}$. No pair of quadrotors should be in an unsafe configuration if the liveness controllers are well-designed. Occasionally, a quadrotor $Q_k$ may behave unexpectedly due to faults, which may lead to an unsafe configuration.
 
-With our choice of $\mathcal{Q}(i)$ and the assumption that the platoon is in a single-file formation, some quadrotor $Q_i$ would get into an unsafe configuration with $Q_k$, where $Q_k$ is likely to be the quadrotor in front or behind of $Q_i$. In this case, a ``safety breach" occurs. Our synthesis of the safety controller guarantees that between every pair of quadrotors $Q_i,Q_k$, as long as $V_S(-t,x_i- x_k)>0$, $\exists u_i$ to keep $Q_i$ from colliding with $Q_k$ for a desired time horizon $t$, despite the worst case (an adversarial) control from $Q_k$. Therefore, as long as the number of ``safety breaches" is at most one, $Q_i$ can simply use the optimal control to avoid $Q_k$ and avoid collision for the time horizon of $t$. Since quadrotors in platoons are able to exit the current altitude range within a duration of $t_\text{internal}$, if we choose $t=t_\text{internal}$, the safety breach would always end before any collision can occur. 
+With our choice of $\mathcal{Q}(i)$ and the assumption that the platoon is in a single-file formation, some quadrotor $Q_i$ would get into an unsafe configuration with $Q_k$, where $Q_k$ is likely to be the quadrotor in front or behind of $Q_i$. In this case, a ``safety breach" occurs. Our synthesis of the safety controller guarantees that between every pair of quadrotors $Q_i,Q_k$, as long as $V_S(-t,x_i- x_k)>0$, $\exists u_i$ to keep $Q_i$ from colliding with $Q_k$ for a desired time horizon $t$, despite the worst case (an adversarial) control from $Q_k$. Therefore, as long as the number of ``safety breaches" is at most one, $Q_i$ can simply use the optimal control $u_i$ to avoid collision with $Q_k$ for the time horizon of $t$. Since by assumption, vehicles in platoons are able to exit the current altitude range within a duration of $t_\text{internal}$, if we choose $t=t_\text{internal}$, the safety breach would always end before any collision can occur. 
 
 Within a duration of $t_\text{internal}$, there is a small chance that additional safety breaches may occur. However, as long as the total number of safety breaches does not exceed the number of affected quadrotors, collision avoidance of all the quadrotors can be guaranteed for the duration $t_\text{internal}$. However, as our simulation results show, putting quadrotors in single-file platoons makes the likelihood of multiple safety breaches low during a quadrotor malfunction and during the presence of one intruder vehicle. 
 

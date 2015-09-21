@@ -1,16 +1,14 @@
 This is BibTeX, Version 0.99dThe top-level auxiliary file: platooning.aux
 The style file: IEEEtran.bst
 Database file #1: references.bib
-I was expecting a `,' or a `}'---line 52 of file references.bib
+I was expecting a `,' or a `}'---line 54 of file references.bib
  : 
- : author = {Fisac, Jaime F. and Chen, Mo and Tomlin, Claire J. and Sastry, S. Shankar},
+ : year = {2015}
 (Error may have been on previous line)
 I'm skipping whatever remains of this entry
 -- IEEEtran.bst version 1.13 (2008/09/30) by Michael Shell.
 -- http://www.michaelshell.org/tex/ieeetran/bibtex/
 -- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
-Warning--empty author in Fisac15
-Warning--empty journal in Fisac15
 Warning--empty year in Fisac15
 Warning--missing publisher in LSToolbox
 Warning--empty journal in Kavathekar11
