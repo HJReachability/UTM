@@ -10,3 +10,6 @@ Simulation code:
 
 Reachability computations:
 - these are for computing the look-up tables (.mat files in the code/ folder)required for the reachability-based controllers that the simulation code uses
+
+Other code:
+- the code here depends on the levelset toolbox, FMM library, and the helper library. Ask Mo about those.
