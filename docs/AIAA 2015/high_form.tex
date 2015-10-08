@@ -1,3 +1,12 @@
 % !TEX root = main.tex
 \section{Air Highways}
 \subsection{Problem Formulation}
+We consider air highways to be line segments of constant altitude over a region. On the highway, a number of platoons may be present. The concept of platoons will be proposed in Section \ref{sec:platooning}. For now, denote the line segments $\hw(s), s\in[0,1]$. In a horizontal plane of fixed altitude, the end points of the line segment are given by $x_0 = \hw(0)$ and $y_0\hw(1)$. We assign a speed of travel $v_\hw$ and specify the direction of travel to be the direction from $\hw(0)$ to $\hw(1)$, denoted using a unit vector $\hwd = \frac{\hw(1) - \hw(0)}{\lVert\hw(1) - \hw(0)\rVert_2}$.
+
+Air highways not only provide structure to make the analysis of a large number of vehicles tractable, but also allow vehicles reach their destinations. Thus, given a origin-destination pair (eg. two cities), air highways must connect the two points while potentially satisfying other criteria. We call this the ``air highway placement problem'', and propose to address it in the following way:
+
+\begin{enumerate}
+\item Establish a cost map over a region of space. This cost map represents the aggregate cost of placing air highways over any point in space. The costs of placing air highways may include interference with commercial air spaces, cost of accidents, noise pollution, etc., and can be designed by government regulation bodies.
+\item Compute the cost-minimizing path from an origin to multiple destinations. 
+\item Convert the cost-minimizing path into a sequence of air highways. The endpoints of the resulting air highways can be thought of as waypoints in the airspace.
+\end{enumerate}

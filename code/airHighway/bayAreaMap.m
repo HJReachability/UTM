@@ -114,7 +114,7 @@ contour(g2.xs{2}, g2.xs{1}, obs, [0 0], 'k-', 'linewidth', 2)
 
 axis(g.axis)
 axis square
-title('Bay Area Map, Shortest Paths')
+title('Bay Area Map, Cost-Minimizing Paths')
 
 % Shortest paths on top of speed profile and value function
 subplot(1,2,2)
@@ -132,7 +132,7 @@ contour(g2.xs{2}, g2.xs{1}, obs, [0 0], 'k-', 'linewidth', 2)
 
 axis(g.axis)
 axis square
-title('Speed Profile, Shortest Paths, Value Function')
+title('Cost Map, Cost-Minimizing Paths, Value Function')
 
 % Figure window size
 f2.Position(3:4) = [1043 420];

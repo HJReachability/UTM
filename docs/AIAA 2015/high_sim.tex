@@ -1,2 +1,23 @@
 % !TEX root = main.tex
 \subsection{Results}
+To illustrate our air highway placement proposal, we used the San Francisco Bay Area as an example, and classified each point on the map into three different region. Each region has an associated cost, reflecting the desirability of flying a vehicle over an area in the region. In general, these costs can be arbitrary and determined by government regulation agencies. For illustration purposes, we assumed the following categories and costs:
+
+\begin{itemize}
+\item Region around airports: $\cost{airports}=b$,
+\item Cities: $\cost{cities}=1$,
+\item Water: $\cost{water}=b^{-2}$,
+\item Other: $\cost{other}=b^{-1}$.
+\end{itemize}
+
+This assumption assigns costs in descending order to the categories ``region around airports'', ``cities'', ``water'', and ``other''. Flying a UAV in each category is more costly by a factor of $b$ compared to the next most important category. The factor $b$ is a tuning parameter that we adjusted to vary the relative importance of the different categories, and we used $b=4$ in the figures below.
+
+Fig. \ref{fig:airHighway_results} shows the San Francisco Bay Area (geographic) map, cost map, cost-minimizing paths, and contours of the value function. The region enclosed by the black boundary represent ``regoin around airports'', which have the highest cost. The dark blue, yellow, and light blue regions represent the ``cities'', the ``water'', and the ``other''' categories, respectively. We assumed that the origin corresponds to the city ``Concord'', and chose a number of other major cities as destinations.
+
+A couple of important observations can be made here. First, the cost-minimizing paths to the various destinations in general overlap, and only split up when they are very close to entering their destination cities. This is intuitively desirable because the number of air highways is kept low. In addition, the cost of flying in the airspace according to the cost map is minimized. Secondly, the spacing of the contours, which correspond to level curves of the value function, have a spacing corresponding to the cost map. This provides insight into the placement of air highways to destinations that were not illustrated.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.75\textwidth]{"fig/airHighway_results"}
+	\caption{Cost-minimizing paths computed by the Fast Marching Method based on the assumed cost map of the San Francisco Bay Area}
+	\label{fig:airHighway_results}
+\end{figure}
