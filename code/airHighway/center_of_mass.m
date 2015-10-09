@@ -29,7 +29,6 @@ if nargin<2
 end
 
 % Compute center of mass
-
 com_x = sum(points(1,:) .* weights)/N;
 com_y = sum(points(2,:) .* weights)/N;
 com = [com_x; com_y];

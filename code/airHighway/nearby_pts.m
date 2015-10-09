@@ -1,4 +1,4 @@
-function near_pts = nearby_pts(this_pt, other_pts, threshold)
+function [near_pts, near_inds] = nearby_pts(this_pt, other_pts, threshold)
 % function near_pts = nearby_pts(this_pt, other_pts, threshold)
 %
 % Finds points close to this_pt within a distance specified by threshold in
@@ -22,6 +22,7 @@ dist = (this_pt(1) - other_pts(1,:)).^2 + (this_pt(2) - other_pts(2,:)).^2;
 dist = sqrt(dist);
 
 % Find nearby points
-near_pts = other_pts(:, dist <= threshold);
+near_inds = find(dist <= threshold);
+near_pts = other_pts(:, near_inds);
 
 end
