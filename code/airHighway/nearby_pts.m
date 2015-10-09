@@ -1,4 +1,4 @@
-function [near_pts, near_inds] = nearby_pts(this_pt, other_pts, threshold)
+function chosen_pts = nearby_pts(this_pt, other_pts, threshold)
 % function near_pts = nearby_pts(this_pt, other_pts, threshold)
 %
 % Finds points close to this_pt within a distance specified by threshold in
@@ -17,12 +17,25 @@ if threshold <= 0
   error('threshold must be strictly positive!')
 end
 
+% Append indices to set of search points if needed
+if size(other_pts,1) == 2
+  other_pts = [other_pts; 1:size(other_pts,2)];
+elseif size(other_pts,1) < 2
+  error('Input set of points must contain at least 2 rows!')
+end
+
 % Compute distance to this_pt from other_pts
 dist = (this_pt(1) - other_pts(1,:)).^2 + (this_pt(2) - other_pts(2,:)).^2;
 dist = sqrt(dist);
 
 % Find nearby points
-near_inds = find(dist <= threshold);
-near_pts = other_pts(:, near_inds);
+logical_inds = dist<=threshold;
+chosen_pts = other_pts(:, logical_inds);
+remaining_pts = other_pts(:, ~logical_inds);
+
+for i = 1:size(chosen_pts,2)
+  chosen_pts = [chosen_pts nearby_pts(chosen_pts(:,i), remaining_pts, ...
+    threshold)];
+end
 
 end

@@ -1,8 +1,8 @@
 function simulateHighwayMerge(debug, save_graphics, output_directory)
 % function simulateNormal(from_checkpoint, save_graphics, output_directory)
 %
-% Simulates 4 quadrotors joining a platoon that initially has a single
-% quadrotor. This file is a good template for new simulations!
+% Simulates a platoon in which part of its members split to join another
+% platoon on a different highway
 %
 % Inputs:  from_checkpoint  - whether to load previous checkpoint
 %          save_graphics    - whether to export graphics (for making an
@@ -10,6 +10,12 @@ function simulateHighwayMerge(debug, save_graphics, output_directory)
 %          output_directory - for graphics export
 %                             - requires export_fig package
 %                             - don't include a "/" at the end
+%
+% Description:
+% Initially, platoon 1 (3 vehicle)s and platoon 2 (4 vehicles) are
+% traveling along highway 1 and highway 2. Two vehicles from platoon 2
+% leave their platoon to join platoon 1 on highway 1, while the remaining 
+% two vehicles stay on highway 2.
 %
 % Mo Chen, 2015-07-08
 

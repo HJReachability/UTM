@@ -4,46 +4,31 @@ function sparse_pts = sparsify_paths(dense_pts, threshold)
 % Groups nearby points of highways together 
 
 if nargin<2
-  threshold = 0.25;
+  threshold = 0.025;
 end
 
-N = length(dense_pts);
+pts_list = cell2list(dense_pts);
 
-for i = 1:N % Go through all the set of points
-  this_pts = dense_pts{i}; % Current point
+i = 1;
+while i < size(pts_list,2)
+  % Find nearby points (recursively)
+  near_pts = nearby_pts(pts_list(:,i), pts_list, threshold);
   
-  near_pts = cell(N-1, 1);
-  near_inds = cell(N-1, 1);
+  % Find center of mass
+  com = center_of_mass(near_pts(1:2,:));
   
-  for j = 1:size(this_pts,2) % Go through all points in the current set
-    % Find all nearby points from all sets of points
-    for k = [1:i-1 i+1:N]
-      [near_pts{k}, near_inds{k}] = ...
-        nearby_pts(this_pts(:,j), dense_pts{k}, threshold);
-    end
-    
-    if ~isempty([near_pts{:}]) % If a set of nearby point is found
-      % Find center of mass
-      com = center_of_mass([near_pts{:}]);
-      
-      % Replace reference point with center of mass
-      dense_pts{i}(:,j) = com;
-      
-      % Replace all nearby points with center of mass
-      for k = [1:i-1 i+1:N] % Go through all other sets of points
-        % If there are nearby points, replace with center of mass
-        if ~isempty(near_inds{k})
-          dense_pts{k}(:,near_inds{k}(1)) = com;
-          
-          if size(dense_pts{k},2) > 1
-            dense_pts{k}(:,near_inds{k}(2:end)) = [];
-          end
-        end
-      end
-      
-    end
-  end
+  % Trim the long list of points
+  [~, inds] = intersect(pts_list', near_pts', 'rows', 'stable');
+  pts_list(1,inds') = com(1);
+  pts_list(2,inds') = com(2);
+  
+  % Remove duplicates
+  [~, inds] = unique(pts_list([1 2 4],:)', 'rows', 'stable');
+  pts_list = pts_list(:,inds');
+  
+  % Increment index
+  i = i + 1;
 end
 
-sparse_pts = dense_pts;
+sparse_pts = list2cell(pts_list);
 end

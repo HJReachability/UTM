@@ -11,7 +11,15 @@ function simulateNormal(from_checkpoint, save_graphics, output_directory,visuali
 %                             - requires export_fig package
 %                             - don't include a "/" at the end
 %
-% Mo Chen, 2015-07-08
+% Description:
+% The first vehicle (vehicle 1) is already on the highway, and is the 
+% leader of a platoon consisting of itself. The other four vehicles join 
+% the% platooning, targetting the first available position behind the 
+% leader. Each vehicle i checks safety with vehicle i-1, while following
+% the liveness controller to merge with the platoon. The leader simply
+% follows the highway.
+%
+% Mo Chen, 2015-10-02
 
 % Default input parameters
 if nargin<1
@@ -64,7 +72,6 @@ else
   Nqr = length(qrs);
   u = zeros(2,Nqr);
   
-  
   % ===== Create highway here =====
   z1 = [-30 -15];
   z2 = [160 80];
@@ -77,7 +84,7 @@ else
   
   % Visualize initial setup
   f1 = figure;
-  keyboard
+
   if visualize_vehicle_on
     f2 = figure;
   end

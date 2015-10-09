@@ -12,7 +12,18 @@ function simulateNormal2(from_checkpoint, save_graphics, output_directory, visua
 %                             - requires export_fig package
 %                             - don't include a "/"
 %          visualize_vehicle_on -debugging tool
-% Mo Chen, 2015-07-06
+%
+% Description:
+% There are just two vehicles in this simulation. The first vehicle merges
+% onto the highway by first moving in a straight line towards its target,
+% and then switching to the reachability-based liveness controller once it
+% enters the target set. The second vehicle also tries to join the highway
+% at the same target, but the first vehicle finishes merging first. So the
+% second vehicle instead joins the new platoon created by the first
+% vehicle. Both vehicles switch to the safety controller if they enter the
+% safety reachable set with respect to the other vehicle.
+%
+% Mo Chen, 2015-10-02
 
 if nargin<1
   from_checkpoint = false;

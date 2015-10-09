@@ -14,7 +14,7 @@ this_pt = rand(2,1);
 plot(this_pt(1), this_pt(2), 'x')
 
 % Plot a random fixed distance from the this_pt
-threshold = rand;
+threshold = 0.2*rand;
 theta = linspace(0, 2*pi, 100);
 plot(this_pt(1) + threshold*cos(theta), ...
   this_pt(2) + threshold*sin(theta), ':')
@@ -24,4 +24,3 @@ near_pts = nearby_pts(this_pt, points, threshold);
 plot(near_pts(1,:), near_pts(2,:), 'o')
 
 axis equal
-
