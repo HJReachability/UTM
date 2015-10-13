@@ -4,7 +4,7 @@ function sparse_pts = sparsify_paths(dense_pts, threshold)
 % Groups nearby points of highways together 
 
 if nargin<2
-  threshold = 0.025;
+  threshold = 0.05;
 end
 
 pts_list = cell2list(dense_pts);

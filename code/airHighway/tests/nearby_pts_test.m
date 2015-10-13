@@ -1,6 +1,8 @@
 clear all
 close all
 
+addpath('..')
+
 % Specify N random points uniformly distributed in [0 1]^2
 N = 100;
 points = rand(2,N);

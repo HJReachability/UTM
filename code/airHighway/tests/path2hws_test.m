@@ -1,6 +1,8 @@
 clear all;
 close all;
 
+addpath('..')
+
 % ----- Grid -----
 g.dim = 2;
 g.min = -1;
@@ -23,26 +25,19 @@ g2.N = size(dots,1);
 g2 = processGrid(g2);
 
 figure;
-image(g2.vs{1}, g2.vs{2},dots,'visible','off'); hold on
+image(g2.vs{1}, g2.vs{2},dots); hold on
 
 % ----- Load path -----
 load('bay_area_raw_paths')
 
-pts = cell(length(spath),1);
-colors = lines(length(spath));
 for i = 1:length(spath)
   raw_path = spath{i};
   
   % Compute indices
-  pts{i} = path2hws(raw_path);
+  pts = path2hws(raw_path);
   
   % ----- Plot -----
-  plot(pts{i}(2,:), pts{i}(1,:), 'o-', 'color', colors(i,:))
+  plot(raw_path(2,:), raw_path(1,:), 'r-');
+  plot(pts(2,:), pts(1,:), 'bo-')
   axis square
-end
-
-% ----- Sparsify -----
-sparse_pts = sparsify_paths(pts);
-for i = 1:length(sparse_pts)
-  plot(sparse_pts{i}(2,:), sparse_pts{i}(1,:), 'x-', 'color', colors(i,:))
 end
