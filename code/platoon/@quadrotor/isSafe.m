@@ -27,7 +27,7 @@ function [safe, uSafe, valuex] = ...
 
 % A vehicle is always safe with respect to itself or to nothing
 if isempty(other) || (obj == other)
-  safe = 1;
+  safe = true;
   uSafe = [];
   valuex = inf;
   return
@@ -84,8 +84,10 @@ if safeV.g.dim == 3
   valuex = min(valueCx, valueSx);
   
   % Is the value safe?
-  if valuex <= 0, safe = false;
-  else            safe = true;
+  if valuex <= 0
+    safe = false;
+  else
+    safe = true;
   end
 
 
