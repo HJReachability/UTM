@@ -4,8 +4,8 @@
 checkpoints
 *.mp4
 *.wlmp
-*.mat
 *.gz
 *.blg
-*.bbl
 *.aux
+*.mat
+*.bbl
