@@ -42,7 +42,7 @@ for i = 3+Navg:size(path,2)-Navg
   y0 = path(2,i-Navg-1);
   theta = angle_mean(atan2(y0-path(2,i-Navg:i+Navg), x0-path(1,i-Navg:i+Navg)) );
   
-  diff = angle_diff(theta, theta0);
+  diff = abs_angle_diff(theta, theta0);
   
   ind = i;
   if diff >= threshold

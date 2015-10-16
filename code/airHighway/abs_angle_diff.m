@@ -1,4 +1,6 @@
-function diff = angle_diff(angle1, angle2)
+function diff = abs_angle_diff(angle1, angle2)
+% function diff = angle_diff(angle1, angle2)
+% 
 % Computes the difference between two angles, taking into account wrapping
 % at pi
 
