@@ -198,8 +198,8 @@ for i = iStart:length(t)
     end % ~exist('hph', 'var')
     
   else % ~isempty(hw.ps)
-%     qrs{1}.plotMergeHighwayV(target);
-%     qrs{1}.plotSafeV(qrs{2}, safeV);
+    qrs{1}.plotMergeHighwayV(target, hw);
+    qrs{1}.plotSafeV(qrs{2}, safeV);
     
   end % ~isempty(hw.ps)
   

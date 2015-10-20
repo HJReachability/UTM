@@ -85,7 +85,7 @@ switch obj.q
         gradx = calculateCostate(g, grad, x_liveV);
         
         % Check to see if we're within 5 seconds to getting to the target
-        inside_RS = valuex <= 5;
+        inside_RS = valuex <= abs(max(liveV.tau) - min(liveV.tau));
       end
       
       %         % Perform merging maneuver until obj becomes leader

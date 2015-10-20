@@ -28,7 +28,7 @@ for i = 1:length(others)
   % Velocity domain should cover a thin layer around current relative
   % velocity
   
-  reference = zeros(2*g.dim, 1);
+  reference = zeros(2*safeV.g.dim, 1);
   if safeV.g.dim == 2
     % Reference for reconstruction
     reference(obj.pdim) = nan;
@@ -36,7 +36,7 @@ for i = 1:length(others)
     
     % Relative and absolute velocity slice for projection
     slice = zeros(4,1);
-    slice([1 3]) = obj.getVelocity - other.getVelocity;
+    slice([1 3]) = obj.getVelocity - others{i}.getVelocity;
     slice([2 4]) = obj.getVelocity;
   elseif safeV.g.dim == 3
     % Reference for reconstruction
@@ -45,7 +45,7 @@ for i = 1:length(others)
     reference([3 6]) = obj.getVelocity;
     
     % Relative velocity slice for projection
-    slice = obj.getVelocity - other.getVelocity;    
+    slice = obj.getVelocity - others{i}.getVelocity;    
   else
     error('Unexpected grid dimension (expected 2 or 3)!')
   end
@@ -56,7 +56,7 @@ for i = 1:length(others)
   [g2D, value2D] = reconProj2D(safeV, xmin, xmax, t, slice);
   
   %% Shift, plot, and update result
-  shiftPlotUpdate(g2D, value2D, others{i})
+  shiftPlotUpdate(g2D, value2D, obj, others{i})
 end
 end
 
@@ -75,6 +75,9 @@ function shiftPlotUpdate(g2D, value2D, obj, other)
 %
 % Mo Chen, 2015-10-20
 
+% Shift the grid
+shiftAmount = other.getPosition;
+g2Dt = shift2DGrid(g2D, shiftAmount);
 
 % Check if the vehicle is already in the list of safe reachable sets being
 % plotted, and if plot already exists, simply update the plot

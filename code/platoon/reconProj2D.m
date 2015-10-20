@@ -14,30 +14,19 @@ function [g2D, value2D] = reconProj2D(V, xmin, xmax, t, slice)
 % Mo Chen, 2015-10-20
 
 % Grid check
-if g.dim ~= 2 && g.dim ~= 3
+if V.g.dim ~= 2 && V.g.dim ~= 3
   error('Reconstruction requires the grid to be 2D or 3D!')
 end
 
-% Unpack constants
-tau = V.tau;
-g = V.g;
-
-if g.dim == 3
-  dataC = V.dataC;
-  dataS = V.dataS;
-else
-  dataC = V.dataC;
-end
-
-if g.dim == 3
+if V.g.dim == 3
   % Collision reachable set: reconstruct the "max" problem
   [~, ~, g6D, valueC, ~, ind] = ...
-    recon2x3D(tau, g, dataC, g, dataC, [xmin xmax], t);
+    recon2x3D(V.tau, V.g, V.dataC, V.g, V.dataC, [xmin xmax], t);
   
   % Velocity reachable set: take union for the "min" problem
-  valueSx = eval_u(g, dataS(:,:,:,ind), 
+  valueSx = eval_u(V.g, V.dataS(:,:,:,ind), ...
     [g6D.xs{1}(:) g6D.xs{2}(:) g6D.xs{3}(:)]);
-  valueSy = eval_u(g, dataS(:,:,:,ind), ...
+  valueSy = eval_u(V.g, V.dataS(:,:,:,ind), ...
     [g6D.xs{4}(:) g6D.xs{5}(:) g6D.xs{6}(:)]);
   valueS = min(valueSx, valueSy);
   valueS = reshape(valueS, g6D.shape);
@@ -50,7 +39,8 @@ if g.dim == 3
   
 else
   % Collision reachable set: reconstruct the "max" problem
-  [~, TD_out] = recon2x2D(tau, {g; g}, {dataC; dataC}, [xmin xmax], t);
+  [~, TD_out] = recon2x2D(V.tau, {V.g; V.g}, {V.dataC; V.dataC}, ...
+    [xmin xmax], t);
   
   % Overall safety set is the collision safety set
   g4D = TD_out.g;

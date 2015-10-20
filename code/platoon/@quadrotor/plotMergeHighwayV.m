@@ -28,19 +28,25 @@ if hw.liveV.g.dim == 2
   % to 2D
   [g2D, value2D] = reconProj2D(hw.liveV, xmin, xmax, inf, obj.getVelocity);
   
-  % Shift the grid!!!
-  g2Dt.dim = g2D.dim;
-  g2Dt.min = g2D.min + target';
-  g2Dt.max = g2D.max + target';
-  g2Dt.N = g2D.N;
-  g2Dt.bdry = g2D.bdry;
-  g2Dt = processGrid(g2Dt);
+  % Visualization level
+  level = 0;
+elseif hw.liveV.g.dim == 4
+  [g2D, value2D] = proj2D(hw.liveV.g, [0 1 0 1], hw.liveV.g.N([1 3]), ...
+    hw.liveV.data, obj.getVelocity);
+
+  level = abs(max(hw.liveV.tau) - min(hw.liveV.tau));
+else
+  error('Highway liveness reachable set must be 2D or 4D!')
 end
+
+% Shift the grid
+shiftAmount = target';
+g2Dt = shift2DGrid(g2D, shiftAmount);
 
 % Plot result
 if isempty(obj.hmergeHighwayV)
-  [~, obj.hmergeHighwayV] = contour(g2Dt.xs{1}, g2Dt.xs{2}, value2D, [0 0], ...
-    'lineStyle', ':', 'linewidth', 2);
+  [~, obj.hmergeHighwayV] = contour(g2Dt.xs{1}, g2Dt.xs{2}, value2D, ...
+    [level level], 'lineStyle', ':', 'linewidth', 2);
 else
   obj.hmergeHighwayV.XData = g2Dt.xs{1};
   obj.hmergeHighwayV.YData = g2Dt.xs{2};
