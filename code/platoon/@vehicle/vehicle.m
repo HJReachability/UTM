@@ -37,19 +37,14 @@ classdef vehicle < handle
     hvxvy           % Velocity
     hvxvyhist       % Velocity history
     
-    % Safety sets (with respect to 5 nearest vehicles, or vehicles in the 
-    % same platoon; + intruder/faulty)
-    hsafeV = cell(6,1);
-        
+    % Safety sets
+    hsafeV         % figure handles
+    safeV_vehicles % list of corresponding vehicles
+
     hmergeHighwayV  % Merging reachable set
     hmergePlatoonV  % Merging reachable set
 
     %% Safety indicators
-    % Cell structure containing pointers to the vehicles with whome safety 
-    % should be checked - need to merge this with the stuff below
-    % eventually
-    sList = {};
-    
     safeI     = true % w.r.t. Intruder
     safeIhist = true % w.r.t. Intruder history
     safeFQ    = true % w.r.t. FQ

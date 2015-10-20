@@ -1,4 +1,4 @@
-function plotSafeV(obj, other, safeV, t)
+function plotSafeV(obj, others, safeV, t)
 % function plotSafeV(obj, other, t)
 %
 % Plots the safe region around other that obj must stay out of in order to
@@ -6,188 +6,109 @@ function plotSafeV(obj, other, safeV, t)
 %
 % Inputs: obj   - this quadrotor
 %         other - other quadrotor
-%         safeV - Reachable set 
+%         safeV - Reachable set
 %         t     - time horizon
 %
 % Mo Chen, 2015-06-21
 
-% State dimensions for position and velocity
-pdim = obj.pdim;
-vdim = obj.vdim;
+% Check input
+others = checkVehiclesList(others, 'quadrotor');
 
-% Unpack constants
-
-tau = safeV.tau;
-g = safeV.g;
-
-if g.dim==3
-    dataC = safeV.dataC;
-    dataS = safeV.dataS;
-else
-    dataC = safeV.dataC;
+% Safety time horizon
+if nargin<4
+  t = obj.tauInt;
 end
-    
 
-% ----- Construct grid -----
-% Position domain should cover all grid positions around the OTHER vehicle
-% since p = [px py] indicates that this vehicle is at (px, py) where the
-% origin is centered around the other vehicle
+for i = 1:length(others)
+  %% Construct grid
+  % Position domain should cover all grid positions around the OTHER vehicle
+  % since p = [px py] indicates that this vehicle is at (px, py) where the
+  % origin is centered around the other vehicle
+  %
+  % Velocity domain should cover a thin layer around current relative
+  % velocity
+  
+  reference = zeros(2*g.dim, 1);
+  if safeV.g.dim == 2
+    % Reference for reconstruction
+    reference(obj.pdim) = nan;
+    reference(obj.vdim) = obj.getVelocity;
+    
+    % Relative and absolute velocity slice for projection
+    slice = zeros(4,1);
+    slice([1 3]) = obj.getVelocity - other.getVelocity;
+    slice([2 4]) = obj.getVelocity;
+  elseif safeV.g.dim == 3
+    % Reference for reconstruction
+    reference([1 4]) = nan;
+    reference([2 5]) = obj.getVelocity - others{i}.getVelocity;
+    reference([3 6]) = obj.getVelocity;
+    
+    % Relative velocity slice for projection
+    slice = obj.getVelocity - other.getVelocity;    
+  else
+    error('Unexpected grid dimension (expected 2 or 3)!')
+  end
+  
+  [xmin, xmax] = highDimGridBounds(safeV.g, reference);
+  
+  %% Compute V(t,x) on the relative velocity slice and project down to 2D
+  [g2D, value2D] = reconProj2D(safeV, xmin, xmax, t, slice);
+  
+  %% Shift, plot, and update result
+  shiftPlotUpdate(g2D, value2D, others{i})
+end
+end
+
+%% =======================================================================
+function shiftPlotUpdate(g2D, value2D, obj, other)
+% function shiftPlotUpdate(g2D, value2D, obj, other)
 %
-% Velocity domain should cover a thin layer around current relative
-% velocity
-max_domain_size = 1;
-domain_thickness = 2;
-
-if g.dim==3
-    xmin = zeros(6,1);
-    % xmin(1) = max( max_domain_size*g.min(1), -apdiffx );
-    xmin(1) = max_domain_size*g.min(1);
-    xmin(2) = obj.x(vdim(1))-other.x(vdim(1)) - domain_thickness*g.dx(2);
-    xmin(3) = obj.x(vdim(1))                  - domain_thickness*g.dx(3);
-    % xmin(4) = max( max_domain_size*g.min(1), -apdiffy );
-    xmin(4) = max_domain_size*g.min(1);
-    xmin(5) = obj.x(vdim(2))-other.x(vdim(2)) - domain_thickness*g.dx(2);
-    xmin(6) = obj.x(vdim(2))                  - domain_thickness*g.dx(3);
-
-    xmax = zeros(6,1);
-    % xmax(1) = min( max_domain_size*g.max(1), apdiffx );
-    xmax(1) = max_domain_size*g.max(1);
-    xmax(2) = obj.x(vdim(1))-other.x(vdim(1)) + domain_thickness*g.dx(2);
-    xmax(3) = obj.x(vdim(1))                  + domain_thickness*g.dx(3);
-    % xmax(4) = min( max_domain_size*g.max(1), apdiffy );
-    xmax(4) = max_domain_size*g.max(1);
-    xmax(5) = obj.x(vdim(2))-other.x(vdim(2)) + domain_thickness*g.dx(2);
-    xmax(6) = obj.x(vdim(2))                  + domain_thickness*g.dx(3);
-    
-    if nargin<4
-        % If the quadrotor is in a platoon AND the other quadrotor is in a
-        % platoon AND (the platoons are the same OR one of the quadrotors is an
-        % EmergLeader), then use internal separation time. 
-        % Otherwise, use external separation time.
-        if ~isempty(obj.p) && ~isempty(other.p) && ...
-                (obj.p.ID == other.p.ID || ...
-                strcmp(obj.q,'EmergLeader') || strcmp(other.q, 'EmergLeader'))
-            t = obj.tauInt;
-        else                     
-            t = obj.tauExt;
-        end
-    end
-
-    % Compute value for V(t,x) on the relative velocity slice and project down
-    % to 2D
-
-    % Collision reachable set: reconstruct the "max" problem
-    [~, ~, g6D, valueC, ~, ind] = recon2x3D(tau, g, dataC, g, dataC, [xmin xmax], t);
-
-    % Velocity reachable set: take union for the "min" problem
-    valueSx = eval_u(g, dataS(:,:,:,ind), [g6D.xs{1}(:) g6D.xs{2}(:) g6D.xs{3}(:)]);
-    valueSy = eval_u(g, dataS(:,:,:,ind), [g6D.xs{4}(:) g6D.xs{5}(:) g6D.xs{6}(:)]);
-    valueS = min(valueSx, valueSy);
-    valueS = reshape(valueS, g6D.shape);
-
-    % Overall safety set is the union of collision and velocity limit sets
-    value = min(valueC, valueS);
-
-    % Relative velocity slice
-    xs = zeros(4,1);
-    xs([1 3]) = obj.x(vdim)-other.x(vdim);
-    xs([2 4]) = obj.x(vdim);
-
-    % Take above relative velocity slice and shift the grid to be centered
-    % around "other"'s position
-    [g2D, value2D] = proj2D(g6D, [0 1 1 0 1 1], g6D.N([1 4]), value, xs);
-    g2Dt.dim = g2D.dim;
-    g2Dt.min = g2D.min + other.x(pdim);
-    g2Dt.max = g2D.max + other.x(pdim);
-    g2Dt.N = g2D.N;
-    g2Dt.bdry = g2D.bdry;
-    g2Dt = processGrid(g2Dt);
-
-    % Plot result
-    if isempty(obj.hsafeV{other.ID}) || ~isvalid(obj.hsafeV{other.ID})
-        [~, obj.hsafeV{other.ID}] = contour(g2Dt.xs{1}, g2Dt.xs{2}, value2D, [0 0], ...
-            'lineStyle', '--');
-        if isempty(obj.hpxpyhist.Color)
-            obj.hsafeV{other.ID}.Color = [0.5,0.5,0.5];
-        else
-            obj.hsafeV{other.ID}.Color = obj.hpxpyhist.Color;
-        end
-
-    else
-        % If plot already exists, simply update the plot
-        obj.hsafeV{other.ID}.XData = g2Dt.xs{1};
-        obj.hsafeV{other.ID}.YData = g2Dt.xs{2};
-        obj.hsafeV{other.ID}.ZData = value2D;
-    end
-else
-    xmin = zeros(4,1);
-    xmin(1) = max_domain_size*g.min(1);
-    xmin(2) = obj.x(vdim(1))-other.x(vdim(1)) - domain_thickness*g.dx(2);
-    xmin(3) = max_domain_size*g.min(1);
-    xmin(4) = obj.x(vdim(2))-other.x(vdim(2)) - domain_thickness*g.dx(2);
-
-    xmax = zeros(4,1);
-    xmax(1) = max_domain_size*g.max(1);
-    xmax(2) = obj.x(vdim(1))-other.x(vdim(1)) + domain_thickness*g.dx(2);
-    xmax(3) = max_domain_size*g.max(1);
-    xmax(4) = obj.x(vdim(2))-other.x(vdim(2)) + domain_thickness*g.dx(2);
-    
-    if nargin<4
-        % If the quadrotor is in a platoon AND the other quadrotor is in a
-        % platoon AND (the platoons are the same OR one of the quadrotors is an
-        % EmergLeader), then use internal separation time. 
-        % Otherwise, use external separation time.
-        if ~isempty(obj.p) && ~isempty(other.p) && ...
-                (obj.p.ID == other.p.ID || ...
-                strcmp(obj.q,'EmergLeader') || strcmp(other.q, 'EmergLeader'))
-            t = obj.tauInt;
-        else                     
-            t = obj.tauExt;
-        end
-    end
-
-    % Compute value for V(t,x) on the relative velocity slice and project down
-    % to 2D
-
-    % Collision reachable set: reconstruct the "max" problem
-    [~, TD_out] = recon2x2D(tau, {g; g}, {dataC; dataC}, [xmin xmax], t);
-
-    % Overall safety set is the collision safety set 
-    g4D = TD_out.g;
-    value = TD_out.value;
-
-    % Relative velocity slice
-    xs = zeros(2,1);
-    xs([1 2]) = obj.x(vdim)-other.x(vdim);
-
-    % Take above relative velocity slice and shift the grid to be centered
-    % around "other"'s position
-    
-    [g2D, value2D] = proj2D(g4D, [0 1 0 1], g4D.N([1 3]), value, xs);
-    g2Dt.dim = g2D.dim;
-    g2Dt.min = g2D.min + other.x(pdim);
-    g2Dt.max = g2D.max + other.x(pdim);
-    g2Dt.N = g2D.N;
-    g2Dt.bdry = g2D.bdry;
-    g2Dt = processGrid(g2Dt);
-
-    % Plot result
-    if isempty(obj.hsafeV{other.ID}) || ~isvalid(obj.hsafeV{other.ID})
-        [~, obj.hsafeV{other.ID}] = contour(g2Dt.xs{1}, g2Dt.xs{2}, value2D, [0 0], ...
-            'lineStyle', '--');
-        if isempty(obj.hpxpyhist.Color)
-            obj.hsafeV{other.ID}.Color = [0.5,0.5,0.5];
-        else
-            obj.hsafeV{other.ID}.Color = obj.hpxpyhist.Color;
-        end
-
-    else
-        % If plot already exists, simply update the plot
-        obj.hsafeV{other.ID}.XData = g2Dt.xs{1};
-        obj.hsafeV{other.ID}.YData = g2Dt.xs{2};
-        obj.hsafeV{other.ID}.ZData = value2D;
-    end    
-end 
+% Given 2D array for plotting, shift the grid to the other quadrotor's
+% position and plots the result. Also updates the list of handles and
+% corresponding quadrotor pointers
+%
+% Inputs: g2D     - 2D grid structure (unshifted)
+%         value2D - 2D reachable set data
+%         obj     - this quadrotor
+%         other   - other quadrotor
+%
+% Mo Chen, 2015-10-20
 
 
+% Check if the vehicle is already in the list of safe reachable sets being
+% plotted, and if plot already exists, simply update the plot
+newPlot = true;
+for i = 1:length(obj.safeV_vehicles)
+  if isequal(other, obj.safeV_vehicles{i})
+    obj.hsafeV{i}.XData = g2Dt.xs{1};
+    obj.hsafeV{i}.YData = g2Dt.xs{2};
+    obj.hsafeV{i}.ZData = value2D;
+    obj.hsafeV{i}.Visible = 'on';
+    newPlot = false;
+    break;
+  end
+end
+
+% If not, add a figure handle and a quadrotor to the plotted list
+if newPlot
+  % Create figure handle
+  [~, hsafeV] = contour(g2Dt.xs{1}, g2Dt.xs{2}, value2D, ...
+    [0 0], 'lineStyle', '--');
+  
+  if isempty(obj.hpxpyhist.Color)
+    hsafeV.Color = [0.5, 0.5, 0.5];
+  else
+    hsafeV.Color = obj.hpxpyhist.Color;
+  end
+  
+  % Update lists
+  if isempty(obj.hsafeV)
+    obj.hsafeV = {hsafeV};
+    obj.safeV_vehicles = {other};
+  else
+    obj.hsafeV = {obj.hsafeV; hsafeV};
+    obj.safeV_vehicles = {obj.safeV_vehicles; other};
+  end
+end
 end

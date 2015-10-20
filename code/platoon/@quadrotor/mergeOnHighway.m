@@ -8,6 +8,8 @@ function u = mergeOnHighway(obj, hw, target)
 % Output:  u - control signal to merge onto highway
 %
 % 2015-06-17, Mo Chen
+% Modified: Kene Akametalu, summer 2015
+% Modified: Mo Chen, 2015-10-20
 
 % Parse target state
 x = zeros(1,4);
@@ -27,34 +29,16 @@ end
 % Target velocity (should be velocity along the highway)
 x(obj.vdim) = hw.speed * hw.ds;
 
-
 % Time horizon for MPC
 tsteps = 5;
 
 switch obj.q
   case 'Free'
-    % Reachable set from target state; compute it if it hasn't been
-    % computed yet; otherwise simply access it
-    %         if isempty(obj.mergeHighwayV)
-    %             [ datax, datay, g, tau ] = quad2D_joinHighway(x, 0);
-    %             obj.mergeHighwayV.datax = datax;
-    %             obj.mergeHighwayV.datay = datay;
-    %             obj.mergeHighwayV.g = g;
-    %             obj.mergeHighwayV.tau = tau;
-    %             obj.mergePlatoonV = [];
-    %         else
-    %             datax = obj.mergeHighwayV.datax;
-    %             datay = obj.mergeHighwayV.datay;
-    %             g = obj.mergeHighwayV.g;
-    %             tau = obj.mergeHighwayV.tau;
-    %         end
-    %
-    
     % state on liveness reachable set grid
     liveV = hw.liveV;
     
-    x_liveV(obj.pdim)=obj.x(obj.pdim)-x(obj.pdim)';
-    x_liveV(obj.vdim)=obj.x(obj.vdim);
+    x_liveV(obj.pdim) = obj.x(obj.pdim) - x(obj.pdim)';
+    x_liveV(obj.vdim) = obj.x(obj.vdim);
     
     if iscell(liveV.g)
       tol = 1.1 * [liveV.g{1}.dx; liveV.g{2}.dx];
@@ -64,9 +48,9 @@ switch obj.q
       error('liveV.g must be a cell structure or a struct!')
     end
     
-    err=obj.x-x';
+    err = obj.x-x';
     
-    if abs(err)<=tol
+    if abs(err) <= tol
       % Perform merging maneuver until obj becomes leader
       % If we're close to the target set, form a platoon and become a leader
       obj.p = platoon(obj, hw);  % Create platoon
@@ -101,7 +85,7 @@ switch obj.q
         gradx = calculateCostate(g, grad, x_liveV);
         
         % Check to see if we're within 5 seconds to getting to the target
-        inside_RS = valuex<=5;
+        inside_RS = valuex <= 5;
       end
       
       %         % Perform merging maneuver until obj becomes leader

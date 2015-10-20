@@ -76,8 +76,8 @@ else
   z1 = [-30 -15];
   z2 = [160 80];
   
-  hw = highway(z1, z2, 1, v, 1);
-  
+  hw = highway(z1, z2, v, true);
+    
   % ===== Create platoon here =====
   % Put first vehicle in platoon
   p = platoon(qr1, hw);

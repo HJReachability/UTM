@@ -180,16 +180,12 @@ for i = iStart:length(t)
   end
   
   if ~isempty(hw.ps) % If there's a platoon
-%     delete(qrs{1}.hsafeV{2});
-%     delete(ht);
-%     delete(qrs{1}.hmergeHighwayV);
+    qrs{1}.unplotSafeV(qrs{2});
+    qrs{1}.hmergeHighwayV.Visible = 'off';
     
-%     qrs{2}.plotSafeV(qrs{1}, safeV);
+    qrs{2}.plotSafeV(qrs{1}, safeV);
     
-    % qr(2).p already assigned inside qr(2).mergeWithPlatoon(hw.ps) on
-    % line 92. This issue is that qr(2) is now a follower so there's
-    % nothing to plot, and qr(2).pJoin is now empty
-%     qrs{2}.plotMergePlatoonV;
+    qrs{2}.plotMergePlatoonV;
     
     
     xPh = qrs{1}.p.phantomPosition(qrs{1}.p.n + 1);
@@ -253,5 +249,5 @@ for i = iStart:length(t)
   disp('Saving checkpoint...')
 %   save(check_point)
 end % for i = 2:length(t)
-keyboard
+
 end % end of function

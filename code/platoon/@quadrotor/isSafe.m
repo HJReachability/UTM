@@ -7,6 +7,8 @@ function [safe, uSafe, valuex] = isSafe(obj, others, safeV)
 % Inputs:  obj    - this vehicle
 %          others - other vehicles with whom safety should be checked; this
 %                   should be a n x 1 or 1 x n cell
+%                   all vehicles need to be of the same type so that a
+%                   single safeV can be used
 %          safeV  - safety reachable set value function
 %
 % Outputs: safe   - boolean array indicating whether this vehicle is safe
@@ -29,13 +31,7 @@ function [safe, uSafe, valuex] = isSafe(obj, others, safeV)
 % Modified: Mo Chen, 2015-10-19
 
 % Check input
-if ~iscell(others)
-  if length(others) == 1
-    others = {others};
-  else
-    error('others must be a vehicle object or a cell of vehicle objects!')
-  end
-end
+others = checkVehiclesList(others, 'quadrotor');
 
 % Initialize outputs
 safe = false(1, length(others));

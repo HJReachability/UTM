@@ -2,7 +2,7 @@ function x1 = computeState(obj, u, x0)
 % function x1 = computeState(obj, u, x0)
 % Computes (DOES NOT update!) state based on control; use updateState to
 % update the state
-% 
+%
 % Inputs:   obj - current quardotor object
 %           u   - control (defaults to previous control)
 %           x0  - initial state (defaults to current state)
@@ -13,12 +13,12 @@ function x1 = computeState(obj, u, x0)
 
 % If no control is specified, use previous control
 if nargin < 2
-    u = obj.u; 
+  u = obj.u;
 end
 
 % If no state is specified, use current state
 if nargin < 3
-    x0 = obj.x; 
+  x0 = obj.x;
 end
 
 % Forward Euler (unstable for large dt)

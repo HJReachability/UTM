@@ -5,8 +5,9 @@ classdef highway < linpath
     % width of highway
     width
     
-    liveV % liveness value function for steering UAVs to points on highway
-    
+    % liveness value function for steering quadrotors to points on highway
+    liveV 
+          
     % highway connections/segways
     connections
     % CURRENTLY:
@@ -36,19 +37,26 @@ classdef highway < linpath
       %
       % Mo Chen, 2015-05-25
       % Modified: 2015-07-21
-      
-      % Default speed and width
+
+      %% Default speed and width
       if nargin<3
         speed = 3;
       end
       
+      % Call constructor of the superclass linpath
+      obj@linpath(z0, z1, speed);
+      
+      if nargin<5
+        obj.width = 6;
+      else
+        obj.width = width;
+      end      
+      
+      %% Whether to use 4D reachable set
       if nargin<4
         fourD=1;
       end
-      
-      % call constructor of the superclass linpath
-      obj@linpath(z0, z1, speed);
-      
+     
       %% Compute liveness reachable set for joining the highway
       % highway direction and speed
       velocity = obj.ds * obj.speed;
@@ -75,12 +83,6 @@ classdef highway < linpath
         obj.liveV.data = datas;
         obj.liveV.tau = tau;
         obj.liveV.grad = [];
-      end
-      
-      if nargin<5
-        obj.width = 6;
-      else
-        obj.width = width;
       end
       
       warning('Need to specify connections property')
