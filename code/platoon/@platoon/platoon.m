@@ -6,16 +6,19 @@ classdef platoon < handle
     
     % Cell array of handles to vehicles currently in the platoon
     vehicles
-
+    
+    % Maximum allowable number of vehicles in platoon
+    nmax
+    
     % Cell array of handles to vehicles attempting to join the platoon
-    vJoin = cell(5,1);
+    vJoin
     
     % List of slots in platoon (vector of length nmax)
     %   1:  Slot is occupied
     %   0:  Slot is empty
     %   -1: Slot is pending (a vehicle is
     %       attempting to occupy the slot by joining platoon
-    slotStatus    
+    slotStatus
     
     % handle to the highway the platoon is on
     hw
@@ -26,11 +29,10 @@ classdef platoon < handle
     % Last occupied slot index
     loIdx
     
-    % Maximum allowable number of vehicles in platoon
-    nmax
+    
     
     % Separation time for followers
-    followTime 
+    followTime
     
     % Front and back platoons (points to self if there are no from and back
     % platoons)
@@ -50,8 +52,8 @@ classdef platoon < handle
       % Constructor for platoon object
       %
       % Must specify a leader and a highway!
-      % 
-      % Inputs:  leader     - leader vehicle (the first vehicle in the 
+      %
+      % Inputs:  leader     - leader vehicle (the first vehicle in the
       %                       platoon)
       %          hw         - highway of platoon
       %          nmax       - maximum number of vehicles
@@ -63,14 +65,14 @@ classdef platoon < handle
       % Mo Chen, 2015-07-06
       % Modified: Qie Hu, 2015-07-17
       
-      % Maximum number of vehicels
+      % Maximum number of vehicles
       if nargin<3
-        nmax = 5; 
+        nmax = 5;
       end
       obj.nmax = nmax;
       
       if nargin<4
-        followTime = 2; 
+        followTime = 2;
       end
       obj.followTime = followTime;
       
@@ -86,10 +88,10 @@ classdef platoon < handle
       obj.loIdx = 1;
       
       % Point to highway
-      obj.hw = hw; 
+      obj.hw = hw;
       
       % make highway object point to this platoon
-      obj.hw.ps = [obj.hw.ps obj]; 
+      obj.hw.ps = [obj.hw.ps obj];
       
       % Make sure leader is within the width of the highway
       [~, dist] = obj.hw.highwayPos( ...
@@ -116,21 +118,20 @@ classdef platoon < handle
       obj.vehicles{1}.mergeHighwayV = [];
       
       if nargin < 5
-         FourD=1;
+        FourD=1;
       end
       
       if FourD
-         filename = '../../data/quad_liveness_4D.mat';
-      else 
-         filename = '../../data/quad_liveness_2x2D.mat';
+        filename = '../../data/quad_liveness_4D.mat';
+      else
+        filename = '../../data/quad_liveness_2x2D.mat';
       end
       
       load(filename)
       
       obj.liveV=liveV;
       
-      
-      
+      obj.vJoin = cell(nmax, 1);
       
     end
   end
@@ -138,7 +139,7 @@ end
 
 % function annex(obj,platoon) % Append trailing platoon at the back of obj
 % % UNUSED?? Should put this in a separate file
-% 
+%
 % if platoon.FP ~= obj
 %   warning([
 %     sprintf('Cannot append platoon.\n'),...
@@ -146,7 +147,7 @@ end
 %     sprintf('\tCan only append platoons directly behind current platoon.\n')
 %     ]);
 % end
-% 
+%
 % % Update platoon pointers
 % if platoon.BP == platoon
 %   obj.BP          = obj;
@@ -154,11 +155,11 @@ end
 %   obj.BP          = platoon.BP;
 %   platoon.BP.FP   = obj;
 % end
-% 
+%
 % % Update vehicle pointers
 % obj.vehicle{obj.n}.BQ   = platoon.vehicle{1};
 % platoon.vehicle{1}.FQ   = obj.vehicle{obj.n};
-% 
+%
 % % Update follower vehicles in old trailing platoon
 % for i=1:platoon.n
 %   platoon.vehicle{i}.platoon = obj;

@@ -1,9 +1,15 @@
 classdef vehicle < handle
   % Vehicle class
-  %
+  %   Subclasses: quadrotor, Dubins vehicle (under construction)
   
   properties
     ID          % ID number (global, unique)
+    
+    x           % State (4D)
+    u           % Recent control signal
+    
+    xhist       % History of state
+    uhist       % History of control
     
     % Mode
     %   'Free'
@@ -31,7 +37,8 @@ classdef vehicle < handle
     hvxvy           % Velocity
     hvxvyhist       % Velocity history
     
-    % Safety sets (with respect to 5 nearest vehicles, or vehicles in the same platoon; + intruder/faulty)
+    % Safety sets (with respect to 5 nearest vehicles, or vehicles in the 
+    % same platoon; + intruder/faulty)
     hsafeV = cell(6,1);
         
     hmergeHighwayV  % Merging reachable set
@@ -51,4 +58,6 @@ classdef vehicle < handle
     safeBQhist = true % w.r.t. BQ history
   end % end properties
 
+  % No constructor in vehicle class. Use constructors in the subclasses
+  
 end % end class
