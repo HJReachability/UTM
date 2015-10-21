@@ -30,6 +30,7 @@ if hw.liveV.g.dim == 2
   
   % Visualization level
   level = 0;
+  
 elseif hw.liveV.g.dim == 4
   [g2D, value2D] = proj2D(hw.liveV.g, [0 1 0 1], hw.liveV.g.N([1 3]), ...
     hw.liveV.data, obj.getVelocity);

@@ -37,20 +37,15 @@ switch obj.q
     % state on liveness reachable set grid
     liveV = hw.liveV;
     
-    x_liveV(obj.pdim) = obj.x(obj.pdim) - x(obj.pdim)';
-    x_liveV(obj.vdim) = obj.x(obj.vdim);
+    x_liveV(obj.pdim) = obj.getPosition - x(obj.pdim)';
+    x_liveV(obj.vdim) = obj.getVelocity;
     
-    if iscell(liveV.g)
-      tol = 1.1 * [liveV.g{1}.dx; liveV.g{2}.dx];
-    elseif isstruct(liveV.g)
-      tol = 1.1 * liveV.g.dx;
-    else
-      error('liveV.g must be a cell structure or a struct!')
-    end
+    % Check to see if the quadrotor is within 0.5 seconds to the target
+    tol = 5;
     
     err = obj.x-x';
     
-    if abs(err) <= tol
+    if arrived
       % Perform merging maneuver until obj becomes leader
       % If we're close to the target set, form a platoon and become a leader
       obj.p = platoon(obj, hw);  % Create platoon

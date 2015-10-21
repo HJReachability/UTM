@@ -55,20 +55,20 @@ v1Min = -5;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 41;  %changed by AKA from 81 to 41
+Nx = 57;  %changed by AKA from 81 to 41
 
 % Create the grid.
 g1.dim = 2;                              % Number of dimensions
-g1.min = [ x(1)-15 ; 1.1*v1Min ];     % Bounds on computational domain
-g1.max = [ x(1)+15 ; 1.1*v1Max ];
+g1.min = [ x(1)-25 ; 1.1*v1Min ];     % Bounds on computational domain
+g1.max = [ x(1)+25 ; 1.1*v1Max ];
 g1.bdry = @addGhostExtrapolate;
 g1.N = [ Nx; ceil(Nx/(g1.max(1)-g1.min(1))*(g1.max(2)-g1.min(2)))];
 g1 = processGrid(g1);
 
 % Create the grid.
 g2.dim = 2;                             % Number of dimensions
-g2.min = [ x(3)-15 ; 2.1*v1Min ];     % Bounds on computational domain
-g2.max = [ x(3)+15 ; 2.1*v1Max ];
+g2.min = [ x(3)-25 ; 1.1*v1Min ];     % Bounds on computational domain
+g2.max = [ x(3)+25 ; 1.1*v1Max ];
 g2.bdry = @addGhostExtrapolate;
 g2.N = [ Nx; ceil(Nx/(g2.max(1)-g2.min(1))*(g2.max(2)-g2.min(2)))];
 g2 = processGrid(g2);
