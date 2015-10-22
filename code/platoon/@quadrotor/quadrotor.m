@@ -16,7 +16,6 @@ classdef quadrotor < vehicle
     % Dimensions of state and control
     nx = 4;
     nu = 2;
-    dt = 0.1;
     
     % A and B matrices (consider putting these as constant properties)
     A = [0 1 0 0; 0 0 0 0; 0 0 0 1; 0 0 0 0];

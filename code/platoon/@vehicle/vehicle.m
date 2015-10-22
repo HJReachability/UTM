@@ -5,11 +5,14 @@ classdef vehicle < handle
   properties
     ID          % ID number (global, unique)
     
-    x           % State (4D)
+    x           % State
     u           % Recent control signal
+    
     
     xhist       % History of state
     uhist       % History of control
+    
+    dt = 0.1
     
     % Mode
     %   'Free'
