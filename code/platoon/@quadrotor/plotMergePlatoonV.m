@@ -28,10 +28,8 @@ end
 % Leader
 if isempty(obj.Leader)
   Leader = obj.pJoin.vehicles{1}; 
-  
 else
   Leader = obj.Leader;
-  
 end
 
 tau = mergeV.tau;

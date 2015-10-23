@@ -29,8 +29,6 @@ classdef platoon < handle
     % Last occupied slot index
     loIdx
     
-    
-    
     % Separation time for followers
     followTime
     

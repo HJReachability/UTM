@@ -35,78 +35,33 @@ tsteps = 5;
 switch obj.q
   case 'Free'
     % state on liveness reachable set grid
-    liveV = hw.liveV;
-    
     x_liveV(obj.pdim) = obj.getPosition - x(obj.pdim)';
     x_liveV(obj.vdim) = obj.getVelocity;
     
-    % Check to see if the quadrotor is within 0.5 seconds to the target
-    tol = 5;
+    [arrived, inRS, uRS] = mergeStatus(x_liveV, hw.liveV, obj.uMin, ...
+                                                                 obj.uMax);
     
-    err = obj.x-x';
-    
+    % Perform merging maneuver until obj becomes leader
     if arrived
-      % Perform merging maneuver until obj becomes leader
-      % If we're close to the target set, form a platoon and become a leader
+      % If we're close to the target set, form a platoon and become a 
+      % leader
       obj.p = platoon(obj, hw);  % Create platoon
       u = obj.followPath(tsteps, hw);
-      
-    else % otherwise head towards target state
-      % the liveness reachable set will either be expressed by 2x2D value 
-      % functions or a 4D value function
-      if iscell(liveV.g)
-        % If liveV.g is a cell structure, then it must be a cell structure
-        % of two elements, each containing the grid corresponding to a 2D
-        % reachable set
-        grids = liveV.g;
-        datas = liveV.data;
-        tau = liveV.tau;
-        
-        TD_out_x = recon2x2D(tau, grids, datas, x_liveV);
-        valuex = TD_out_x.value;
-        gradx = TD_out_x.grad;
-        
-        % Check to see if we're inside reachable set; a value of <= 0
-        % incidcates that we're within 5 seconds to getting to the target
-        inside_RS = valuex<=0; 
-      else
-        % if liveV.g is not a cell structure, then it must be a struct
-        % representing the grid structure for a 4D reachable set
-        g = liveV.g;
-        data = liveV.data;
-        grad = liveV.grad;
-        
-        valuex = eval_u(g, data, x_liveV);
-        gradx = calculateCostate(g, grad, x_liveV);
-        
-        % Check to see if we're within 5 seconds to getting to the target
-        inside_RS = valuex <= abs(max(liveV.tau) - min(liveV.tau));
-      end
-      
-      %         % Perform merging maneuver until obj becomes leader
-      %         % If we're close to the target set, form a platoon and become a leader
-      %         if abs(x'-obj.x)<=1.1*[g.dx;g.dx]
-      %             obj.p = platoon(obj, hw);  % Create platoon
-      %             u = obj.followPath(tsteps, hw);
-      %
-      %         else
-      %             % Otherwise, compute V(t,obj.x) at the first t such at V(t,obj.x)<=0
-      %            [valuex, gradx] = recon2x2D(tau, g, datax, g, datay, obj.x);
-      
-      if inside_RS % If we're inside reachable set, start merging
-        disp('Locked-in')
-        ux = (gradx(2)>=0)*obj.uMin + (gradx(2)<0)*obj.uMax;
-        uy = (gradx(4)>=0)*obj.uMin + (gradx(4)<0)*obj.uMax;
-        u = [ux; uy];
-      else % Otherwise, simply take a straight line to the target
-        
-        disp('Open-loop')
-        % Path to target         
-        pathToTarget = linpath(obj.x(obj.pdim), target);
-        
-        u = obj.followPath(tsteps, pathToTarget);
-      end
+      return
     end
+    
+    if inRS
+      % If inside reachable set, use control obtained from reachable set
+      u = uRS;
+      return
+    end
+    
+    % Otherwise, simply take a straight line to the target
+    disp('Open-loop')
+
+    % Path to target
+    pathToTarget = linpath(obj.x(obj.pdim), target);
+    u = obj.followPath(tsteps, pathToTarget);
     
   case 'Leader'
     error('Vehicle cannot be a leader!')
@@ -117,6 +72,70 @@ switch obj.q
     
   otherwise
     error('Unknown mode!')
+end
+end
+
+function [arrived, inRS, uRS] = mergeStatus(x_liveV, liveV, uMin, uMax)
+% function arrived = hasArrived(x_liveV liveV)
+%
+% Checks whether the quadrotor has arrived at the target set or inside
+% livesness reachable set
+
+% Initialize outputs
+arrived = false;
+inRS = false;
+uRS = [];
+
+% Number of seconds until target set is reached
+arrivedThreshold = 1;
+
+% Evaluate value function
+if iscell(liveV.g)
+  % If liveV.g is a cell structure, then it must be a cell structure
+  % of two elements, each containing the grid corresponding to a 2D
+  % reachable set
+
+  [TD_out_x, ~, TTR_out_x] = recon2x2D(liveV.tau, liveV.g, liveV.data, ...
+                                                                  x_liveV);
+  
+  % If arriving at target set, skip the rest
+  if TTR_out_x.value <= arrivedThreshold
+    arrived = true;
+    inRS = true;
+    return;
+  end
+  
+  if TD_out_x.value <= 0
+    inRS = true;
+    gradx = TD_out_x.grad;
+  end
+  
+else
+  % if liveV.g is not a cell structure, then it must be a struct
+  % representing the grid structure for a 4D reachable set
+  valuex = eval_u(liveV.g, liveV.data, x_liveV);
+  
+  % If arriving at target set, skip the rest
+  if valuex <= arrivedThreshold
+    arrived = true;
+    inRS = true;
+    uRS = [];
+    return;
+  end
+  
+  % If inside reachable set, save gradient
+  if valuex <= abs(max(liveV.tau) - min(liveV.tau));
+    inRS = true;
+    gradx = calculateCostate(liveV.g, liveV.grad, x_liveV);
+  end
+end
+
+% Compute control if inside reachable set
+if inRS
+  disp('Locked-in')
+  ux = (gradx(2)>=0)*uMin + (gradx(2)<0)*uMax;
+  uy = (gradx(4)>=0)*uMin + (gradx(4)<0)*uMax;
+  uRS = [ux; uy];
 end
 
 end

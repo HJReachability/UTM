@@ -90,7 +90,7 @@ x(vdim) = [0 0];
 % Determine phantom position (First free position)
 idx = obj.idxJoin;
 xPh = p.phantomPosition(idx);
-x(pdim) = xPh - p.vehicles{1}.x(p.vehicles{1}.pdim);
+x(pdim) = xPh - p.vehicles{1}.getPosition;
 
 if strcmp(obj.q, 'Free') || strcmp(obj.q, 'Leader')
   % If vehicle is free or a leader, then try to join the
@@ -108,10 +108,8 @@ if strcmp(obj.q, 'Free') || strcmp(obj.q, 'Leader')
   else
     % if relative state is not close enough, then try to head towards
     % the relative target state
-%     speed = p.hw.speed;
-    speed = obj.vMax;
     u = obj.computeCtrl_relDyn(p.vehicles{1}.x, xPh, ...
-      grids, datas, tau, speed);
+      grids, datas, tau, obj.vMax);
   end
   
 else

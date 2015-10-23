@@ -47,15 +47,25 @@ for i = 1:length(others)
     return
   end
 
-  % Check safety using 2D or 3D value function to reconstruct the 4D or 6D
-  % value depending on input grid
-  if safeV.g.dim == 3
-    [safe(i), uSafe(:,i), valuex(i)] = isSafe3D(obj, others{i}, safeV);
-  elseif safeV.g.dim == 2
-    [safe(i), uSafe(:,i), valuex(i)] = isSafe2D(obj, others{i}, safeV);
-  else
-    error('Safety value function must be 2 or 3D!')
-  end
+  % Check safety for a single vehicle
+  [safe(i), uSafe(:,i), valuex(i)] = isSafeSingle(obj, others{i}, safeV);
+end
+end
+
+function [safe, uSafe, valuex] = isSafeSingle(obj, other, safeV)
+% function [safe, uSafe, valuex] = isSafeSingle(obj, other, safeV)
+%
+% Thin wrapper function for calling the appropriate safety check functions
+% depending on the dimension of the input grid.
+%
+% Mo Chen, 2015-10-22
+
+if safeV.g.dim == 3
+  [safe, uSafe, valuex] = isSafe3D(obj, other, safeV);
+elseif safeV.g.dim == 2
+  [safe, uSafe, valuex] = isSafe2D(obj, other, safeV);
+else
+  error('Safety value function must be 2 or 3D!')
 end
 end
 
