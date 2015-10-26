@@ -61,7 +61,17 @@ classdef quadrotor < vehicle
       if nargin < 2
         obj.x = zeros(obj.nx, 1);
       else
-        obj.x = x;
+        % Make sure initial state is 4D
+        if numel(x) == 4
+          % Make sure initial state is a column vector
+          if iscolumn(x)
+            obj.x = x;
+          else
+            obj.x = x';
+          end
+        else
+          error('Quadrotor state must be 4D.')
+        end
       end
       obj.xhist = obj.x;
       

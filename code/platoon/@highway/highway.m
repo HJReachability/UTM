@@ -6,7 +6,7 @@ classdef highway < linpath
     width
     
     % liveness value function for steering quadrotors to points on highway
-    liveV 
+    liveV
 
     % highway connections/segways
     connections

@@ -6,5 +6,5 @@ function [p, phist] = getPosition(obj)
 % Mo Chen, 2015-10-20
 
 p = obj.x(obj.pdim);
-phist = obj.xhist(obj.pdim,:);
+phist = obj.xhist(obj.pdim, :);
 end
