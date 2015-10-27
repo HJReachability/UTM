@@ -21,6 +21,8 @@ function simulateNormal(from_checkpoint, save_graphics, output_directory,visuali
 %
 % Mo Chen, 2015-10-02
 
+addpath('RS_core')
+
 % Default input parameters
 if nargin<1
   from_checkpoint = false;
