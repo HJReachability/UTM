@@ -1,26 +1,16 @@
-function [grids, datas, tau] = quad2D_joinHighwayPlatoon(x, visualize)
-% quad3D: demonstrate the 3D quadrotor collision avoidance example
-%
-%  [ data, g, data0 ] = quad3D(accuracy)
+function [grids, datas, tau] = quad_rel_target_2D(x, visualize)
+% function [grids, datas, tau] = quad_rel_target_2D(x, visualize)
 %
 % The relative coordinate dynamics are
 %
-%   \dot x      = v_r = v1 - v2
-%   \dot v_r    = u1 - u2
-%	\dot v2     = u2
+% \dot x      = v_r = v1 - v2
+% \dot v_r    = u1 - u2
 %
-%   where,qr_create_platoon_V
-%     input u2 trying to avoid the target
-%	  input u1 trying to hit the target.
+% where input u2 is approximately 0 (staying on the highway)
+%	      input u1 is trying to hit the target.
 %
-% Parameters:
-%
-%   accuracy     Controls the order of approximations.
-%                  'low'         Use odeCFL1 and upwindFirstFirst.
-%                  'medium'      Use odeCFL2 and upwindFirstENO2 (default).
-%                  'high'        Use odeCFL3 and upwindFirstENO3.
-%                  'veryHigh'    Use odeCFL3 and upwindFirstWENO5.
-%
+% Inputs: x         - target relative state
+%         visualize - whether to plot the computation
 %   data         Implicit surface function at t_max.
 %   g            Grid structure on which data was computed.
 %   data0        Implicit surface function at t_0.
@@ -40,7 +30,7 @@ end
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 5;                    % End time.
+tMax = 10;                    % End time.
 plotSteps = 1;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).

@@ -3,7 +3,7 @@ classdef tfm < handle
     % Highways
     hws = {};
     
-    % Frequency of state updates
+    % Frequency of state updates to the system
     dt = 1;
     
     %% Quadrotor reachable sets

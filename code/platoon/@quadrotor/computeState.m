@@ -21,6 +21,15 @@ if nargin < 3
   x0 = obj.x;
 end
 
+% Make sure control is a 2D column vector
+if numel(u) ~= 2
+  error('Control input must be a 2D column vector!')
+end
+
+if ~iscolumn(u)
+  u = u';
+end
+
 % Forward Euler (unstable for large dt)
 % x1  = x0 + (obj.A*x0 + obj.B*u)*obj.dt;
 

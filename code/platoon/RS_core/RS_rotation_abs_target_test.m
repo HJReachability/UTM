@@ -1,5 +1,5 @@
-function RS_rotation_test()
-% function RS_rotation_test()
+function RS_rotation_abs_target_test()
+% function RS_rotation_abs_target_test()
 %
 % Tests for using a base create platoon reachable set to synthesize a
 % controller to move to the origin. 
@@ -13,6 +13,8 @@ function RS_rotation_test()
 % random angle
 %
 % Mo Chen, 2015-10-26
+
+addpath('..')
 
 % Compute and visualize reachable sets
 orig_v = [3 0];
@@ -145,7 +147,7 @@ function [base_TTR_out, rot_TTR_out, theta] = RS_rotate_visualize(v)
 %% Create the base reachable set and reconstruct
 disp(['Original velocity = ' num2str(v)])
 x = [0 v(1) 0 v(2)];
-[grids, datas, tau] = quad2D_liveness(x, 0);
+[grids, datas, tau] = quad_abs_target_2D(x, 0);
 
 % Reconstruct the base reachable set
 gridLim = ...
@@ -166,7 +168,7 @@ v = rotate2D(v, theta);
 disp(['New velocity = ' num2str(v)])
 
 x([2 4]) = v;
-[grids, datas, tau] = quad2D_liveness(x, 0);
+[grids, datas, tau] = quad_abs_target_2D(x, 0);
 
 % Reconstruct the rotated reachable set
 gridLim = ...
