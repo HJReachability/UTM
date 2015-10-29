@@ -20,7 +20,7 @@ if ~iscell(vehicles)
   end
 end
 
-% Make sure all other vehicles are quadrotors
+% Make sure all other vehicles are of correct type
 for i = 1:length(vehicles)
   if ~isa(vehicles{i}, veh_type)
     error(['All vehicles must be of type ' veh_type '!'])
