@@ -1,4 +1,4 @@
-function x1 = computeState(obj, u, x0)
+function x1 = computeState(obj, u, T, x0)
 % function x1 = computeState(obj, u, x0)
 % Computes (DOES NOT update!) state based on control; use updateState to
 % update the state
@@ -17,7 +17,7 @@ if nargin < 2
 end
 
 % If no state is specified, use current state
-if nargin < 3
+if nargin < 4
   x0 = obj.x;
 end
 
@@ -34,6 +34,6 @@ end
 % x1  = x0 + (obj.A*x0 + obj.B*u)*obj.dt;
 
 % Backwards Euler (unconditionally stable)
-x1  = (eye(obj.nx) - obj.dt*obj.A)\(x0 + obj.B*u *obj.dt);
+x1  = (eye(obj.nx) - T*obj.A)\(x0 + obj.B*u * T);
 
 end

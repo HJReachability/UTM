@@ -1,4 +1,4 @@
-function [grids, datas, tau] = quad2D_liveness(x, visualize)
+function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 % [grids, datas, tau] = quad2D_liveness(x, visualize)
 %
 % Computes 2D liveness reachable set for merging onto the highway. These
@@ -30,7 +30,7 @@ end
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 5;                    % End time.
+tMax = 8;                    % End time.
 plotSteps = 1;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).

@@ -31,8 +31,8 @@ orig_p = [-15 5];
 rot_p = rotate2D(orig_p, theta);
 v = rotate2D(orig_v, theta);
 x = [rot_p(1) v(1) rot_p(2) v(2)];
-q1 = quadrotor(1, x);
-q2 = quadrotor(1, x);
+q1 = Quadrotor(x);
+q2 = Quadrotor(x);
 
 % Initialize plot
 figure;
@@ -79,7 +79,7 @@ for i = 1:length(t)
   u = [ux; uy];
   
   % Apply control in the global frame
-  q.updateState(rotate2D(u, theta));
+  q.updateState(rotate2D(u, theta), dt);
   
   % Update and plot position
   q.plotPosition;
@@ -122,7 +122,7 @@ for i = 1:length(t)
   u = [ux; uy];
   
   % Update and plot state
-  q.updateState(u);
+  q.updateState(u, dt);
   
   q.plotPosition;
   title(['t = ' num2str(t(i))])

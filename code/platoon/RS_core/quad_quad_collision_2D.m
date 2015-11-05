@@ -1,4 +1,4 @@
-function [dataC, g2D, tau] = quad2Dcollision(d, visualize)
+function [data, g, tau] = quad_quad_collision_2D(d, visualize)
 % function [dataC, g2D, tau] = quad2Dcollision(d, visualize)
 %
 % Computes collision reachable set for 4D relative quadrotor dynamics by
@@ -37,13 +37,10 @@ if nargin<2
   visualize = 1;
 end
 
-if nargin<3
-  recon = 0;
-end
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 4;                    % End time.
+tMax = 3;                    % End time.
 plotSteps = 1;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
@@ -68,30 +65,19 @@ v1Max = 5;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 41;
+Nx = 51;
 
 % Create the grid.
-g2D.dim = 2;                           % Number of dimensions
-g2D.min = [-15; -2.1*v1Min ];     % Bounds on computational domain
-g2D.max = [ 15;  2.1*v1Max ];
-g2D.bdry = @addGhostExtrapolate;
-g2D.N = [ Nx; ceil(1.5*Nx/(g2D.max(1)-g2D.min(1))*(g2D.max(2)-g2D.min(2)))];
-g2D = processGrid(g2D);
-
-% Create the grid.
-gy.dim = 2;                              % Number of dimensions
-gy.min = [-15; -2.1*v1Min ];     % Bounds on computational domain
-gy.max = [ 15;  2.1*v1Max ];
-gy.bdry = @addGhostExtrapolate;
-gy.N = [ Nx; ceil(1.5*Nx/(gy.max(1)-gy.min(1))*(gy.max(2)-gy.min(2)))];
-gy = processGrid(gy);
-
+g.dim = 2;                           % Number of dimensions
+g.min = [-25; -2.1*v1Min ];     % Bounds on computational domain
+g.max = [ 25;  2.1*v1Max ];
+g.bdry = @addGhostExtrapolate;
+g.N = [ Nx; ceil(1.5*Nx/(g.max(1)-g.min(1))*(g.max(2)-g.min(2)))];
+g = processGrid(g);
 
 % ----------------- Target -----------------
 % Below separation distance for any relative velocity
-dataC = shapeRectangleByCorners(g2D, [-d; -inf], [d; inf]);
-datay = shapeRectangleByCorners(gy, [-d; -inf], [d; inf]);
-
+data = shapeRectangleByCorners(g, [-d; -inf], [d; inf]);
 %---------------------------------------------------------------------------
 % Set up spatial approximation scheme.
 schemeFunc = @termLaxFriedrichs;
@@ -149,12 +135,9 @@ end
 % Initialize Display
 if visualize
   f = figure;
-  
-  [~, h1] = contour(g2D.xs{1}, g2D.xs{2}, dataC, [0 0],'r'); hold on
-  contour(g2D.xs{1}, g2D.xs{2}, dataC, [0 0],'r--');
-  
-  [~, h2] = contour(gy.xs{1}, gy.xs{2}, datay, [0 0],'b');
-  contour(gy.xs{1}, gy.xs{2}, datay, [0 0],'b--');
+
+  [~, h1] = contour(g.xs{1}, g.xs{2}, data, [0 0],'r'); hold on
+  contour(g.xs{1}, g.xs{2}, data, [0 0],'r--');
   
   xlabel('x')
   ylabel('v')
@@ -171,35 +154,24 @@ while(tMax - tNow > small * tMax)
   tSpan = [ tNow, min(tMax, tNow + tPlot) ];
   
   % Reshape data array into column vector for ode solver call.
-  y0 = dataC(:,:,end);
+  y0 = data(:,:,end);
   y0 = y0(:);
-  schemeData.grid = g2D;
+  schemeData.grid = g;
   [t, y] = feval(integratorFunc, schemeFunc, tSpan, y0,...
     integratorOptions, schemeData);
-  dataC = cat(3, dataC, reshape(y, g2D.shape));
-  
-  % Reshape data array into column vector for ode solver call.
-  y0 = datay(:,:,end);
-  y0 = y0(:);
-  schemeData.grid = gy;
-  [t, y] = feval(integratorFunc, schemeFunc, tSpan, y0,...
-    integratorOptions, schemeData);
-  datay = cat(3, datay, reshape(y, gy.shape));
+  data = cat(3, data, reshape(y, g.shape));
   
   tNow = t(end);
   tau = cat(1, tau, tNow);
   
   % Create new visualization.
   if visualize
-    h1.ZData = dataC(:,:,end);
-    h2.ZData = datay(:,:,end);
+    h1.ZData = data(:,:,end);
   end
   
   drawnow;
 end
 
-g = [];
-data = [];
 end
 
 %---------------------------------------------------------------------------

@@ -1,10 +1,22 @@
-classdef tfm < handle
+classdef TFM < handle
+  % Traffic flow manager
   properties
     % Highways
     hws = {};
+    hw_speed = 3;
+    
+    % active agents
+    aas = {};
+    
+    % safety time
+    safetyTime = 2;
+    
+    % Thresholds for being considered in target set or in reachable set
+    ttt = 0.25; % target threshold time
+    rtt = 5;    % reachable set threshold time
     
     % Frequency of state updates to the system
-    dt = 1;
+    dt = 0.2;
     
     %% Quadrotor reachable sets
     % Quadrotor create platoon reachable set
@@ -14,7 +26,7 @@ classdef tfm < handle
     qr_join_platoon_V
     
     % Quadrotor-quadrotor safety reachable set
-    qr_qr_SafeV
+    qr_qr_safeV
     
     %% Plane reachable sets
     % Plane create platoon reachable set
@@ -28,12 +40,5 @@ classdef tfm < handle
     
   end
   
-  methods
-    function obj = tfm
-    end
-    
-    function addHighway(obj, hw)
-    end
-
-  end % end methods
+  % No explicit constructor
 end % end classdef

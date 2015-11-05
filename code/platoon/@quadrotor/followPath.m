@@ -1,4 +1,4 @@
-function [u1, u] = followPath(obj, tsteps, linpath, v, LQROn)
+function [u1, u] = followPath(obj, linpath, v, LQR)
 % function [u1, u] = followPath(obj, tsteps, hw, v)
 %
 % Computes the next control input to follow the path rpath
@@ -22,13 +22,13 @@ function [u1, u] = followPath(obj, tsteps, linpath, v, LQROn)
 s0 = firstPathPoint(obj, linpath.fn);
 
 % Default speed
-if nargin < 4
+if nargin < 3
   v = linpath.speed;
 end
 
 % Use LQR controller by default
-if nargin < 5
-  LQROn = 1;
+if nargin < 4
+  LQR = 1;
 end
 
 % Reference velocity
@@ -38,15 +38,21 @@ else
   vref = v;
 end
 
-if LQROn
+if LQR
   % ----- BEGIN LQR ---
   K = createLQR;
   sref = s0;
   rref = linpath.fn(sref);
   u1 = -K* (obj.x - [rref(1); vref(1); rref(2); vref(2)]);
-  max(min(u1,obj.uMax), obj.uMin);
+  if any(u1 > obj.uMax)
+    u1 = u1 / max(abs(u1)) * obj.uMax;
+  end
   % ----- END LQR -----  
 else
+  error(['MPC Controller doesn''t work properly! ' ... 
+    'Try testing it using followPath_test.m'])
+  tsteps = 5; % MPC time horizon
+  dt = 0.1; % time step size
   % ----- BEGIN CVX -----
   cvx_begin
   variable p(2, tsteps)     % sequence of vehicle positions
@@ -61,14 +67,14 @@ else
   
   subject to
   % First time step
-  x(:,1) == obj.computeState(u(:,1), obj.x)   % Dynamics
+  x(:,1) == obj.dynamics(0, obj.x, u(:,1))*dt   % Dynamics
   p(:,1) == x(obj.pdim,1)                        % Position components
   v(:,1) == x(obj.vdim,1)
   s(1) == s0
   
   %             All time steps afterwards
   for i = 2:tsteps
-    x(:,i) == obj.computeState(u(:,i), x(:,i-1))        % Dynamics
+    x(:,i) == obj.dynamics(0, x(:,i-1), u(:,i))*dt        % Dynamics
     p(:,i) == x(obj.pdim,i)                                % Position components
     v(:,i) == x(obj.vdim,i)                                % Position components
     s(i) == s(i-1) + ds(i-1)                            % Advanced on path

@@ -1,4 +1,4 @@
-classdef platoon < handle
+classdef Platoon < handle
   
   properties
     % ID of platoon (should be equal to ID of leader vehicle)

@@ -39,15 +39,15 @@ classdef linpath < handle
       end
       
       % function handle representing highway
-      if numel(z0) ~= 2
-        error('Starting point must be in 2D!')
-      elseif size(z0,1) ~= 2
+      if numel(z0) ~= 2 || numel(z1) ~= 2
+        error('Starting and ending points must be in 2D!')
+      end
+      
+      if ~iscolumn(z0);
         z0 = z0';
       end
       
-      if numel(z1) ~= 2
-        error('Ending point must be in 2D!')
-      elseif size(z1,1) ~= 2
+      if ~iscolumn(z1)
         z1 = z1';
       end
       
