@@ -1,4 +1,4 @@
-classdef highway < linpath
+classdef Highway < linpath
   % Highway class (inherits linpath class)
   
   properties

@@ -1,12 +1,12 @@
-classdef plane < vehicle
+classdef Plane < vehicle
   % Note: Since plane is a "handle class", we can pass on
   % handles/pointers to other plane objects
   % e.g. a.platoon.leader = b (passes b by reference, does not create a copy)
   % Also see constructor  
   
   properties    
-    wMin        % angular control bounds
-    wMax
+    wMin = -1       % angular control bounds
+    wMax = 1
     
     vMax        % speed control bounds
     vMin    
@@ -25,7 +25,7 @@ classdef plane < vehicle
   end
   
   methods
-    function obj = plane(ID, x, reachInfo)
+    function obj = plane(x)
       % obj = plane(ID, x, reachInfo)
       %
       % Constructor. Creates a plane object with a unique ID,
@@ -47,96 +47,17 @@ classdef plane < vehicle
       % Output:   obj       - a quadrotor object
       %
       % Mahesh Vashishtha, 2015-10-26
-      obj.ID = ID;  
+      % Modified, Mo Chen, 2015-11-04
 
-      % Initial state and state history
-      if nargin < 3
-        obj.x = zeros(obj.nx, 1);
-        obj.x(4) = plane.DEFAULT_V;
-      else        
-        if numel(x) ~= obj.nx
-          error('Initial state does not have right dimension');
-        end
-        obj.x = x;
+      if numel(x) ~= 4
+        error('Initial state does not have right dimension');
       end
+
+      obj.x = x;
       obj.xhist = obj.x;
-      obj.u = [0 0];
 
-      % Control bounds and Reachable set
-      if nargin<4
-        obj.wMax = 1;
-        obj.wMin = -1;
-        obj.vMax = 1;
-        obj.vMin = -1;
-      else
-        obj.wMax = reachInfo.uMax;
-        obj.wMin = reachInfo.uMin;
-        obj.vMax = reachInfo.vMax;
-        obj.vMin = reachInfo.vMin;
       end      
-    end
- 
-    function x1 = computeState(obj, u, x0)      
-      % function x1 = computeState(obj, u, x0)
-      % Computes (DOES NOT update!) state based on control; use updateState to
-      % update the state
-      %
-      % Inputs:   obj - current plane object
-      %           u   - control (defaults to previous control)
-      %           x0  - initial state (defaults to current state)
-      %
-      % Outputs:  x1  - final state
-      %
-      % Mahesh Vashishtha, 2015-10-26
-
-      % If no control is specified, use previous control      
-      if nargin  < 2
-        u = obj.u;
-      end
-      if nargin < 3
-        x0 = obj.x;
-      end      
-      % forwards euler (unstable for large dt)
-      x1 = x0 + obj.dt * [x0(4)*cos(x0(3)); x0(4)*sin(x0(3)); u(1); u(2)];
-    end
-    
-    function x1 = updateState(obj, u, x0)
-      % function x1 = updateState(obj, u, x0)
-      % Updates state based on control
-      %
-      % Inputs:   obj - current plane object
-      %           u   - control (defaults to previous control)
-      %           x0  - initial state (defaults to current state)
-      %
-      % Outputs:  x1  - final state
-      %
-      % Mahesh Vashishtha, 2015-10-26
-
-      % If no control is specified, use previous control      
-      if nargin < 2
-        u = obj.u;
-      else
-        if numel(u) ~= plane.nu
-          error('Control is wrong dimension')
-        elseif any(cat(2,u < [obj.wMin obj.vMin], u > [obj.wMax obj.vMax]))
-          error('Control not in bounds.')
-        end
-      end
-    
-      % If no state is specified, use current state
-      if nargin < 3
-        x0 = obj.x;
-      end      
-      x1 = obj.computeState(u, x0);
-
-      % Update the state, state history, control, and control history
-      obj.x = x1;
-      obj.u = u;
-
-      obj.xhist = cat(2, obj.xhist, obj.x);
-      obj.uhist = cat(2, obj.uhist, obj.u);
-    end
-        
+  end        
     function pos = getPosition(obj)
       % function pos = getPosition(obj)
       % Finds the position (x,y) of a plane
