@@ -19,7 +19,7 @@ classdef Linpath < handle
   end % end properties
     
   methods
-    function obj = linpath(z0, z1, speed)
+    function obj = Linpath(z0, z1, speed)
       % function obj = highway(z0, z1, speed)
       % Constructor for linpath class
       %

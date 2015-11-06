@@ -37,9 +37,6 @@ t = dt:dt:tMax;
 
 for i = 1:length(t)
   %% Check if the planes have collided (should not happen!)
-  p1_pos  = pl1.getPosition;
-  p2_pos = pl2.getPosition;
-  
   if norm(pl1.getPosition - pl2.getPosition) <= capture_radius
     error('Planes collided!')
   end

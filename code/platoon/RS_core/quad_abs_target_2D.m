@@ -1,5 +1,5 @@
 function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
-% [grids, datas, tau] = quad2D_liveness(x, visualize)
+% [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 %
 % Computes 2D liveness reachable set for merging onto the highway. These
 % need to be reconstructed in 4D.
@@ -21,7 +21,7 @@ function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 
 % Default states and visualization option
 if nargin<1
-  x = [0 0 0 0];
+  x = [0 10 0 0];
 end
 
 if nargin<2
@@ -46,39 +46,38 @@ dissType = 'global';
 
 %---------------------------------------------------------------------------
 % Problem Parameters.
-u1Max = 1.7;
-u1Min = -1.7;
-u2Max = 1.7;
-u2Min = -1.7;
-v1Max = 5;
-v1Min = -5;
+uMax = 3;
+vRange = 10;
+
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 57;  %changed by AKA from 81 to 41
+Nx = 71;  %changed by AKA from 81 to 41
 
 % Create the grid.
 g1.dim = 2;                              % Number of dimensions
-g1.min = [ x(1)-25 ; 1.1*v1Min ];     % Bounds on computational domain
-g1.max = [ x(1)+25 ; 1.1*v1Max ];
+g1.min = [ x(1)-65 ; x(2)-vRange ];     % Bounds on computational domain
+g1.max = [ x(1)+5 ; x(2)+vRange ];
 g1.bdry = @addGhostExtrapolate;
 g1.N = [ Nx; ceil(Nx/(g1.max(1)-g1.min(1))*(g1.max(2)-g1.min(2)))];
 g1 = processGrid(g1);
 
 % Create the grid.
 g2.dim = 2;                             % Number of dimensions
-g2.min = [ x(3)-25 ; 1.1*v1Min ];     % Bounds on computational domain
-g2.max = [ x(3)+25 ; 1.1*v1Max ];
+g2.min = [ x(3)-35 ; x(4)-vRange ];     % Bounds on computational domain
+g2.max = [ x(3)+35 ; x(4)+vRange];
 g2.bdry = @addGhostExtrapolate;
 g2.N = [ Nx; ceil(Nx/(g2.max(1)-g2.min(1))*(g2.max(2)-g2.min(2)))];
 g2 = processGrid(g2);
 
 % ----------------- Target -----------------
-% Below minimum relative distance, small relative velocity, any velocity in x
-datax = shapeRectangleByCorners(g1, [x(1); x(2)]-1.1*g1.dx, [x(1); x(2)]+1.1*g1.dx);
+% Below minimum relative distance, small relative velocity,
+datax = shapeRectangleByCorners(g1, ...
+  [x(1); x(2)]-1.1*g1.dx, [x(1); x(2)]+1.1*g1.dx);
 
 % Below minimum relative distance, small relative velocity, any velocity in x
-datay = shapeRectangleByCorners(g2, [x(3); x(4)]-1.1*g2.dx, [x(3); x(4)]+1.1*g2.dx);
+datay = shapeRectangleByCorners(g2, ...
+  [x(3); x(4)]-1.1*g2.dx, [x(3); x(4)]+1.1*g2.dx);
 
 %---------------------------------------------------------------------------
 % Set up spatial approximation scheme.
@@ -87,10 +86,7 @@ schemeData.hamFunc = @HamFunc;
 schemeData.partialFunc = @PartialFunc;
 
 % The Hamiltonian and partial functions need problem parameters.
-schemeData.u1Max = u1Max;
-schemeData.u1Min = u1Min;
-schemeData.u2Max = u2Max;
-schemeData.u2Min = u2Min;
+schemeData.uMax = uMax;
 
 %---------------------------------------------------------------------------
 % Choose degree of dissipation.
@@ -182,9 +178,9 @@ while(tMax - tNow > small * tMax)
   if visualize
     h1.ZData = datax(:,:,end);
     h2.ZData = datay(:,:,end);
-  end
   
   drawnow;
+end
 end
 
 % Manually creating cell structures for the grids and datas outputs; could
@@ -218,30 +214,19 @@ function hamValue = HamFunc(t, data, deriv, schemeData)
 % schemeData is a structure containing data specific to this Hamiltonian
 %   For this function it contains the field(s):
 
-checkStructureFields(schemeData, 'u1Max','u1Min', 'u2Max','u2Min', 'grid');
+checkStructureFields(schemeData, 'uMax', 'grid');
 
 grid = schemeData.grid;
-
-u1Max = schemeData.u1Max;
-u1Min = schemeData.u1Min;
-u2Max = schemeData.u2Max;
-u2Min = schemeData.u2Min;
-
+uMax = schemeData.uMax;
 
 % Dynamics:
 % \dot{x}_1 = v_1
 % \dot{v}_1 = u_1
 
-% \dot{x}_2 = v_2 (= constant)
-% \dot{v}_2 = 0
-
-% \dot{x}_r = v_r
-% \dot{v}_r = u_1
-
 % quadrotor 1 minimizes value, quadrotor 2 maximizes value
 hamValue = deriv{1} .* grid.xs{2} + ...
-  (deriv{2}>=0) .* (deriv{2}) * u1Min + ...
-  (deriv{2}<0) .* (deriv{2}) * u1Max;
+  (deriv{2}>=0) .* (deriv{2}) * (-uMax) + ...
+  (deriv{2}<0) .* (deriv{2}) * uMax;
 %     (-deriv{2}>=0) .* (-deriv{2}) * u2Max + ...
 %     (-deriv{2}<0) .* (-deriv{2}) * u2Min;
 
@@ -273,21 +258,17 @@ function alpha = PartialFunc(t, data, derivMin, derivMax, schemeData, dim)
 %		   at each node of the grid.
 
 
-checkStructureFields(schemeData, 'u1Max','u1Min', 'u2Max','u2Min', 'grid');
+checkStructureFields(schemeData, 'uMax', 'grid');
 
 grid = schemeData.grid;
-
-u1Max = schemeData.u1Max;
-u1Min = schemeData.u1Min;
-u2Max = schemeData.u2Max;
-u2Min = schemeData.u2Min;
+uMax = schemeData.uMax;
 
 switch dim
   case 1
     alpha = abs(grid.xs{2});
     
   case 2
-    alpha = max(abs([u1Min u1Max])) + max(abs([u2Min u2Max]));
+    alpha = uMax;
     
   otherwise
     error([ 'Partials only exist in dimensions 1-2' ]);

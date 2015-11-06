@@ -19,7 +19,7 @@ axis square
 target_origin = 5*rand(2,1);
 target_dir = 100*rotate2D([1 0], 2*pi*rand);
 speed = 2+3*rand;
-ptf = linpath(target_origin, target_dir, speed); % path to follow
+ptf = Linpath(target_origin, target_dir, speed); % path to follow
 ptf.lpPlot;
 
 title(['Speed = ' num2str(speed)])

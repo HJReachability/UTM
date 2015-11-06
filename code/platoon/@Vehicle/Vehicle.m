@@ -12,7 +12,6 @@ classdef Vehicle < handle
     xhist       % History of state
     uhist       % History of control
     
-    dt = 0.1
     
     % Mode
     %   'Free'
@@ -20,6 +19,8 @@ classdef Vehicle < handle
     %   'Leader'
     %   'Faulty'
     q = 'Free';
+    
+    live_status
     
     p           % Pointer to platoon
     idx         % Vehicle index in platoon (determines phantom position)
@@ -31,7 +32,8 @@ classdef Vehicle < handle
     FQ                 % Pointer to quadrotor in front (self if leader)
     BQ                 % Pointer to quadrotor behind (self if tail)
     
-    mergeHighwayV      % Value function for merging onto highway
+    h_abs_target_V     % Value function for getting to an absolute target
+    % mergeHighwayV      % Value function for merging onto highway
     mergePlatoonV      % Value function for merging onto platoon
     
     %% Figure handles

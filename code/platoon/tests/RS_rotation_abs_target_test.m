@@ -63,8 +63,8 @@ function simulate_baseRS(q, base_TTR_out, theta)
 dt = 0.1;
 tMax = 10;
 t = 0:dt:tMax;
-uMin = -1.7;
-uMax = 1.7;
+uMin = -3;
+uMax = 3;
 
 % State in the frame of the base reachable set (vehicle frame)
 base_pos = rotate2D(q.getPosition, -theta);
@@ -111,8 +111,8 @@ function simulate_rotRS(q, rot_TTR_out)
 dt = 0.1;
 tMax = 10;
 t = 0:dt:tMax;
-uMin = -1.7;
-uMax = 1.7;
+uMin = -3;
+uMax = 3;
 for i = 1:length(t)
   % Gradient
   rot_p = calculateCostate(rot_TTR_out.g, rot_TTR_out.grad, q.x);

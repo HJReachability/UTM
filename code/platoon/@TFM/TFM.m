@@ -12,11 +12,11 @@ classdef TFM < handle
     safetyTime = 2;
     
     % Thresholds for being considered in target set or in reachable set
-    ttt = 0.25; % target threshold time
-    rtt = 5;    % reachable set threshold time
+    ttt = 1; % target threshold time
+    rtt = 8;    % reachable set threshold time
     
     % Frequency of state updates to the system
-    dt = 0.2;
+    dt = 0.1;
     
     %% Quadrotor reachable sets
     % Quadrotor create platoon reachable set

@@ -5,8 +5,8 @@ classdef Quadrotor < Vehicle
   % Also see constructor
   
   properties
-    uMin = -1.7    % Control bounds
-    uMax = 1.7
+    uMin = -3    % Control bounds
+    uMax = 3
     
     vMax = 5       % Speed bounds
     vMin = -5
