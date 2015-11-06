@@ -1,4 +1,4 @@
-function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
+function [grids, datas, tau] = quad_abs_target_2D(x, near, visualize)
 % [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 %
 % Computes 2D liveness reachable set for merging onto the highway. These
@@ -25,18 +25,21 @@ if nargin<1
 end
 
 if nargin<2
+  near = 1;
+end
+
+if nargin<3
   visualize = 1;
 end
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 8;                    % End time.
-plotSteps = 1;               % How many intermediate plots to produce?
-t0 = 0;                      % Start time.
+if near
+  tMax = 2;
+else
+  tMax = 5;                    % End time.
+end
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
-
-% Period at which intermediate plots should be produced.
-tPlot = (tMax - t0) / (plotSteps - 1);
 
 % How close (relative) do we need to get to tMax to be considered finished?
 small = 100 * eps;
@@ -52,20 +55,32 @@ vRange = 10;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 71;  %changed by AKA from 81 to 41
+Nx = 51;  %changed by AKA from 81 to 41
 
 % Create the grid.
+if near
+  g1.min = [ x(1)-20 ; x(2)-vRange ];     % Bounds on computational domain
+  g1.max = [ x(1)+2 ; x(2)+vRange ];
+else
+  g1.min = [ x(1)-45 ; x(2)-vRange ];     % Bounds on computational domain
+  g1.max = [ x(1)+5 ; x(2)+vRange ];  
+end
+
 g1.dim = 2;                              % Number of dimensions
-g1.min = [ x(1)-65 ; x(2)-vRange ];     % Bounds on computational domain
-g1.max = [ x(1)+5 ; x(2)+vRange ];
+
 g1.bdry = @addGhostExtrapolate;
 g1.N = [ Nx; ceil(Nx/(g1.max(1)-g1.min(1))*(g1.max(2)-g1.min(2)))];
 g1 = processGrid(g1);
 
 % Create the grid.
+if near
+  g2.min = [ x(3)-10 ; x(4)-vRange ];     % Bounds on computational domain
+  g2.max = [ x(3)+10 ; x(4)+vRange];
+else
+  g2.min = [ x(3)-25 ; x(4)-vRange ];     % Bounds on computational domain
+  g2.max = [ x(3)+25 ; x(4)+vRange]; 
+end
 g2.dim = 2;                             % Number of dimensions
-g2.min = [ x(3)-35 ; x(4)-vRange ];     % Bounds on computational domain
-g2.max = [ x(3)+35 ; x(4)+vRange];
 g2.bdry = @addGhostExtrapolate;
 g2.N = [ Nx; ceil(Nx/(g2.max(1)-g2.min(1))*(g2.max(2)-g2.min(2)))];
 g2 = processGrid(g2);
@@ -73,11 +88,11 @@ g2 = processGrid(g2);
 % ----------------- Target -----------------
 % Below minimum relative distance, small relative velocity,
 datax = shapeRectangleByCorners(g1, ...
-  [x(1); x(2)]-1.1*g1.dx, [x(1); x(2)]+1.1*g1.dx);
+  [x(1); x(2)]-2.1*g1.dx, [x(1); x(2)]+2.1*g1.dx);
 
 % Below minimum relative distance, small relative velocity, any velocity in x
 datay = shapeRectangleByCorners(g2, ...
-  [x(3); x(4)]-1.1*g2.dx, [x(3); x(4)]+1.1*g2.dx);
+  [x(3); x(4)]-2.1*g2.dx, [x(3); x(4)]+2.1*g2.dx);
 
 %---------------------------------------------------------------------------
 % Set up spatial approximation scheme.
@@ -149,11 +164,11 @@ end
 
 %---------------------------------------------------------------------------
 % Loop until tMax (subject to a little roundoff).
-tNow = t0;
+tNow = 0;
 tau = tNow;
 while(tMax - tNow > small * tMax)
   % How far to step?
-  tSpan = [ tNow, min(tMax, tNow + tPlot) ];
+  tSpan = [tNow, tMax];
   
   % Reshape data array into column vector for ode solver call.
   y0 = datax(:,:,end);

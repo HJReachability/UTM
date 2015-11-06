@@ -4,7 +4,7 @@ addpath('../RS_core')
 
 % Initialize TFM
 tfm = TFM;
-tfm.computeRS('qr_create_platoon_V');
+tfm.computeRS('qr_abs_target_V');
 debug = 1;
 
 % Random heading
@@ -21,18 +21,19 @@ target_dist = 50;
 target_position = rotate2D([target_dist 0], pos_theta);
 figure;
 quiver(target_position(1), target_position(2), ...
-  10*cos(pos_theta), 10*sin(pos_theta), 'rx')
+  10*cos(vel_theta), 10*sin(vel_theta), 'rx')
 hold on
 
 % Plot initial setup
-level = 8;
+clevel = 2;
+flevel = 5;
 for j = 1:length(tfm.aas)
   tfm.aas{j}.plotPosition('b');
-  tfm.aas{j}.plot_abs_target_V(tfm.qr_create_platoon_V, ...
-    level, target_position, vel_theta);
+  tfm.aas{j}.plot_abs_target_V( ...
+    tfm.qr_atcV, tfm.qr_atfV, clevel, flevel, target_position, vel_theta);
 end
-xlim(1.5*target_dist*[-1 1])
-ylim(1.5*target_dist*[-1 1])
+xlim(1.2*target_dist*[-1 1])
+ylim(1.2*target_dist*[-1 1])
 axis square
 drawnow;
 
@@ -48,8 +49,8 @@ for i = 1:length(t)
     tfm.aas{j}.updateState(u, tfm.dt);
     tfm.aas{j}.plotPosition;
     
-    tfm.aas{j}.plot_abs_target_V(tfm.qr_create_platoon_V, ...
-      level, target_position, vel_theta);
+    tfm.aas{j}.plot_abs_target_V( ...
+     tfm.qr_atcV, tfm.qr_atfV, clevel, flevel, target_position, vel_theta);
   end
   drawnow;
 end

@@ -20,7 +20,7 @@ classdef Vehicle < handle
     %   'Faulty'
     q = 'Free';
     
-    live_status
+    live_status = 'outRS';
     
     p           % Pointer to platoon
     idx         % Vehicle index in platoon (determines phantom position)
@@ -32,7 +32,8 @@ classdef Vehicle < handle
     FQ                 % Pointer to quadrotor in front (self if leader)
     BQ                 % Pointer to quadrotor behind (self if tail)
     
-    h_abs_target_V     % Value function for getting to an absolute target
+    h_atcV     % coarse value function for getting to an absolute target
+    h_atfV     % fine value function for getting to an absolute target
     % mergeHighwayV      % Value function for merging onto highway
     mergePlatoonV      % Value function for merging onto platoon
     

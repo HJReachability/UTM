@@ -31,35 +31,33 @@ switch class(vehicle)
     
     % Get value function
     switch vehicle.live_status
-      case []
+      case 'outRS'
         % Outside reachable set
-        if debug
-          disp('Outside reachable set')
-        end
-
-        valuex = eval_u(obj.qr_create_platoon_V.g, ...
-          obj.qr_create_platoon_V.data, base_x);
+        valuecx = eval_u(obj.qr_atcV.g, obj.qr_atcV.data, base_x);
       
         % Check if vehicle has arrived; if so, update status and recompute
         % control
-        if valuex <= obj.ttt
+        if valuecx <= obj.ttt
           vehicle.live_status = 'arrived';
           vehicle.waypoints = [];          
           u = obj.getToPose(vehicle, position, heading, debug);
           return;
         end
         
-        % Check if vehicle is in reachable set; if so, update status and
-        % recompute control
-        if valuex <= obj.rtt
+        % Check if vehicle is in coarse reachable set; if so, update
+        % status and recompute control
+        if valuecx <= obj.crtt
           vehicle.live_status = 'inRS';
           vehicle.waypoints = [];          
           u = obj.getToPose(vehicle, position, heading, debug);
           return;
         end
-
+        
         % If vehicle is in fact outside of reachable set, plan a straight
         % path to target position
+        if debug
+          disp('Outside reachable set')
+        end        
         if isempty(vehicle.waypoints)
           vehicle.waypoints = ...
             Linpath(vehicle.getPosition, position, obj.hw_speed);
@@ -69,27 +67,42 @@ switch class(vehicle)
         u = vehicle.followPath(vehicle.waypoints);
         
       case 'arrived'
+        
         if debug
-          disp('Arrived at target')
+          valuecx = eval_u(obj.qr_atcV.g, obj.qr_atcV.data, base_x);
+          valuefx = eval_u(obj.qr_atfV.g, obj.qr_atfV.data, base_x);
+          disp(['Arrived at target, coarse value = ' ...
+            num2str(valuecx) ', fine value = ' num2str(valuefx)])
         end
         u = [];
-
+        
       case 'inRS'
         % Inside reachable set
-        if debug
-          disp(['Inside reachable set, value = ' num2str(valuex)])
-        end
+        valuecx = eval_u(obj.qr_atcV.g, obj.qr_atcV.data, base_x);
+        valuefx = eval_u(obj.qr_atfV.g, obj.qr_atfV.data, base_x);
         
         % Check if vehicle has arrived; if so, update status and recompute
         % control
-        if valuex <= obj.ttt
+        if valuecx <= obj.ttt
           vehicle.live_status = 'arrived';
           u = obj.getToPose(vehicle, position, heading, debug);
           return;
         end
-
-        base_p = calculateCostate(obj.qr_create_platoon_V.g, ...
-          obj.qr_create_platoon_V.grad, base_x);
+        
+        % Vehicle has in fact not arrived
+        if debug
+          disp(['Inside reachable set, coarse value = ' ...
+            num2str(valuecx) ', fine value = ' num2str(valuefx)])
+        end
+        
+        if valuefx <= obj.frtt
+          disp('Using fine value function')
+          base_p = ...
+            calculateCostate(obj.qr_atfV.g, obj.qr_atfV.grad, base_x);
+        else
+          base_p = ...
+            calculateCostate(obj.qr_atcV.g, obj.qr_atcV.grad, base_x);          
+        end
         
         ux = (base_p(2)>=0)*vehicle.uMin + (base_p(2)<0)*vehicle.uMax;
         uy = (base_p(4)>=0)*vehicle.uMin + (base_p(4)<0)*vehicle.uMax;
