@@ -18,22 +18,28 @@ N = 12;
 spC = ceil(sqrt(N));
 spR = ceil(N/spC);
 
-figure;
+hp = figure;
+hv = figure;
 for i = 1:N
-  % Velocity slice (i.e. initial velocity of quadrotor)
+  % Project 4D reachable set to position space
   v = [-6+i 10];
-  
-  % Project 4D reachable set
+  figure(hp)
   [g2D, data2D] = proj2D(TTR_out.g, [0 1 0 1], ...
     TTR_out.g.N([1 3]), TTR_out.value, v);
   
   subplot(spR, spC, i)
-  contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:10, 'color', 'b')
-  hold on
-  
-  
-  [g2D, data2D] = proj2D(TD_out.g, [0 1 0 1], ...
-    TD_out.g.N([1 3]), TD_out.value, v);
-  contour(g2D.xs{1}, g2D.xs{2}, data2D, [0 0], 'color', 'r')
+  contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:13)
   title(['v = ' num2str(v)])
+  
+  % Project 4D reachable set to position space
+  p = -5 + 10 * rand(1,2);
+  figure(hv)
+  [g2D, data2D] = proj2D(TTR_out.g, [1 0 1 0], ...
+    TTR_out.g.N([2 4]), TTR_out.value, p);
+  
+  subplot(spR, spC, i)
+  contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:13)
+  title(['p = ' num2str(p)])
+
+  
 end

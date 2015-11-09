@@ -28,7 +28,7 @@ switch class(vehicle)
     base_pos = rotate2D(vehicle.getPosition - position, -heading);
     base_vel = rotate2D(vehicle.getVelocity, -heading);
     base_x = [base_pos(1); base_vel(1); base_pos(2); base_vel(2)];
-    
+
     % Get value function
     % Outside reachable set
     valuex = eval_u( ...
@@ -54,8 +54,9 @@ switch class(vehicle)
       base_p = calculateCostate( ...
         obj.qr_abs_target_V.g, obj.qr_abs_target_V.grad, base_x);
       
-      ux = (base_p(2)>=0)*vehicle.uMin + (base_p(2)<0)*vehicle.uMax;
-      uy = (base_p(4)>=0)*vehicle.uMin + (base_p(4)<0)*vehicle.uMax;
+      small = 1e-6;
+      ux = (base_p(2)>small)*vehicle.uMin + (base_p(2)<-small)*vehicle.uMax;
+      uy = (base_p(4)>small)*vehicle.uMin + (base_p(4)<-small)*vehicle.uMax;
       u = rotate2D([ux; uy], heading);
       return;
     end

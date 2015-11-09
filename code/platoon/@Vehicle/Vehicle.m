@@ -19,9 +19,7 @@ classdef Vehicle < handle
     %   'Leader'
     %   'Faulty'
     q = 'Free';
-    
-    live_status = 'outRS';
-    
+
     p           % Pointer to platoon
     idx         % Vehicle index in platoon (determines phantom position)
     
@@ -41,6 +39,10 @@ classdef Vehicle < handle
     hpxpyhist       % Position history
     hvxvy           % Velocity
     hvxvyhist       % Velocity history
+    
+    % Position velocity (so far only used in DoubleInt)
+    hpxvx 
+    hpxvxhist
     
     % Safety sets
     hsafeV         % figure handles

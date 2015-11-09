@@ -1,5 +1,5 @@
-function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
-% [grids, datas, tau] = quad_abs_target_2D(x, visualize)
+function [TD_out, TTR_out] = di_abs_target_2D(x, visualize)
+% [g, data, tau] = di_abs_target_2D(x, visualize)
 %
 % Computes 2D liveness reachable set for merging onto the highway. These
 % need to be reconstructed in 4D.
@@ -21,7 +21,7 @@ function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 
 % Default states and visualization option
 if nargin<1
-  x = [0 10 0 0];
+  x = [0 10];
 end
 
 if nargin<2
@@ -46,33 +46,26 @@ uMax = 3;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %  (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 41;
+Nx = 61;
 
 % Create the x grid.
-g1.min = [ x(1)-75 ; -1.1*x(2) ];     % Bounds on computational domain
-g1.max = [ x(1)+35 ; 1.1*x(2) ];  
+g.min = [ x(1)-75 ; -1.5*x(2) ];     % Bounds on computational domain
+g.max = [ x(1)+35 ; 1.5*x(2) ];  
 
-g1.dim = 2;                              % Number of dimensions
+g.dim = 2;                              % Number of dimensions
 
-g1.bdry = @addGhostExtrapolate;
-g1.N = [ Nx; 3*ceil(Nx/(g1.max(1)-g1.min(1))*(g1.max(2)-g1.min(2)))];
-g1 = processGrid(g1);
+g.bdry = @addGhostExtrapolate;
+g.N = [ Nx; 3*ceil(Nx/(g.max(1)-g.min(1))*(g.max(2)-g.min(2)))];
+g = processGrid(g);
 
-% Create the y grid.
-g2.min = [ x(3)-55 ; x(4)-1.1*x(2) ];     % Bounds on computational domain
-g2.max = [ x(3)+55 ; x(4)+1.1*x(2)]; 
-
-g2.dim = 2;                             % Number of dimensions
-g2.bdry = @addGhostExtrapolate;
-g2.N = [ Nx; 3*ceil(Nx/(g2.max(1)-g2.min(1))*(g2.max(2)-g2.min(2)))];
-g2 = processGrid(g2);
+TD_out.g = g;
+TTR_out.g = g;
 
 % ----------------- Target -----------------
-datax = shapeRectangleByCorners(g1, ...
-  [x(1); x(2)]-1.5*g1.dx, [x(1); x(2)]+1.5*g1.dx);
-
-datay = shapeRectangleByCorners(g2, ...
-  [x(3); x(4)]-1.5*g2.dx, [x(3); x(4)]+1.5*g2.dx);
+TD_out.value = shapeRectangleByCorners(g, ...
+  [x(1); x(2)]-1.5*g.dx, [x(1); x(2)]+1.5*g.dx);
+TTR_out.value = 1e5 * ones(size(TD_out.value));
+TTR_out.value(TD_out.value <= 0) = 0;
 
 %---------------------------------------------------------------------------
 % Set up spatial approximation scheme.
@@ -130,12 +123,8 @@ end
 if visualize
   f = figure;
   
-  [~, h1] = contour(g1.xs{1}, g1.xs{2}, datax, [0 0],'r'); hold on
-  contour(g1.xs{1}, g1.xs{2}, datax, [0 0],'r--');
-  
-  [~, h2] = contour(g2.xs{1}, g2.xs{2}, datay, [0 0],'b');
-  contour(g2.xs{1}, g2.xs{2}, datay, [0 0],'b--');
-  
+  [~, h] = contour(g.xs{1}, g.xs{2}, TD_out.value, [0 0], 'r'); hold on
+  contour(g.xs{1}, g.xs{2}, TD_out.value, [0 0], 'r--')
   xlabel('x')
   ylabel('v')
   
@@ -145,43 +134,31 @@ end
 %---------------------------------------------------------------------------
 % Loop until tMax (subject to a little roundoff).
 tNow = 0;
-tau = tNow;
 while(tMax - tNow > small * tMax)
   % How far to step?
   tSpan = [tNow, tMax];
   
   % Reshape data array into column vector for ode solver call.
-  y0 = datax(:,:,end);
+  y0 = TD_out.value;
   y0 = y0(:);
-  schemeData.grid = g1;
+  schemeData.grid = g;
   [t, y] = feval(integratorFunc, schemeFunc, tSpan, y0,...
     integratorOptions, schemeData);
-  datax = cat(3, datax, reshape(y, g1.shape));
-
-  % Reshape data array into column vector for ode solver call.
-  y0 = datay(:,:,end);
-  y0 = y0(:);
-  schemeData.grid = g2;
-  [t, y] = feval(integratorFunc, schemeFunc, tSpan, y0,...
-    integratorOptions, schemeData);
-  datay = cat(3, datay, reshape(y, g2.shape));
-
+  TD_out.value = reshape(y, g.shape);
   tNow = t(end);
-  tau = cat(1, tau, tNow);
+  
+  TTR_out.value(TD_out.value < 0) = ...
+    min(TTR_out.value(TD_out.value < 0), tNow);
   
   % Create new visualization.
   if visualize
-    h1.ZData = datax(:,:,end);
-    h2.ZData = datay(:,:,end);
+    h.ZData = TD_out.value;
     title(['t=' num2str(tNow)])
     drawnow;
   end
 end
 
-% Manually creating cell structures for the grids and datas outputs; could
-% consider assigning these earlier so we don't use these extra variables.
-grids = {g1; g2};
-datas = {datax; datay};
+TTR_out.grad = extractCostates(TTR_out.g, TTR_out.value);
 end
 
 %---------------------------------------------------------------------------
