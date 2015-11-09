@@ -32,9 +32,8 @@ classdef Vehicle < handle
     FQ                 % Pointer to quadrotor in front (self if leader)
     BQ                 % Pointer to quadrotor behind (self if tail)
     
-    h_atcV     % coarse value function for getting to an absolute target
-    h_atfV     % fine value function for getting to an absolute target
-    % mergeHighwayV      % Value function for merging onto highway
+    h_abs_target_V     % value function for getting to an absolute target
+
     mergePlatoonV      % Value function for merging onto platoon
     
     %% Figure handles

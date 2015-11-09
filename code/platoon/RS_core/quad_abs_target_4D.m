@@ -1,4 +1,4 @@
-function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
+function [TD_out, TTR_out] = quad_abs_target_4D(x)
 % [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 %
 % Computes 2D liveness reachable set for merging onto the highway. These
@@ -21,17 +21,12 @@ function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 
 % Default states and visualization option
 if nargin<1
-  x = [0 10 0 0];
-end
-
-if nargin<2
-  visualize = 1;
+  x = [0 10 0 0]';
 end
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 12;                    % End time.
-singleStep = 1;              % Plot at each timestep (overrides tPlot).
+tMax = 10;                    % End time.
 
 % How close (relative) do we need to get to tMax to be considered finished?
 small = 100 * eps;
@@ -42,43 +37,41 @@ dissType = 'global';
 %---------------------------------------------------------------------------
 % Problem Parameters.
 uMax = 3;
+vRange = 10;
 
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
-%  (Slightly different grid cell counts will be chosen for each dimension.)
+%   (Slightly different grid cell counts will be chosen for each dimension.)
 Nx = 71;
 
-% Create the x grid.
-g1.min = [ x(1)-75 ; -1.1*x(2) ];     % Bounds on computational domain
-g1.max = [ x(1)+35 ; 1.1*x(2) ];  
+% Bounds on computational domain
+g.min = [ x(1)-65 ; x(2)-2*vRange; x(3)-25 ; x(4)-vRange ];     
+g.max = [ x(1)+25 ; x(2)+2; x(3)+25 ; x(4)+vRange ];  
 
-g1.dim = 2;                              % Number of dimensions
+g.dim = 4;                              % Number of dimensions
 
-g1.bdry = @addGhostExtrapolate;
-g1.N = [ Nx; 2*ceil(Nx/(g1.max(1)-g1.min(1))*(g1.max(2)-g1.min(2)))];
-g1 = processGrid(g1);
+g.bdry = @addGhostExtrapolate;
+g.N = zeros(4,1);
+g.N(1) = 51;
+for i = 2:g.dim
+  g.N(i) = ceil(Nx/(g.max(1)-g.min(1))*(g.max(i)-g.min(i)));
+end
+g = processGrid(g);
 
-% Create the y grid.
-g2.min = [ x(3)-55 ; x(4)-1.1*x(2) ];     % Bounds on computational domain
-g2.max = [ x(3)+55 ; x(4)+1.1*x(2)]; 
-
-g2.dim = 2;                             % Number of dimensions
-g2.bdry = @addGhostExtrapolate;
-g2.N = [ Nx; 2*ceil(Nx/(g2.max(1)-g2.min(1))*(g2.max(2)-g2.min(2)))];
-g2 = processGrid(g2);
+TD_out.g = g;
+TTR_out.g = g;
 
 % ----------------- Target -----------------
-datax = shapeRectangleByCorners(g1, ...
-  [x(1); x(2)]-1.5*g1.dx, [x(1); x(2)]+1.5*g1.dx);
-
-datay = shapeRectangleByCorners(g2, ...
-  [x(3); x(4)]-1.5*g2.dx, [x(3); x(4)]+1.5*g2.dx);
+TD_out.value = shapeRectangleByCorners(g, x-3*g.dx, x+3*g.dx);
+TTR_out.value = 1e5 * ones(size(TD_out.value));
+TTR_out.value(TD_out.value <= 0) = 0;
 
 %---------------------------------------------------------------------------
 % Set up spatial approximation scheme.
 schemeFunc = @termLaxFriedrichs;
 schemeData.hamFunc = @HamFunc;
 schemeData.partialFunc = @PartialFunc;
+schemeData.grid = g;
 
 % The Hamiltonian and partial functions need problem parameters.
 schemeData.uMax = uMax;
@@ -98,10 +91,10 @@ switch(dissType)
 end
 
 %--------------------------------------------------------------------------
-accuracy = 'veryHigh';
+accuracy = 'medium';
 
 % Set up time approximation scheme.
-integratorOptions = odeCFLset('factorCFL', 0.5, 'stats', 'off');
+integratorOptions = odeCFLset('factorCFL', 0.9, 'stats', 'on');
 
 % Choose approximations at appropriate level of accuracy.
 switch(accuracy)
@@ -121,67 +114,40 @@ switch(accuracy)
     error('Unknown accuracy level %s', accuracy);
 end
 
-if(singleStep)
-  integratorOptions = odeCFLset(integratorOptions, 'singleStep', 'on');
-end
+integratorOptions = odeCFLset(integratorOptions, 'singleStep', 'on');
 
-%--------------------------------------------------------------------------
-% Initialize Display
-if visualize
-  f = figure;
-  
-  [~, h1] = contour(g1.xs{1}, g1.xs{2}, datax, [0 0],'r'); hold on
-  contour(g1.xs{1}, g1.xs{2}, datax, [0 0],'r--');
-  
-  [~, h2] = contour(g2.xs{1}, g2.xs{2}, datay, [0 0],'b');
-  contour(g2.xs{1}, g2.xs{2}, datay, [0 0],'b--');
-  
-  xlabel('x')
-  ylabel('v')
-  
-  drawnow;
-end
+%---------------------------------------------------------------------------
+% Restrict the Hamiltonian so that reachable set only grows.
+%   The Lax-Friedrichs approximation scheme MUST already be completely set up.
+innerFunc = schemeFunc;
+innerData = schemeData;
+clear schemeFunc schemeData;
+
+% Wrap the true Hamiltonian inside the term approximation restriction routine.
+schemeFunc = @termRestrictUpdate;
+schemeData.innerFunc = innerFunc;
+schemeData.innerData = innerData;
+schemeData.positive = 0;
 
 %---------------------------------------------------------------------------
 % Loop until tMax (subject to a little roundoff).
 tNow = 0;
-tau = tNow;
 while(tMax - tNow > small * tMax)
   % How far to step?
   tSpan = [tNow, tMax];
   
   % Reshape data array into column vector for ode solver call.
-  y0 = datax(:,:,end);
-  y0 = y0(:);
-  schemeData.grid = g1;
+  y0 = TD_out.value(:);
+
   [t, y] = feval(integratorFunc, schemeFunc, tSpan, y0,...
     integratorOptions, schemeData);
-  datax = cat(3, datax, reshape(y, g1.shape));
-
-  % Reshape data array into column vector for ode solver call.
-  y0 = datay(:,:,end);
-  y0 = y0(:);
-  schemeData.grid = g2;
-  [t, y] = feval(integratorFunc, schemeFunc, tSpan, y0,...
-    integratorOptions, schemeData);
-  datay = cat(3, datay, reshape(y, g2.shape));
-
+  TD_out.value = reshape(y, g.shape);
   tNow = t(end);
-  tau = cat(1, tau, tNow);
   
-  % Create new visualization.
-  if visualize
-    h1.ZData = datax(:,:,end);
-    h2.ZData = datay(:,:,end);
-    title(['t=' num2str(tNow)])
-    drawnow;
-  end
+  TTR_out.value(TD_out.value < 0) = ...
+    min(TTR_out.value(TD_out.value < 0), tNow);
 end
 
-% Manually creating cell structures for the grids and datas outputs; could
-% consider assigning these earlier so we don't use these extra variables.
-grids = {g1; g2};
-datas = {datax; datay};
 end
 
 %---------------------------------------------------------------------------
@@ -221,9 +187,11 @@ uMax = schemeData.uMax;
 % quadrotor 1 minimizes value, quadrotor 2 maximizes value
 hamValue = deriv{1} .* grid.xs{2} + ...
   (deriv{2}>=0) .* (deriv{2}) * (-uMax) + ...
-  (deriv{2}<0) .* (deriv{2}) * uMax;
-%     (-deriv{2}>=0) .* (-deriv{2}) * u2Max + ...
-%     (-deriv{2}<0) .* (-deriv{2}) * u2Min;
+  (deriv{2}<0) .* (deriv{2}) * uMax + ...
+  deriv{3} .* grid.xs{4} + ...
+  (deriv{4}>=0) .* (deriv{4}) * (-uMax) + ...
+  (deriv{4}<0) .* (deriv{4}) * uMax;
+
 
 % backwards reachable set
 hamValue = -hamValue;
@@ -264,8 +232,13 @@ switch dim
     
   case 2
     alpha = uMax;
+  
+  case 3
+    alpha = abs(grid.xs{4});
     
+  case 4
+    alpha = uMax;    
   otherwise
-    error([ 'Partials only exist in dimensions 1-2' ]);
+    error([ 'Partials only exist in dimensions 1-4' ]);
 end
 end

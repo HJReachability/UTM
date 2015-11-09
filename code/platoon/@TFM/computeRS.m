@@ -24,31 +24,15 @@ switch type
     % is in the positive x-axis
     target = [0 obj.hw_speed 0 0];
     
-    % Big, coarse set
-    near = 0;
-    [grids, datas, tau] = quad_abs_target_2D(target, near, visualize);
+    [grids, datas, tau] = quad_abs_target_2D(target, visualize);
     
     gridLim = ...
       [grids{1}.min-1 grids{1}.max+1; grids{2}.min-1 grids{2}.max+1];
-    [~, ~, TTR_out] = recon2x2D(tau, grids, datas, gridLim, tau(end));
+    [~, ~, obj.qr_abs_target_V] = ...
+      recon2x2D(tau, grids, datas, gridLim, tau(end));
 
-    obj.qr_atcV.g = TTR_out.g;
-    obj.qr_atcV.data = TTR_out.value;
-    obj.qr_atcV.grad = TTR_out.grad;
-    obj.qr_atcV.tau = tau;
-    
-    % Small, fine set
-    near = 1;
-    [grids, datas, tau] = quad_abs_target_2D(target, near, visualize);
-    
-    gridLim = ...
-      [grids{1}.min-1 grids{1}.max+1; grids{2}.min-1 grids{2}.max+1];
-    [~, ~, TTR_out] = recon2x2D(tau, grids, datas, gridLim, tau(end));
+    obj.qr_abs_target_V.tau = tau;
 
-    obj.qr_atfV.g = TTR_out.g;
-    obj.qr_atfV.data = TTR_out.value;
-    obj.qr_atfV.grad = TTR_out.grad;
-    obj.qr_atfV.tau = tau;    
     
   case 'qr_join_platoon_V'
     %% Join platoon / merge onto highway for quadrotors
