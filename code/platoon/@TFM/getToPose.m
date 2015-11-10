@@ -54,9 +54,10 @@ switch class(vehicle)
       base_p = calculateCostate( ...
         obj.qr_abs_target_V.g, obj.qr_abs_target_V.grad, base_x);
       
-      small = 1e-6;
-      ux = (base_p(2)>small)*vehicle.uMin + (base_p(2)<-small)*vehicle.uMax;
-      uy = (base_p(4)>small)*vehicle.uMin + (base_p(4)<-small)*vehicle.uMax;
+      v = vehicle.getVelocity;
+      if abs(v(1)) < vel_threshold && base_p(2) < 
+      ux = (base_p(2)>=0)*vehicle.uMin + (base_p(2)<0)*vehicle.uMax;
+      uy = (base_p(4)>=0)*vehicle.uMin + (base_p(4)<0)*vehicle.uMax;
       u = rotate2D([ux; uy], heading);
       return;
     end

@@ -41,7 +41,7 @@ if ~iscolumn(u)
   u = u';
 end
 
-[~, x] = ode45(@(t,x) obj.dynamics(t, x, u), [0 T], x0);
+[~, x] = ode113(@(t,x) obj.dynamics(t, x, u), [0 T], x0);
 
 % Update the state, state history, control, and control history
 x1 = x(end, :)';

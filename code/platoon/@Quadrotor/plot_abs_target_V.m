@@ -17,8 +17,8 @@ end
   rotate2D(obj.getVelocity, -theta));
 
 % translation and rotation
-gRot = rotate2DGrid(g2D, theta);
-gFinal = shift2DGrid(gRot, shift);
+gRot = rotateGrid(g2D, theta);
+gFinal = shiftGrid(gRot, shift);
 
 % Plot result
 if isempty(obj.h_abs_target_V)
