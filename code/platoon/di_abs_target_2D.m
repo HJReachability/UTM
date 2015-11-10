@@ -46,7 +46,7 @@ uMax = 3;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %  (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 61;
+Nx = 81;
 
 % Create the x grid.
 g.min = [ x(1)-75 ; -1.5*x(2) ];     % Bounds on computational domain
