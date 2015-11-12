@@ -41,8 +41,8 @@ classdef Vehicle < handle
     hvxvyhist       % Velocity history
     
     % Position velocity (so far only used in DoubleInt)
-    hpxvx 
-    hpxvxhist
+    hpv = cell(2,1);
+    hpvhist = cell(2,1);
     
     % Safety sets
     hsafeV         % figure handles

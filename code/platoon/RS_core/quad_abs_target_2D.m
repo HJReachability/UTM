@@ -1,16 +1,16 @@
 function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 % [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 %
-% Computes 2D liveness reachable set for merging onto the highway. These
+% Computes 2D liveness reachable set for an absolute target set. These
 % need to be reconstructed in 4D.
 %
-% The dynamics are
+% The dynamics are (in each of the x and y components)
 % \dot x = v
 % \dot v = u
 %
 % where the control u aims to reach the target x
 %
-% Inputs: x - target state
+% Inputs: x - 4D target state
 %         visualize - whether to visualize the results
 %
 % Outputs: grids - two grid structures in a cell corresponding to datas
@@ -18,6 +18,7 @@ function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 %          tau   - time vector corresponding to datas
 %
 % Mo Chen, 2015-08-25
+% Modified by Mo Chen, 2015-11-12
 
 % Default states and visualization option
 if nargin<1
@@ -30,7 +31,7 @@ end
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 12;                    % End time.
+tMax = 13;                    % End time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
 
 % How close (relative) do we need to get to tMax to be considered finished?
@@ -46,25 +47,26 @@ uMax = 3;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %  (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 41;
+Np = 41;
+Nv = 31;
 
 % Create the x grid.
-g1.min = [ x(1)-75 ; -1.1*x(2) ];     % Bounds on computational domain
-g1.max = [ x(1)+35 ; 1.1*x(2) ];  
+g1.min = [ x(1)-35 ; -1.5*x(2) ];     % Bounds on computational domain
+g1.max = [ x(1)+35 ; 1.5*x(2) ];  
 
 g1.dim = 2;                              % Number of dimensions
 
 g1.bdry = @addGhostExtrapolate;
-g1.N = [ Nx; 3*ceil(Nx/(g1.max(1)-g1.min(1))*(g1.max(2)-g1.min(2)))];
+g1.N = [ Np; Nv];
 g1 = processGrid(g1);
 
 % Create the y grid.
-g2.min = [ x(3)-55 ; x(4)-1.1*x(2) ];     % Bounds on computational domain
-g2.max = [ x(3)+55 ; x(4)+1.1*x(2)]; 
+g2.min = [ x(3)-35 ; x(4)-1.5*x(2) ];     % Bounds on computational domain
+g2.max = [ x(3)+35 ; x(4)+1.5*x(2)]; 
 
 g2.dim = 2;                             % Number of dimensions
 g2.bdry = @addGhostExtrapolate;
-g2.N = [ Nx; 3*ceil(Nx/(g2.max(1)-g2.min(1))*(g2.max(2)-g2.min(2)))];
+g2.N = [ Np; Nv];
 g2 = processGrid(g2);
 
 % ----------------- Target -----------------
@@ -222,8 +224,6 @@ uMax = schemeData.uMax;
 hamValue = deriv{1} .* grid.xs{2} + ...
   (deriv{2}>=0) .* (deriv{2}) * (-uMax) + ...
   (deriv{2}<0) .* (deriv{2}) * uMax;
-%     (-deriv{2}>=0) .* (-deriv{2}) * u2Max + ...
-%     (-deriv{2}<0) .* (-deriv{2}) * u2Min;
 
 % backwards reachable set
 hamValue = -hamValue;

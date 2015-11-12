@@ -1,4 +1,20 @@
 function getToPose_test()
+% getToPose_test()
+%
+% Tests the getToPose function in TFM and in Quadrotor (mostly TFM)
+%
+% Repeats the following N times:
+%   Randomly assigns a target position target_dist units away from the
+%   origin using a random angle (pos_theta), as well as a random target
+%   heading (vel_theta). A quadrotor starts from the origin and attempts to
+%   head to the target position and velocity.
+%
+%  If debug mode is on (debug = 1), position-velocity slices of the value
+%  function in both the x and y directions, as well as the trajectories,
+%  are plotted.
+%
+% Mo Chen, 2015-11-12
+
 addpath('..')
 addpath('../RS_core')
 
@@ -6,117 +22,137 @@ addpath('../RS_core')
 tfm = TFM;
 tfm.computeRS('qr_abs_target_V');
 
+% Test N times...
 N = 10;
 for i = 1:N
   getToPoseSingle(tfm);
 end
-
-
 end
 
 function getToPoseSingle(tfm)
+% getToPoseSingle(tfm)
+%
+% A single random simulation
 
-debug = 1;
+%% Preliminaries
+debug = 1; % Debug mode
+target_dist = 50; % Target distance
 
-% Random heading
+% Random position and heading
+pos_theta = 2*pi*rand;
+target_heading = 2*pi*rand;
 
-pos_theta = 0;
-vel_theta = 0;
-%pos_theta = 2*pi*rand;
-%vel_theta = pos_theta - pi/2 + pi*rand;
-
-% Add quadrotors to TFM
-init_x = [0 10 -50 0];
+% Add quadrotor to TFM
+init_x = zeros(4,1);
 tfm.aas = {};
 tfm.addActiveAgents(Quadrotor(init_x));
 
 % Target state (random angle at 50 distance away; angle may be different
 % from heading)
-target_dist = 50;
 target_position = rotate2D([target_dist 0], pos_theta);
-figure;
-quiver(target_position(1), target_position(2), ...
-  10*cos(vel_theta), 10*sin(vel_theta), 'rx')
-hold on
 
-% Plot initial setup
-level = tfm.rtt;
-for j = 1:length(tfm.aas)
-  tfm.aas{j}.plotPosition('b');
-  tfm.aas{j}.plot_abs_target_V( ...
-    tfm.qr_abs_target_V, level, target_position, vel_theta);
+%% Display target state and initialize plot
+f = figure;
+if debug
+  subplot(1,3,1)
 end
+quiver(target_position(1), target_position(2), ...
+  10*cos(target_heading), 10*sin(target_heading), 'rx')
+grid on
 xlim(1.2*target_dist*[-1 1])
 ylim(1.2*target_dist*[-1 1])
 axis square
-drawnow;
 
-% Integration parameters
-tMax = 15;
-t = 0:tfm.dt:tMax;
-
-% Integrate
-for i = 1:length(t)
-  if i == length(t)
-    p = tfm.aas{1}.getPosition - target_position';
-    figure;
-    [g2D, data2D] = proj2D(tfm.qr_abs_target_V.g, [1 0 1 0], ...
-      tfm.qr_abs_target_V.g.N([2 4]), tfm.qr_abs_target_V.value, p);
-    
-    contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:0.2:13)
-    hold on
-    v = tfm.aas{1}.getVelocity;
-    plot(v(1), v(2), '*')
-    title(['p = ' num2str(p')])
-    
-    figure;
-    [g2D, data2D] = proj2D(tfm.qr_abs_target_V.g, [1 0 1 0], ...
-      tfm.qr_abs_target_V.g.N([2 4]), tfm.qr_abs_target_V.grad{2}, p);
-    
-    contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:0.2:13)
-    hold on
-    v = tfm.aas{1}.getVelocity;
-    plot(v(1), v(2), '*')
-    title(['p = ' num2str(p')])
-    
-    base_p = calculateCostate(tfm.qr_abs_target_V.g, tfm.qr_abs_target_V.grad, [p(1) v(1) p(2) v(2)])
-  end
-  
-  for j = 1:length(tfm.aas)
-    u = tfm.aas{j}.getToPose(tfm, target_position, vel_theta, debug);
-    
-    tfm.aas{j}.updateState(u, tfm.dt);
-    tfm.aas{j}.plotPosition;
-    
-    tfm.aas{j}.plot_abs_target_V( ...
-      tfm.qr_abs_target_V, level, target_position, vel_theta);
-  end
-  drawnow;
+if debug
+  f.Position(3:4) = [1000 400];
 end
 
-% Project 4D reachable set to position space
-p = tfm.aas{1}.getPosition - target_position';
-v = tfm.aas{1}.getVelocity;
-figure;
-[g2D, data2D] = proj2D(tfm.qr_abs_target_V.g, [1 0 1 0], ...
-  tfm.qr_abs_target_V.g.N([2 4]), tfm.qr_abs_target_V.value, p);
-
-contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:0.2:13)
 hold on
 
-plot(v(1), v(2), '*')
-title(['p = ' num2str(p')])
+% Plot initial setup
+level = tfm.rtt/2; % Level of the value function to show
+%% Main plot showing position and reachable set in position space
+tfm.aas{1}.plotPosition('b');
+tfm.aas{1}.plot_abs_target_V( ...
+  tfm.qr_abs_target_V, level, target_position, target_heading);
 
-figure;
-[g2D, data2D] = proj2D(tfm.qr_abs_target_V.g, [1 0 1 0], ...
-  tfm.qr_abs_target_V.g.N([2 4]), tfm.qr_abs_target_V.grad{2}, p);
+if debug
+  % Lower level plots showing transformed states position-velocity space
+  base_pos = rotate2D(tfm.aas{1}.getPosition - target_position', ...
+    -target_heading);
+  base_vel = rotate2D(tfm.aas{1}.getVelocity, -target_heading);
+  
+  %% x direction
+  subplot(1,3,2)
+  plot(base_pos(1), base_vel(1), 'k.')
+  hold on
+  g2D = proj2D(tfm.qr_abs_target_V.g, [], [0 0 1 1]);
+  data3D = min(tfm.qr_abs_target_V.value, [], 3);
+  data2D = min(data3D, [], 4);
+  contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:0.2:15)
+  axis square
+  
+  % Manual switching curves
+  x0left = -1.5*tfm.qr_abs_target_V.g.dx(1);
+  y0left = 10;
+  
+  x0right = 0; %tfm.qr_abs_target_V.g.dx(1);
+  y0right = 10 - 1.5*tfm.qr_abs_target_V.g.dx(2);
+  
+  % Plot switching curves
+  tt = linspace(-8, 1, 50);
+  x = 0.5 * 3 * tt.^2 + y0left*tt + x0left;
+  y = 3*tt + y0left;
+  plot(x, y, 'k-.')
+  x = 0.5 * 3 * tt.^2 + y0right*tt + x0right;
+  y = 3*tt + y0right;
+  plot(x, y, 'k-.')
+  
+  %% y direction
+  subplot(1,3,3)
+  plot(base_pos(2), base_vel(2), 'k.')
+  hold on
+  g2D = proj2D(tfm.qr_abs_target_V.g, [], [1 1 0 0]);
+  data3D = min(tfm.qr_abs_target_V.value, [], 1);
+  data2D = squeeze(min(data3D, [], 2));
+  contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:0.2:15)
+  axis square
+end
+drawnow;
 
-contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:0.2:13)
-hold on
-v = tfm.aas{1}.getVelocity;
-plot(v(1), v(2), '*')
-title(['p = ' num2str(p')])
+%% Integration
+tMax = 20;
+t = 0:tfm.dt:tMax;
+for i = 1:length(t)
+  % Just get to pose...
+  u = tfm.aas{1}.getToPose(tfm, target_position, target_heading, debug);
+  
+  % Main plot
+  if debug
+    subplot(1,3,1)
+  end
+  tfm.aas{1}.updateState(u, tfm.dt);
+  tfm.aas{1}.plotPosition;
+  tfm.aas{1}.plot_abs_target_V( ...
+    tfm.qr_abs_target_V, level, target_position, target_heading);
+  
+  % Lower level plots
+  if debug
+    base_pos = rotate2D(tfm.aas{1}.getPosition - target_position', ...
+      -target_heading);
+    base_vel = rotate2D(tfm.aas{1}.getVelocity, -target_heading);
+    
+    subplot(1,3,2)
+    plot(base_pos(1), base_vel(1), 'k.')
+    
+    subplot(1,3,3)
+    plot(base_pos(2), base_vel(2), 'k.')
+  end
+  drawnow;
+  
+  if isempty(u)
+    break;
+  end
+end
 
-base_p = calculateCostate(tfm.qr_abs_target_V.g, tfm.qr_abs_target_V.grad, [p(1) v(1) p(2) v(2)])
-keyboard
 end

@@ -16,7 +16,7 @@ function [u1, u] = followPath(obj, linpath, v, LQR)
 %          u  - entire control function from optimization
 %
 % Mo Chen, 2015-05-23
-% Modified: 2015-07-21
+% Modified: Mo Chen, 2015-11-12
 
 % Find closest point on the path to current position
 s0 = firstPathPoint(obj, linpath.fn);
@@ -44,7 +44,7 @@ if LQR
   sref = s0;
   rref = linpath.fn(sref);
   u1 = -K* (obj.x - [rref(1); vref(1); rref(2); vref(2)]);
-  if any(u1 > obj.uMax)
+  if any(abs(u1) > obj.uMax)
     u1 = u1 / max(abs(u1)) * obj.uMax;
   end
   % ----- END LQR -----  
@@ -90,7 +90,7 @@ else
   % ----- END CVX -----
   if any(isnan(u(:))), keyboard; end  %MPC just takes the first control
   u1 = u(:,1);
-end % end if LQROn
+end % end if LQR
 
 end % end function
 

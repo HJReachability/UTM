@@ -13,7 +13,7 @@ classdef TFM < handle
     
     % Thresholds for being considered in target set or in reachable set
     ttt = 1; % target threshold time
-    rtt = 10; % reachable set threshold time
+    rtt = 12; % reachable set threshold time
     
     % Frequency of state updates to the system
     dt = 0.1;
