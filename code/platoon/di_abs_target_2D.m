@@ -49,8 +49,8 @@ uMax = 3;
 Nx = 81;
 
 % Create the x grid.
-g.min = [ x(1)-75 ; -1.5*x(2) ];     % Bounds on computational domain
-g.max = [ x(1)+35 ; 1.5*x(2) ];  
+g.min = [ x(1)-75 ; min(-15, -1.5*x(2)) ];     % Bounds on computational domain
+g.max = [ x(1)+35 ; max(15, 1.5*x(2)) ];  
 
 g.dim = 2;                              % Number of dimensions
 

@@ -1,84 +1,107 @@
 function DoubleInt_test()
+% DoubleInt_test()
+%
+% Tests the double integrator model in getting to a target state
 addpath('..')
 
-
-% Target set and reachable set
+%% Target set and reachable set
 target = [0 10];
 [~, TTR_out] = di_abs_target_2D(target, 0);
 figure;
-contour(TTR_out.g.xs{1}, TTR_out.g.xs{2}, TTR_out.value, 0:0.2:20)
+contour(TTR_out.g.xs{1}, TTR_out.g.xs{2}, TTR_out.value, 0:0.2:15)
 hold on
-% Plot gradient
-%surf(TTR_out.g.xs{1}, TTR_out.g.xs{2}, TTR_out.grad{2}.*(abs(TTR_out.grad{2}) < 1))
-%zlim([-1 1])
-%return
-% Plot initial coniditions and setup figure
+
+%% Plot initial coniditions and setup figure
 plot(target(1), target(2), 'ro')
-xlim([-35 10])
+xlim([-60 60])
 ylim([-15 15])
 
-% % Plot switching curve
-% y = linspace(-15, 15, 100);
-% tt = (10 - 1.5*TTR_out.g.dx(2) -y)/3;
-% x = -0.5 * 3 * tt.^2;
-% plot(x,y,'k--')
-
-% % Plot upper left special trajectory
-% tt = linspace(-5, 0, 50);
-% y = 3*tt + 10 + 1.5*TTR_out.g.dx(2);
-% x = 0.5 * 3 * tt.^2 + (10+1.5*TTR_out.g.dx(2))*tt - 1.5*TTR_out.g.dx(2);
-% plot(x, y, 'k-.')
-
-% Plot lower left special trajectory
+%% Plot right switching curve
 tt = linspace(-5, 0, 50);
-y = 3*tt + 10 - 1.5*TTR_out.g.dx(2);
-x = 0.5 * 3 * tt.^2 + (10-1.5*TTR_out.g.dx(2))*tt - 1.5*TTR_out.g.dx(2);
+x0right = 0;
+y0right = 10 - 1.5*TTR_out.g.dx(2);
+x = 0.5 * 3 * tt.^2 + y0right*tt + x0right;
+y = 3*tt + y0right;
 plot(x, y, 'k-.')
 
-% % Plot lower right special trajectory
-% tt = linspace(-5, 0, 50);
-% y = 3*tt + 10 - 1.5*TTR_out.g.dx(2);
-% x = 0.5 * 3 * tt.^2 + (10-1.5*TTR_out.g.dx(2))*tt + 1.5*TTR_out.g.dx(2);
-% plot(x, y, 'k-.')
+%% Plot left switching curve
+x0left = -1.5*TTR_out.g.dx(1);
+y0left = 10;
+x = 0.5 * 3 * tt.^2 + y0left*tt + x0left;
+y = 3*tt + y0left;
+plot(x, y, 'k-.')
 
-% Simulation parameters
+%% Simulation parameters
 tMax = 50;
 dt = 0.1;
 t = 0:dt:tMax;
-N = 20;
-grad_threshold = -0.1;
-vel_threshold = 2;
-% grad_threshold = 0;
-% vel_threshold = 0;
+N = 20; % Repeat N times
 for n = 1:N
-  init_x = [-30*rand -8 + 16*rand];
+  %% Random initial state
+  init_x = [-20+40*rand -15+30*rand]; 
   d = DoubleInt(init_x);
-  d.plotPosVelx;
-
+  d.plotPosVel;
+  
   title('t=0')
   drawnow;
   
+  % Integrate
   for i = 1:length(t)
+    %% Check if already at target
     valuex = eval_u(TTR_out.g, TTR_out.value, d.x);
-    
     if valuex < 0.25
       break;
     end
     
-    p = calculateCostate(TTR_out.g, TTR_out.grad, d.x);
-    if abs(d.getVelocity) < vel_threshold && ...
-        p(2) < grad_threshold
-      %u = d.uMin;
-      u = (p(2) >= grad_threshold) * d.uMin + ...
-        (p(2) < grad_threshold) * d.uMax;      
+    %% Check if in band and synthesize controller
+    if in_band([x0left y0left], [x0right y0right], d.uMax, d.x)
+      u = d.uMax;
     else
-      u = (p(2) >= 0) * d.uMin + ...
-        (p(2) < 0) * d.uMax;
+      p = calculateCostate(TTR_out.g, TTR_out.grad, d.x);
+      u = (p(2) >= 0) * d.uMin + (p(2) < 0) * d.uMax;
     end
+    
+    %% Update state
     d.updateState(u, dt);
-    d.plotPosVelx;
+    d.plotPosVel;
     
     title(['t=' num2str(t)])
     drawnow;
   end
+end
+end
+
+function in = in_band(left, right, u, state)
+% Given y, evaluate x to see if it's between the band defined by the left
+% and right optimal curves
+%
+% Inputs: left, right - the left and right points (x(0), y(0)), i.e. the
+%                       final points for the left and right switching
+%                       curves
+%         u           - maximum acceleration
+%         state       - the point (x,y) to be checked
+% Output: in          - boolean indicating whether state is between left
+%                       and right
+
+in = false;
+
+if state(1) > opt_curve_x(left(1), left(2), u, state(2)) && ...
+    state(1) < opt_curve_x(right(1), right(2), u, state(2))
+  in = true;
+end
+
+end
+
+function x = opt_curve_x(x0, y0, u, y)
+% Takes the final point (x0, y0), acceleration u, and a query value y as
+% input, and outputs the corresponding value x that lies on the optimal
+% curve determined by (x0, y0)
+
+% Parametric form of the curve:
+% x = 0.5 * u * t.^2 + y0*t + x0;
+% y = u*t + y0;
+% Take y as input ans solve for x
+
+t = (y-y0)/u;
+x = 0.5 * u * t.^2 + y0*t + x0;
 end
