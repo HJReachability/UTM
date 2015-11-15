@@ -13,11 +13,10 @@ function [TD_out, TTR_out] = di_abs_target_2D(x, visualize)
 % Inputs: x - target state
 %         visualize - whether to visualize the results
 %
-% Outputs: grids - two grid structures in a cell corresponding to datas
-%          datas - 2D value functions in a cell
-%          tau   - time vector corresponding to datas
+% Outputs: TD_out  - Time-dependent formulatino value function
+%          TTR_out - Time-to-reach value function
 %
-% Mo Chen, 2015-08-25
+% Mo Chen, 2015-11-12
 
 % Default states and visualization option
 if nargin<1

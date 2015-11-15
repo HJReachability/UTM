@@ -30,7 +30,7 @@ classdef Vehicle < handle
     FQ                 % Pointer to quadrotor in front (self if leader)
     BQ                 % Pointer to quadrotor behind (self if tail)
     
-    h_abs_target_V     % value function for getting to an absolute target
+    
 
     mergePlatoonV      % Value function for merging onto platoon
     
@@ -44,7 +44,10 @@ classdef Vehicle < handle
     hpv = cell(2,1);
     hpvhist = cell(2,1);
     
+    h_abs_target_V     % for getting to an absolute target
+    
     % Safety sets
+    h_safe_V
     hsafeV         % figure handles
     safeV_vehicles % list of corresponding vehicles
 

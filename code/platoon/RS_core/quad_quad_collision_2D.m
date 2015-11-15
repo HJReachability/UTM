@@ -1,4 +1,4 @@
-function [data, g, tau] = quad_quad_collision_2D(d, visualize)
+function [data, g, tau] = quad_quad_collision_2D(d, speed, visualize)
 % function [dataC, g2D, tau] = quad2Dcollision(d, visualize)
 %
 % Computes collision reachable set for 4D relative quadrotor dynamics by
@@ -29,11 +29,15 @@ function [data, g, tau] = quad_quad_collision_2D(d, visualize)
 %   These are included to show some of the options available; modify
 %   the commenting to modify the behavior.
 
-if nargin<1
-  d = 2;
+if nargin < 1
+  d = 5;
 end
 
-if nargin<2
+if nargin < 2
+  speed = 10;
+end
+
+if nargin < 3
   visualize = 1;
 end
 
@@ -56,12 +60,11 @@ dissType = 'global';
 
 %---------------------------------------------------------------------------
 % Problem Parameters.
-u1Max = 1.7;
-u1Min = -1.7;
-u2Max = 1.7;
-u2Min = -1.7;
-v1Min = 5;
-v1Max = 5;
+u1Max = 3;
+u1Min = -3;
+u2Max = 3;
+u2Min = -3;
+
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
@@ -69,8 +72,8 @@ Nx = 51;
 
 % Create the grid.
 g.dim = 2;                           % Number of dimensions
-g.min = [-25; -2.1*v1Min ];     % Bounds on computational domain
-g.max = [ 25;  2.1*v1Max ];
+g.min = [-45; -2.1*speed ];     % Bounds on computational domain
+g.max = [ 45;  2.1*speed ];
 g.bdry = @addGhostExtrapolate;
 g.N = [ Nx; ceil(1.5*Nx/(g.max(1)-g.min(1))*(g.max(2)-g.min(2)))];
 g = processGrid(g);

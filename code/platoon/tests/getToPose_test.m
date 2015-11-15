@@ -74,7 +74,7 @@ level = tfm.rtt/2; % Level of the value function to show
 %% Main plot showing position and reachable set in position space
 tfm.aas{1}.plotPosition('b');
 tfm.aas{1}.plot_abs_target_V( ...
-  tfm.qr_abs_target_V, level, target_position, target_heading);
+  tfm.qr_abs_target_V, target_position, target_heading, level);
 
 if debug
   % Lower level plots showing transformed states position-velocity space
@@ -87,7 +87,7 @@ if debug
   plot(base_pos(1), base_vel(1), 'k.')
   hold on
   g2D = proj2D(tfm.qr_abs_target_V.g, [], [0 0 1 1]);
-  data3D = min(tfm.qr_abs_target_V.value, [], 3);
+  data3D = min(tfm.qr_abs_target_V.data, [], 3);
   data2D = min(data3D, [], 4);
   contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:0.2:15)
   axis square
@@ -113,7 +113,7 @@ if debug
   plot(base_pos(2), base_vel(2), 'k.')
   hold on
   g2D = proj2D(tfm.qr_abs_target_V.g, [], [1 1 0 0]);
-  data3D = min(tfm.qr_abs_target_V.value, [], 1);
+  data3D = min(tfm.qr_abs_target_V.data, [], 1);
   data2D = squeeze(min(data3D, [], 2));
   contour(g2D.xs{1}, g2D.xs{2}, data2D, 0:0.2:15)
   axis square
@@ -134,7 +134,7 @@ for i = 1:length(t)
   tfm.aas{1}.updateState(u, tfm.dt);
   tfm.aas{1}.plotPosition;
   tfm.aas{1}.plot_abs_target_V( ...
-    tfm.qr_abs_target_V, level, target_position, target_heading);
+    tfm.qr_abs_target_V, target_position, target_heading, level);
   
   % Lower level plots
   if debug

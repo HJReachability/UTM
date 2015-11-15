@@ -31,9 +31,9 @@ switch class(vehicle)
 end
 end
 
-%
+% =======================================
 % ============== QUADROTOR ==============
-%
+% =======================================
 function u = getToPose_qr(obj, vehicle, position, heading, debug)
 %% Compute liveness value
 % Get state in the target heading frame
@@ -42,7 +42,7 @@ base_vel = rotate2D(vehicle.getVelocity, -heading);
 base_x = [base_pos(1); base_vel(1); base_pos(2); base_vel(2)];
 
 % Evaluate value function
-valuex = eval_u(obj.qr_abs_target_V.g, obj.qr_abs_target_V.value, base_x);
+valuex = eval_u(obj.qr_abs_target_V.g, obj.qr_abs_target_V.data, base_x);
 
 %% Check if vehicle has arrived
 if valuex <= obj.ttt
@@ -151,6 +151,6 @@ t = (y-y0)/u;
 x = 0.5 * u * t.^2 + y0*t + x0;
 end
 
-%
+% =============================================
 % ============ END OF QUADROTOR ===============
-%
+% =============================================

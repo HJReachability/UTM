@@ -3,13 +3,16 @@ classdef TFM < handle
   properties
     % Highways
     hws = {};
-    hw_speed = 3;
+    hw_speed = 10;
     
     % active agents
     aas = {};
     
     % safety time
     safetyTime = 2;
+    
+    % collision radius
+    cr = 5;
     
     % Thresholds for being considered in target set or in reachable set
     ttt = 1; % target threshold time
@@ -23,10 +26,10 @@ classdef TFM < handle
     qr_abs_target_V
     
     % Quadrotor join platoon reachable set
-    qr_join_platoon_V
+    qr_rel_target_V
     
     % Quadrotor-quadrotor safety reachable set
-    qr_qr_safeV
+    qr_qr_safe_V
     
     %% Plane reachable sets
     % Plane create platoon reachable set

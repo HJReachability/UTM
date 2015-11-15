@@ -11,14 +11,8 @@ function [grids, datas, tau] = quad_rel_target_2D(x, visualize)
 %
 % Inputs: x         - target relative state
 %         visualize - whether to plot the computation
-%   data         Implicit surface function at t_max.
-%   g            Grid structure on which data was computed.
-%   data0        Implicit surface function at t_0.
 
-%---------------------------------------------------------------------------
-% You will see many executable lines that are commented out.
-%   These are included to show some of the options available; modify
-%   the commenting to modify the behavior.
+
 
 if nargin<2
   visualize = 1;
@@ -30,7 +24,7 @@ end
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 10;                    % End time.
+tMax = 15;                    % End time.
 plotSteps = 1;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
@@ -46,29 +40,28 @@ dissType = 'global';
 
 %---------------------------------------------------------------------------
 % Problem Parameters.
-u1Max = 1.7;
-u1Min = -1.7;
-u2Max = 1.7;
-u2Min = -1.7;
-v1Max = 5;
-v1Min = -5;
+u1Max = 3;
+u1Min = -3;
+u2Max = 0;
+u2Min = 0;
+
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 41;  %changed by AKA from 81 to 41
+Nx = 51;  %changed by AKA from 81 to 41
 
 % Create the grid.
 g1.dim = 2;                              % Number of dimensions
-g1.min = [ x(1)-15 ; 1.1*v1Min ];     % Bounds on computational domain
-g1.max = [ x(1)+15 ; 1.1*v1Max ];
+g1.min = [ x(1)-45 ; -20 ];     % Bounds on computational domain
+g1.max = [ x(1)+45 ; 20 ];
 g1.bdry = @addGhostExtrapolate;
 g1.N = [ Nx; ceil(Nx/(g1.max(1)-g1.min(1))*(g1.max(2)-g1.min(2)))];
 g1 = processGrid(g1);
 
 % Create the grid.
 g2.dim = 2;                             % Number of dimensions
-g2.min = [ x(3)-15 ; 1.1*v1Min ];     % Bounds on computational domain
-g2.max = [ x(3)+15 ; 1.1*v1Max ];
+g2.min = [ x(3)-45 ; -20 ];     % Bounds on computational domain
+g2.max = [ x(3)+45 ; 20 ];
 g2.bdry = @addGhostExtrapolate;
 g2.N = [ Nx; ceil(Nx/(g2.max(1)-g2.min(1))*(g2.max(2)-g2.min(2)))];
 g2 = processGrid(g2);
@@ -243,9 +236,9 @@ u2Min = schemeData.u2Min;
 % quadrotor 1 minimizes value, quadrotor 2 maximizes value
 hamValue = deriv{1} .* grid.xs{2} + ...
   (deriv{2}>=0) .* (deriv{2}) * u1Min + ...
-  (deriv{2}<0) .* (deriv{2}) * u1Max;
-%     (-deriv{2}>=0) .* (-deriv{2}) * u2Max + ...
-%     (-deriv{2}<0) .* (-deriv{2}) * u2Min;
+  (deriv{2}<0) .* (deriv{2}) * u1Max + ...
+  (-deriv{2}>=0) .* (-deriv{2}) * u2Max + ...
+  (-deriv{2}<0) .* (-deriv{2}) * u2Min;
 
 % backwards reachable set
 hamValue = -hamValue;

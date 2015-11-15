@@ -26,7 +26,7 @@ switch(class(obj.aas{i}))
     %% agent i is a quadrotor
     switch(class(obj.aas{j}))
       case 'Quadrotor'
-        [safe, uSafe] = checkPWSafety_qr_qr(obj.qr_qr_safeV, ...
+        [safe, uSafe] = checkPWSafety_qr_qr(obj.qr_qr_safe_V, ...
           obj.safetyTime, obj.aas{i}, obj.aas{j});
         
       case 'Platoon'
@@ -66,7 +66,7 @@ end % end outer switch
 end % end function
 
 %%
-function [safe, uSafe] = checkPWSafety_qr_qr(qr_qr_safeV, safetyTime, ...
+function [safe, uSafe] = checkPWSafety_qr_qr(qr_qr_safe_V, safetyTime, ...
   qr1, qr2)
 % Safety of quadrotor qr1 with respect to quadrotor qr2
 
@@ -79,15 +79,15 @@ base_vel = rotate2D(qr2.getVelocity - qr1.getVelocity, -theta);
 base_x = [base_pos(1); base_vel(1); base_pos(2); base_vel(2)];
 
 % Check if state is within grid bounds for a closer safety check
-if any(base_x <= qr_qr_safeV.g.min) || ...
-    any(base_x >= qr_qr_safeV.g.max)
+if any(base_x <= qr_qr_safe_V.g.min) || ...
+    any(base_x >= qr_qr_safe_V.g.max)
   safe = 1;
   uSafe = [];
   return
 end
 
 % Compute safety value
-valuex = eval_u(qr_qr_safeV.g, qr_qr_safeV.data, base_x);
+valuex = eval_u(qr_qr_safe_V.g, qr_qr_safe_V.data, base_x);
 
 % Compute safety preserving control if needed
 if valuex > safetyTime
@@ -99,7 +99,7 @@ else
   safe = 0;
 
   % Compute control assuming "pursuer" is facing 0 degrees
-  base_grad = calculateCostate(qr_qr_safeV.g, qr_qr_safeV.grad, base_x);
+  base_grad = calculateCostate(qr_qr_safe_V.g, qr_qr_safe_V.grad, base_x);
   ux = (base_grad(2)>=0)*qr1.uMin + (base_grad(2)<0)*qr1.uMax;
   uy = (base_grad(4)>=0)*qr1.uMin + (base_grad(4)<0)*qr1.uMax;
   u = [ux; uy];
