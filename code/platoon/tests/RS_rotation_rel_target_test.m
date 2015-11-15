@@ -31,7 +31,7 @@ hold on
 % Leader velocity
 orig_v2 = [3 0];
 v2 = rotate2D(orig_v2, theta);
-q2 = quadrotor(1, [0 v2(1) 0 v2(2)]);
+q2 = Quadrotor([0 v2(1) 0 v2(2)]);
 
 % Target relative position
 rel_p = [-5 0];
@@ -42,7 +42,7 @@ disp(['Target relative position: ' num2str(rel_pt)])
 offset = [-1 -1];
 orig_p = rel_p + offset;
 rot_p = rotate2D(orig_p, theta);
-q1 = quadrotor(2, [rot_p(1) 0 rot_p(2) 0]);
+q1 = Quadrotor([rot_p(1) 0 rot_p(2) 0]);
 
 % Initialize plot
 q1.plotPosition('r');
@@ -63,7 +63,7 @@ function simulate_baseRS(q1, q2, base_TTR_out, rel_pt, theta)
 % vehicle states are rotated appropriately to the frame of the base
 % reachable set
 %
-% q1 is leader, q2 tries to join platoon
+% q2 is leader, q1 tries to join platoon
 %
 % Mo Chen, 2015-10-27
 
@@ -100,8 +100,8 @@ for i = 1:length(t)
   u = [ux; uy];
   
   % Apply control in the global frame
-  q2.updateState([0 0]);
-  q1.updateState(rotate2D(u, theta));
+  q2.updateState([0 0], dt);
+  q1.updateState(rotate2D(u, theta), dt);
   
   % Update and plot position
   q1.plotPosition;
@@ -136,8 +136,8 @@ gridLim = ...
 [~, ~, base_TTR_out] = recon2x2D(tau, grids, datas, gridLim, tau(end));
 
 % Visualize the base reachable set
-[g2D, data2D] = proj2D(base_TTR_out.g, [0 1 0 1], ...
-  base_TTR_out.g.N([1 3]), base_TTR_out.value, [0 0]);
+[g2D, data2D] = proj2D(base_TTR_out.g, base_TTR_out.value, [0 1 0 1], ...
+    [0 0]);
 figure
 contour(g2D.xs{1}, g2D.xs{2}, data2D, [4 4])
 hold on
