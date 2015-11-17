@@ -8,7 +8,8 @@ addpath('..') % needed for Plane class
 addpath('/Users/jennifershih/Documents/Tomlin Research/hybrid_system_lab_git/helperOC');
 
 % load the output g and data from running air3D.m in the levelset toolbox
-load('../tests/Plane_test_data/air3D_data')
+load('/Users/jennifershih/Documents/Tomlin Research/hybrid_system_lab_git/hamilton_jacobian_toolbox/Examples/Reachability/cylinder_target_air3D.mat')
+%load('../tests/Plane_test_data/air3D_data');
 capture_radius = 5;
 speed = 5;
 
@@ -19,9 +20,13 @@ pl2 = Plane([20 0 3*pi/4]);
 pl2.speed = speed;
 pl3 = Plane([0 0 pi/4]);
 pl3.speed = speed;
+pl4 = Plane([20 20 pi + pi/4]);
+pl4.speed = speed;
+%pl5 = Plane([10 10 -pi/4]);
+%pl5.speed = speed;
 
 % A list of planes
-list_planes = [pl1 pl2 pl3];
+list_planes = [pl1 pl2 pl3 pl4];
 num_planes = length(list_planes);
 
 % Safety threshold settings for control
@@ -31,9 +36,9 @@ safety_threshold = 1;
 costates = extractCostates(g, data);
 
 figure;
-pl1.plotPosition;
-pl2.plotPosition;
-pl3.plotPosition;
+for i=1:num_planes
+    list_planes(i).plotPosition;
+end
 axis([-5 25 -5 25]);
 
 % Integration parameters
@@ -41,9 +46,7 @@ tMax = 5;
 dt = 0.1;
 t = dt:dt:tMax;
 
-% Pairings
-pairings = three_agent_basic_solver();
-controls = zeros(3, 1);
+controls = zeros(num_planes, 1);
 
 for i = 1:length(t)
   %% Detect collision 
@@ -55,10 +58,14 @@ for i = 1:length(t)
      end
   end
   
+  %% Compute pairings for each intersection
+  %pairings = three_agent_basic_solver();
+  pairings = safety_penalty_obj_solver(list_planes, safety_threshold, g, data, costates);
   %% Computes control for each agent based on pairings (evader, pursuer)
   for planeNo = 1:num_planes
     evader = list_planes(planeNo);
     pursuer = list_planes(pairings(num2str(planeNo)));
+    %disp([num2str(planeNo) ' evades ' num2str(pairings(num2str(planeNo)))])
     controls(planeNo) = compute_control_evader(evader, pursuer, safety_threshold, g, data, costates);
   end
   
@@ -89,6 +96,7 @@ function u = compute_control_evader(evader, pursuer, safety_threshold, g, data, 
 
   %% Compute controls
   valuex = eval_u(g, data, xr); % Plug relative state into value function
+
   disp(['Safety value: ' num2str(valuex)])
   
   if valuex <= safety_threshold
