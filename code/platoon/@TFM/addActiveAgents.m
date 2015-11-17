@@ -5,6 +5,11 @@ function addActiveAgents(obj, agents)
 %
 % Mo Chen 2015-11-03
 
+% If adding an empty set, do nothing
+if isempty(agents)
+  return
+end
+
 % Convert a single agent into a list containing the agent if necessary
 if ~iscell(agents)
   agents = {agents};

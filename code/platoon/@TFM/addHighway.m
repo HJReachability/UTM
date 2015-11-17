@@ -5,14 +5,14 @@ function addHighway(obj, hw)
 %
 % Mo Chen, 2015-10-30
 
-if ~isa(hw, 'highway')
+if ~isa(hw, 'Highway')
   error('Input must be a highway object!')
 end
 
 % Add highway to highways list
-obj.hws = {hws; hw};
+obj.hws{length(obj.hws)+1} = hw;
 
 % Add platoons on highway to active agents list
-addActiveAgent(hw.ps);
+obj.addActiveAgents(hw.ps);
 
 end

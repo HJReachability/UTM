@@ -1,4 +1,4 @@
-classdef Highway < linpath
+classdef Highway < Linpath
   % Highway class (inherits linpath class)
   
   properties
@@ -21,7 +21,7 @@ classdef Highway < linpath
   end
   
   methods
-    function obj = highway(z0, z1, speed, fourD, width)
+    function obj = Highway(z0, z1, speed, width)
       % function obj = highway(z0, z1, speed, width)
       % Constructor for highway class
       %
@@ -36,51 +36,19 @@ classdef Highway < linpath
       % Modified: 2015-07-21
 
       %% Default speed and width
-      if nargin<3
+      if nargin < 3
         speed = 3;
       end
       
+      if nargin < 4
+        width = 10;
+      end
+      
       % Call constructor of the superclass linpath
-      obj@linpath(z0, z1, speed);
+      obj@Linpath(z0, z1, speed);
       
-      if nargin<5
-        obj.width = 6;
-      else
-        obj.width = width;
-      end      
-      
-      %% Whether to use 4D reachable set
-      if nargin<4
-        fourD=1;
-      end
-     
-      %% Compute liveness reachable set for joining the highway
-      % highway direction and speed
-      velocity = obj.ds * obj.speed;
-      
-      % Compute 2D value function that could be used to reconstruct the 4D
-      % value function
-      [grids, datas, tau] = quad2D_liveness( ...
-                                         [0 velocity(1) 0 velocity(2)], 0);
-      
-      % If 4D reachable set is specified, then reconstruct it; otherwise,
-      % simply store the 2D reachable sets and reconstruct later
-      if fourD
-        gridLim = ...
-          [grids{1}.min-1 grids{1}.max+1; grids{2}.min-1 grids{2}.max+1];
-        [~, ~, TTR_out] = recon2x2D(tau, grids, datas, gridLim, tau(end));
-        
-        obj.liveV.g = TTR_out.g;
-        obj.liveV.data = TTR_out.value;
-        obj.liveV.grad = TTR_out.grad;
-        obj.liveV.tau = tau;
-        
-      else
-        obj.liveV.g = grids;
-        obj.liveV.data = datas;
-        obj.liveV.tau = tau;
-        obj.liveV.grad = [];
-      end
+      % width of highway
+      obj.width = width;
       
       warning('Need to specify connections property')
     end
