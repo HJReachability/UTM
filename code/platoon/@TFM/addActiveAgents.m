@@ -25,5 +25,10 @@ end
 % Expand cell array
 for i = 1:length(agents)
   obj.aas{length(obj.aas) + 1, 1} = agents{i};
+  
+  % If agent is a vehicle, assign a unique ID
+  if isa(agents{i}, 'Vehicle')
+    agents{i}.ID = length(obj.aas);
+  end
 end
 end

@@ -7,6 +7,9 @@ classdef Platoon < handle
     % Cell array of handles to vehicles currently in the platoon
     vehicles
     
+    % Vehicle spacing
+    veh_spacing
+    
     % Maximum allowable number of vehicles in platoon
     nmax
     
@@ -29,23 +32,15 @@ classdef Platoon < handle
     % Last occupied slot index
     loIdx
     
-    % Separation time for followers
-    followTime
-    
     % Front and back platoons (points to self if there are no from and back
     % platoons)
     FP
     BP
     
-    % Footprint of platoon
-    safeV
-    
-    %Liveness reachable set for tracking platoon positions
-    liveV
   end
   
   methods
-    function obj = platoon(leader, hw, nmax, followTime,FourD)
+    function obj = platoon(leader, hw, tfm, nmax)
       % function obj = platoon(leader, hw, nmax, followTime)
       % Constructor for platoon object
       %
@@ -54,9 +49,8 @@ classdef Platoon < handle
       % Inputs:  leader     - leader vehicle (the first vehicle in the
       %                       platoon)
       %          hw         - highway of platoon
+      %          tfm        - traffic flow manager
       %          nmax       - maximum number of vehicles
-      %          followTime - required following time for other platoons
-      %                       behind this one
       %
       % Output: obj         - platoon object
       %
@@ -68,11 +62,6 @@ classdef Platoon < handle
         nmax = 5;
       end
       obj.nmax = nmax;
-      
-      if nargin<4
-        followTime = 2;
-      end
-      obj.followTime = followTime;
       
       % Preliminary
       obj.ID = leader.ID;

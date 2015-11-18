@@ -18,8 +18,13 @@ classdef Vehicle < handle
     %   'Follower'
     %   'Leader'
     %   'Faulty'
-    q = 'Free';
+    q = 'Free'
 
+    % Status (when requesting control from TFM)
+    %   'idle'
+    %   'busy'
+    tfm_status = 'idle'
+    
     p           % Pointer to platoon
     idx         % Vehicle index in platoon (determines phantom position)
     

@@ -1,4 +1,4 @@
-function xPhantom = phantomPosition(obj, idx)
+function xPhantom = phantomPosition(obj, spacing, idx)
 % function xPhantom = phantomPosition(obj, idx)
 %
 % Computes phantom position of a Follower
@@ -14,9 +14,6 @@ function xPhantom = phantomPosition(obj, idx)
 % Get leader vehicle and highway heading
 Leader = obj.vehicles{1};
 
-% Vehicle spacing is 3*2*sqrt(2) between each vehicle
-spacing = 3*(2*sqrt(2));
-xPhantom = Leader.x(Leader.pdim) - ...
-    spacing * (idx-1) * obj.hw.ds; %* obj.platoon.followTime;
+xPhantom = Leader.x(Leader.pdim) - spacing * (idx-1) * obj.hw.ds;
   
 end

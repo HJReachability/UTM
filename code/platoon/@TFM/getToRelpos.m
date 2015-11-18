@@ -1,4 +1,13 @@
-function u = getToRelpos(obj, veh, veh_ref, relpos, debug)
+function u = getToRelpos(obj, veh, veh_ref, rel_pos, debug)
+% u = getToRelpos(obj, veh, veh_ref, relpos, debug)
+% method of TFM class
+% 
+% Returns the control needed for veh to get to the relative position relpos
+% with respect to the vehicle veh_ref
+
+if nargin < 5
+  debug = false;
+end
 
 switch class(veh)
   case 'Quadrotor'
@@ -6,7 +15,7 @@ switch class(veh)
     switch class(veh_ref)
       case 'Quadrotor'
         %% Reference vehicle is a quadrotor
-        u = getToRelpos_qr_qr(obj, veh, veh_ref, relpos, debug);
+        u = getToRelpos_qr_qr(obj, veh, veh_ref, rel_pos, debug);
         
       otherwise
         %% Otherwise

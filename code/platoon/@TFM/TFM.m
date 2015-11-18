@@ -5,6 +5,9 @@ classdef TFM < handle
     hws = {};
     hw_speed = 10;
     
+    % Separation distance of vehicles within platoons
+    ipsd = 10; % Intra-platoon separation distance
+    
     % active agents
     aas = {};
     

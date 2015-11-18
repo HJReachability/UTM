@@ -24,7 +24,10 @@ function assimVehicle(obj, vehicle)
 % end
 
 % Check if the platoon is already full
-if isempty(vehicle.idxJoin) %HACK ALERT: there is a problem when a higher indexed uav reaches its target position in the platoon before a lowersimulateNormal2.m indexed uav
+if isempty(vehicle.idxJoin) 
+  % HACK ALERT: there is a problem when a higher indexed uav reaches its 
+  % target position in the platoon before a lowersimulateNormal2.m 
+  % indexed uav
     if strcmp(vehicle.q, 'Free')
         % Vehicle is free
         if obj.loIdx >= obj.nmax

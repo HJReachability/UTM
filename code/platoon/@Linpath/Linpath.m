@@ -6,7 +6,7 @@ classdef Linpath < handle
     z0
     z1
     
-    % heading
+    % heading unit vector
     ds
     
     % function handle
