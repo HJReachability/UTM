@@ -8,10 +8,8 @@ classdef Vehicle < handle
     x           % State
     u           % Recent control signal
     
-    
     xhist       % History of state
     uhist       % History of control
-    
     
     % Mode
     %   'Free'

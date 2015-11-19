@@ -37,7 +37,7 @@ classdef Highway < Linpath
 
       %% Default speed and width
       if nargin < 3
-        speed = 3;
+        speed = 10;
       end
       
       if nargin < 4

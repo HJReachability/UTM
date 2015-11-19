@@ -45,13 +45,16 @@ if valuex <= obj.ttt
   if debug
     disp('Arrived')
   end
-    u = [];
-    return;
+  u = [];
+  return;
 end
 
 %% In reachable set
 if valuex <= obj.rtt
-  disp(['In reachable set; valuex = ' num2str(valuex)])
+  if debug
+    disp(['In reachable set; valuex = ' num2str(valuex)])
+  end
+  
   % Gradient in the frame of base reachable set
   base_p = calculateCostate(obj.qr_rel_target_V.g, ...
                                         obj.qr_rel_target_V.grad, base_x);

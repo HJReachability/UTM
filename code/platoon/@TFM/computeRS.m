@@ -24,8 +24,10 @@ switch type
     % is in the positive x-axis
     target = [0 obj.hw_speed 0 0];
     
-    filename = ['../RS_core/saved/qr_abs_target_V_' ...
+    filename = [fileparts(mfilename('fullpath')) ...
+      '/../RS_core/saved/qr_abs_target_V_' ...
       num2str(obj.hw_speed) '.mat'];
+    
     if exist(filename, 'file')
       load(filename)
     else
@@ -52,7 +54,8 @@ switch type
     %% Join platoon / merge onto highway for quadrotors
     x = [0 0 0 0]; % Base reachable set assumes 0 relative state
     
-    filename = ['../RS_core/saved/qr_rel_target_V.mat'];
+    filename = [fileparts(mfilename('fullpath')) ...
+      '/../RS_core/saved/qr_rel_target_V.mat'];
     
     if exist(filename, 'file')
       load(filename)
@@ -88,7 +91,8 @@ switch type
     
   case 'qr_qr_safe_V'
     %% Safety between two quadrotors
-    filename = ['../RS_core/saved/qr_qr_safe_V_' ...
+    filename = [fileparts(mfilename('fullpath')) ... 
+      '/../RS_core/saved/qr_qr_safe_V_' ...
       num2str(obj.cr) '_' num2str(obj.hw_speed) '.mat'];
 
     if exist(filename, 'file')
@@ -125,7 +129,8 @@ switch type
     %% Safety between two Planes
     % 3D sets take a while to compute... load from file if available;
     % otherwise, compute and save for next time.
-    filename = ['../RS_core/saved/pl_pl_safe_V_' ...
+    filename = [fileparts(mfilename('fullpath')) ...
+      '/../RS_core/saved/pl_pl_safe_V_' ...
       num2str(obj.cr) '_' num2str(obj.hw_speed) '.mat'];
     
     if exist(filename, 'file')

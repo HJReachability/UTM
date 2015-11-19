@@ -40,9 +40,9 @@ classdef Platoon < handle
   end
   
   methods
-    function obj = platoon(leader, hw, tfm, nmax)
-      % function obj = platoon(leader, hw, nmax, followTime)
-      % Constructor for platoon object
+    function obj = Platoon(leader, hw, tfm, nmax)
+      % function obj = Platoon(leader, hw, nmax, followTime)
+      % Constructor for Platoon object
       %
       % Must specify a leader and a highway!
       %
@@ -56,106 +56,46 @@ classdef Platoon < handle
       %
       % Mo Chen, 2015-07-06
       % Modified: Qie Hu, 2015-07-17
+      % Modified: Mo Chen, 2015-11-18
+
+      %% Make sure leader is within the width of the highway
+      [~, dist] = hw.highwayPos(leader.getPosition);
+      if dist > hw.width
+        error('Vehicle is too far to be added to platoon on this highway!')
+      end
       
-      % Maximum number of vehicles
-      if nargin<3
+      %% Maximum number of vehicles
+      if nargin<4
         nmax = 5;
       end
+      
       obj.nmax = nmax;
       
-      % Preliminary
+      %% Preliminary
       obj.ID = leader.ID;
       obj.n = 1;
       
-      % Vehicle list and slot status
+      % Intra-vehicle spacing
+      obj.veh_spacing = tfm.ipsd;
+      
+      %% Vehicle list and slot status
       obj.vehicles = cell(obj.nmax, 1);
       obj.vehicles{1} = leader;
       obj.slotStatus = zeros(nmax, 1);
       obj.slotStatus(1) = 1;
-      obj.loIdx = 1;
-      
-      % Point to highway
-      obj.hw = hw;
-      
-      % make highway object point to this platoon
-      obj.hw.ps = [obj.hw.ps obj];
-      
-      % Make sure leader is within the width of the highway
-      [~, dist] = obj.hw.highwayPos( ...
-        obj.vehicles{1}.x(obj.vehicles{1}.pdim) );
-      if dist > obj.hw.width
-        error('Vehicle is too far to be added to platoon on this highway!')
-      end
       
       % Set vehicle mode to leader
       obj.vehicles{1}.q = 'Leader';
       obj.vehicles{1}.idx = 1;
       obj.vehicles{1}.p = obj;
-      obj.vehicles{1}.Leader = obj.vehicles{1};
       
-      % Set BQ and FQ to itself for leader
-      obj.vehicles{1}.FQ = obj.vehicles{1};
-      obj.vehicles{1}.BQ = obj.vehicles{1};
+      %% Add platoon to highway
+      hw.addPlatoon(obj);
       
       % Initialize platoon pointers to self
       obj.FP = obj;
       obj.BP = obj;
       
-      % Remove merge highway value function
-      obj.vehicles{1}.mergeHighwayV = [];
-      
-      if nargin < 5
-        FourD=1;
-      end
-      
-      if FourD
-        filename = '../../data/quad_liveness_4D.mat';
-      else
-        filename = '../../data/quad_liveness_2x2D.mat';
-      end
-      
-      load(filename)
-      
-      obj.liveV=liveV;
-      
-      obj.vJoin = cell(nmax, 1);
-      
-    end
+     end
   end
 end
-
-% function annex(obj,platoon) % Append trailing platoon at the back of obj
-% % UNUSED?? Should put this in a separate file
-%
-% if platoon.FP ~= obj
-%   warning([
-%     sprintf('Cannot append platoon.\n'),...
-%     sprintf('\tPlatoon %s is behind platoon %s.\n',platoon.ID, platoon.FQ.ID),...
-%     sprintf('\tCan only append platoons directly behind current platoon.\n')
-%     ]);
-% end
-%
-% % Update platoon pointers
-% if platoon.BP == platoon
-%   obj.BP          = obj;
-% else
-%   obj.BP          = platoon.BP;
-%   platoon.BP.FP   = obj;
-% end
-%
-% % Update vehicle pointers
-% obj.vehicle{obj.n}.BQ   = platoon.vehicle{1};
-% platoon.vehicle{1}.FQ   = obj.vehicle{obj.n};
-%
-% % Update follower vehicles in old trailing platoon
-% for i=1:platoon.n
-%   platoon.vehicle{i}.platoon = obj;
-%   platoon.vehicle{i}.idx = obj.n + platoon.vehicle{i}.idx;
-% end
-% % Concatenate all lists and update info
-% obj.n         =  obj.n     +    platoon.n;
-% obj.vehicle   = [obj.vehicle    platoon.vehicle];
-% obj.IDvehicle = [obj.IDvehicle  platoon.IDvehicle];
-% % Delete old platoon object
-% delete(platoon)
-% end

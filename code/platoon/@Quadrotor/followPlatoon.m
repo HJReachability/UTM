@@ -1,5 +1,6 @@
-function u = followPlatoon(obj)
-% function u = followPlatoon(obj)
+function u = followPlatoon(obj, tfm, debug)
+% u = followPlatoon(obj, tfm, debug)
+% method of Quadrotor class
 %
 % Follows the platoon that the current vehicle is in; the vehicle's current
 % platoon is given by obj.p
@@ -12,56 +13,40 @@ if ~strcmp(obj.q, 'Follower')
   error('Vehicle must be a follower!')
 end
 
-% Go to first available free position slot if needed
-if find(~obj.p.slotStatus, 1, 'first') < obj.idx
+if nargin < 3
+  debug = false;
+end
+
+%% Check if there's a free slot in front inside the platoon
+idx = obj.p.getFirstEmptySlot;
+if idx < obj.idx
   obj.p.slotStatus(obj.idx) = 0;
-  obj.idx = find(~obj.p.slotStatus, 1, 'first');
-  obj.p.vList(obj.idx) = 1;
-  obj.mergePlatoonV = [];
+  obj.p.slotStatus(idx) = 1;
+  obj.idx = idx;
 end
 
-% Parse target state
-x = zeros(obj.nx, 1);
+%% Determine if the vehicle is too far away for simple controller
+% Phantom position
+[pPh_rel, pPh_abs] = obj.p.phantomPosition(tfm.ipsd, obj.idx);
 
-% Determine phantom position
-xPh = obj.p.phantomPosition(obj.idx);
+err = norm(pPh_abs - obj.getPosition);
 
-% Target state relative to leader
-x(obj.pdim) = xPh - obj.Leader.x(obj.Leader.pdim);
-
-
-
-if abs(x-(obj.x-obj.Leader.x))<=1.5%2.1*[g1.dx;g2.dx]
-  disp('PID')
-  % Simple position and velocity feedback; gains could be tuned
-  k_p = 10;
-  k_v = 1;
-
-  if isempty(obj.Leader.u)
-    lu = [0; 0];
-  else
-    lu = obj.Leader.u;
+if err > 5
+  %% If needed (too far away), use reachability-based controller
+  if debug
+    disp(['Vehicle ' num2str(obj.ID) ' catching up...'])
   end
-
-  u = lu ...
-    + k_p*(obj.p.phantomPosition(obj.idx) - obj.x(obj.pdim))...
-    + k_v*(obj.Leader.x(obj.vdim) - obj.x(obj.vdim));
-
-  % Acceleration limit
-  u = max(u, obj.uMin);
-  u = min(u, obj.uMax);
-  obj.mergePlatoonV = [];
-else
-  disp('Catch-up')
   
-  % Get value function
-  [grids, datas, tau] = obj.computeV_relDyn(x);  
-  
-  % Catch up to platoon if too far away
-  u = obj.computeCtrl_relDyn(obj.Leader.x, xPh, ...
-    grids, datas, tau, obj.vMax);
-
+  u = obj.getToRelpos(obj.p.vehicles{1}, tfm, pPh_rel);  
+  return
 end
+
+%% If close enough, use simple controller
+if debug
+  disp(['Vehicle ' num2str(obj.ID) ' using simple controller...'])
+end
+u = simpleLinFB(obj, obj.p.vehicles{1}.u, pPh_abs, ...
+  obj.p.vehicles{1}.getVelocity);
 
 end % end function
 

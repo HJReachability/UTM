@@ -20,17 +20,13 @@ function [s, dist, x] = highwayPos(obj, z)
 x1 = obj.z0(1); y1 = obj.z0(2);
 x2 = obj.z1(1); y2 = obj.z1(2);
 
-% Normalized directions
-dx = x2-x1; dy = y2-y1;
-dnorm = (dx^2 + dy^2);
-dx = dx/dnorm;
-dy = dy/dnorm;
-
 % Perpendicular directions
-dx_perp = -dy; dy_perp = dx;
+dx_perp = -obj.ds(2); 
+dy_perp = obj.ds(1);
 
 % "Origin" of input point
-x3 = z(1); y3 = z(2);
+x3 = z(1);
+y3 = z(2);
 
 % Extend input point in both directions along perpendicular direction
 large = 1e3;

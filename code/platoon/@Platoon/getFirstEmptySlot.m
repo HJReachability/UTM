@@ -2,10 +2,10 @@ function idx = getFirstEmptySlot(obj)
 % idx = getFirstEmptySlot(obj)
 % method of Platoon class
 %
-% Returns the first empty slot, if available; otherwise, returns -1
+% Returns the first empty slot, if available; otherwise, returns empty
 
-if length(obj.vehicles) >= nmax
-  idx = -1;
+if all(obj.slotStatus)
+  idx = [];
   return;
 end
 

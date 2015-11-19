@@ -33,10 +33,10 @@ classdef Linpath < handle
       
       % Default speed
       if nargin<3
-        obj.speed = 3;
-      else
-        obj.speed = speed;
+        speed = 10;
       end
+      
+      obj.speed = speed;
       
       % function handle representing highway
       if numel(z0) ~= 2 || numel(z1) ~= 2

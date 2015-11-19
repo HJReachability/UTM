@@ -47,50 +47,51 @@ if LQR
   if any(abs(u1) > obj.uMax)
     u1 = u1 / max(abs(u1)) * obj.uMax;
   end
-  % ----- END LQR -----  
-else
-  error(['MPC Controller doesn''t work properly! ' ... 
-    'Try testing it using followPath_test.m'])
-  tsteps = 5; % MPC time horizon
-  dt = 0.1; % time step size
-  % ----- BEGIN CVX -----
-  cvx_begin
-  variable p(2, tsteps)     % sequence of vehicle positions
-  variable v(2, tsteps)     % sequence of vehicle velocities
-  variable r(2, tsteps)     % sequence of reference positions
-  variable s(1, tsteps)       % sequence of reference path indices
-  variable ds(1,tsteps-1)     % sequence of speeds along the path
-  variable u(obj.nu, tsteps)  % sequence of controls
-  variable x(obj.nx, tsteps)  % sequence of states
-  
-  minimize sum(sum((r-p).^2)) + 5*sum(1-s) + sum(sum( (v(1,:)-vref(1)).^2 + (v(2,:)-vref(2)).^2 ))
-  
-  subject to
-  % First time step
-  x(:,1) == obj.dynamics(0, obj.x, u(:,1))*dt   % Dynamics
-  p(:,1) == x(obj.pdim,1)                        % Position components
-  v(:,1) == x(obj.vdim,1)
-  s(1) == s0
-  
-  %             All time steps afterwards
-  for i = 2:tsteps
-    x(:,i) == obj.dynamics(0, x(:,i-1), u(:,i))*dt        % Dynamics
-    p(:,i) == x(obj.pdim,i)                                % Position components
-    v(:,i) == x(obj.vdim,i)                                % Position components
-    s(i) == s(i-1) + ds(i-1)                            % Advanced on path
-  end
-  
-  r == linpath.fn(s)
-  obj.uMin <= u <= obj.uMax              % Control bounds
-  % obj.vMin <= v <= obj.vMax                 % Velocity bounds
-  0 <= s <= 1
-  ds >= 0
-  
-  cvx_end
-  % ----- END CVX -----
-  if any(isnan(u(:))), keyboard; end  %MPC just takes the first control
-  u1 = u(:,1);
-end % end if LQR
+  return
+end
+% ----- END LQR -----
+
+error(['MPC Controller doesn''t work properly! ' ...
+  'Try testing it using followPath_test.m'])
+tsteps = 5; % MPC time horizon
+dt = 0.1; % time step size
+% ----- BEGIN CVX -----
+cvx_begin
+variable p(2, tsteps)     % sequence of vehicle positions
+variable v(2, tsteps)     % sequence of vehicle velocities
+variable r(2, tsteps)     % sequence of reference positions
+variable s(1, tsteps)       % sequence of reference path indices
+variable ds(1,tsteps-1)     % sequence of speeds along the path
+variable u(obj.nu, tsteps)  % sequence of controls
+variable x(obj.nx, tsteps)  % sequence of states
+
+minimize sum(sum((r-p).^2)) + 5*sum(1-s) + sum(sum( (v(1,:)-vref(1)).^2 + (v(2,:)-vref(2)).^2 ))
+
+subject to
+% First time step
+x(:,1) == obj.dynamics(0, obj.x, u(:,1))*dt   % Dynamics
+p(:,1) == x(obj.pdim,1)                        % Position components
+v(:,1) == x(obj.vdim,1)
+s(1) == s0
+
+%             All time steps afterwards
+for i = 2:tsteps
+  x(:,i) == obj.dynamics(0, x(:,i-1), u(:,i))*dt        % Dynamics
+  p(:,i) == x(obj.pdim,i)                                % Position components
+  v(:,i) == x(obj.vdim,i)                                % Position components
+  s(i) == s(i-1) + ds(i-1)                            % Advanced on path
+end
+
+r == linpath.fn(s)
+obj.uMin <= u <= obj.uMax              % Control bounds
+% obj.vMin <= v <= obj.vMax                 % Velocity bounds
+0 <= s <= 1
+ds >= 0
+
+cvx_end
+% ----- END CVX -----
+if any(isnan(u(:))), keyboard; end  %MPC just takes the first control
+u1 = u(:,1);
 
 end % end function
 

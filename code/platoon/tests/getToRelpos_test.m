@@ -5,6 +5,7 @@ function getToRelpos_test()
 % using the getToRelpos function
 %
 % Mo Chen, 2015-11-14
+addpath('..')
 
 tfm = TFM;
 tfm.computeRS('qr_rel_target_V');

@@ -6,6 +6,8 @@ if ~strcmp(veh.q, 'Free') && ~strcmp(veh.q, 'Leader')
   error('Vehicle must be ''Free'' or ''Leader''!')
 end
 
+veh.tfm_status = 'busy';
+
 % Control
 u = getToPose(obj, veh, target, hw.getHeading);
 
@@ -17,7 +19,7 @@ if isempty(u)
     veh.p.hw = hw;
   else
     veh.q = 'Leader';
-    veh.p = Platoon(veh, hw);
+    veh.p = Platoon(veh, hw, obj);
   end
 end
 end
