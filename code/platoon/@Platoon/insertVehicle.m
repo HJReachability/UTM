@@ -23,6 +23,11 @@ for i = idx-1:-1:1
   end
 end
 
+% If there is no one in front
+if isempty(veh.FQ)
+  veh.FQ = FQ;
+end
+
 % Scan upper positions to find the platoon member that's behind
 for i = idx+1:length(obj.vehicles)
   if ~isempty(obj.vehicles{i})
@@ -30,6 +35,11 @@ for i = idx+1:length(obj.vehicles)
     obj.vehicles{i}.FQ = veh;
     break
   end
+end
+
+% If there is no one behind
+if isempty(veh.BQ)
+  veh.BQ = veh;
 end
 
 end

@@ -10,19 +10,47 @@ function [safe, uSafe] = checkAASafety(obj)
 %          uSafe - cell vector of safety-preserving controls
 %
 % Mo Chen, 2015-11-04
+% Modified: Mo Chen, 2015-11-19
 
 % uSafe needs to be cell because controls may have different dimensions in
 % different agents
-safe = zeros(length(obj.aas));
-uSafe = cell(length(obj.aas), 1); 
+safe = ones(length(obj.aas));
+uSafe = cell(length(obj.aas), 1);
 
 % Go through every pair of agents and return safety indicator and control
 for i = 1:length(obj.aas)
-  % Get safety indicator controller with respect to all other vehicles
   uSafei = cell(1, length(obj.aas));
-  for j = 1:length(obj.aas)
-    [safe(i,j), uSafei{j}] = obj.checkPWSafety(i, j);
+
+  % Free vehicles check safety against all other free vehicles and leaders
+  if strcmp(obj.aas{i}.q, 'Free')
+    for j = 1:length(obj.aas)
+      if strcmp(obj.aas{j}.q, 'Free') || strcmp(obj.aas{j}.q, 'Leader')
+        [safe(i,j), uSafei{j}] = obj.checkPWSafety(i, j);
+      end
+    end
   end
+
+  % Leader vehicles check safety against all other leaders and free
+  % vehicles, as well as the vehicle behind him
+  if strcmp(obj.aas{i}.q, 'Leader')
+    for j = 1:length(obj.aas)
+      if obj.aas{j} == obj.aas{i}.BQ || strcmp(obj.aas{j}.q, 'Free') ...
+          || strcmp(obj.aas{j}.q, 'Leader')
+        [safe(i,j), uSafei{j}] = obj.checkPWSafety(i, j);
+      end
+    end
+  end
+
+  % Followers check safety against vehicles in front and behind
+  if strcmp(obj.aas{i}.q, 'Follower')
+    for j = 1:length(obj.aas)
+      if obj.aas{j} == obj.aas{i}.BQ || obj.aas{j} == obj.aas{i}.FQ
+        [safe(i,j), uSafei{j}] = obj.checkPWSafety(i, j);
+      end
+    end
+  end
+
+  % Assume no safety checks for other vehicles
   
   % There should not be more than one conflict
   if nnz(~safe(i,:)) > 1
@@ -31,11 +59,11 @@ for i = 1:length(obj.aas)
   
   % Update safe-preserving control for agent i
   if nnz(~safe(i,:)) == 1
-    uSafe{i} = uSafei{safe(i,:) == 0};
-  else
-    uSafe{i} = [];
+    uSafe{i} = uSafei{~safe(i,:)};
   end
 end
 
+% Overall safety indicator; vehicle i is safe overall only if it is safe
+% with respect to all other vehicles against which safety is checked
 safe = prod(safe,2);
 end

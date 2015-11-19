@@ -89,6 +89,10 @@ classdef Platoon < handle
       obj.vehicles{1}.idx = 1;
       obj.vehicles{1}.p = obj;
       
+      % Vehicle in front and behind
+      leader.FQ = leader;
+      leader.BQ = leader;
+      
       %% Add platoon to highway
       hw.addPlatoon(obj);
       

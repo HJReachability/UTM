@@ -9,10 +9,11 @@ if ~isa(hw, 'Highway')
   error('Input must be a highway object!')
 end
 
+if ~isempty(hw.ps)
+  error('Highway must not contain any platoons!')
+end
+
 % Add highway to highways list
 obj.hws{length(obj.hws)+1} = hw;
-
-% Add platoons on highway to active agents list
-obj.addActiveAgents(hw.ps);
 
 end

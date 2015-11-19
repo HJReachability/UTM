@@ -9,7 +9,6 @@ tfm.computeRS('qr_rel_target_V');
 tfm.computeRS('qr_abs_target_V');
 tfm.computeRS('qr_qr_safe_V');
 
-
 %% Highway
 theta = 2*pi*rand;
 hw_length = 500;
@@ -26,12 +25,12 @@ hold on
 
 %% Quadrotors
 xs = 0:25:100;
-ys = sign(rand(size(xs))-0.5).*(100 - xs);
+ys = sign(rand(size(xs))-0.5).*(125 - xs);
 xs_ys = rotate2D([xs; ys], theta);
 xs = xs_ys(1,:);
 ys = xs_ys(2,:);
 for j = 1:length(xs)
-  tfm.addActiveAgents(Quadrotor([xs(j) 0 ys(j) 0]));
+  tfm.regVehicle(Quadrotor([xs(j) 0 ys(j) 0]));
   tfm.aas{j}.plotPosition;
 end
 title('t=0')
@@ -61,7 +60,9 @@ for i = 1:length(t)
   end
   title(['t=' num2str(t(i))])
   drawnow
+
 end
+
 
 end
 
