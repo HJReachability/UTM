@@ -13,6 +13,7 @@ veh.p = obj;
 obj.vehicles{idx} = veh;
 obj.slotStatus(idx) = 1;
 veh.idx = idx;
+obj.n = obj.n + 1;
 
 % Scan lower positions to find the platoon member that's in front
 for i = idx-1:-1:1

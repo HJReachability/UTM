@@ -23,14 +23,13 @@ classdef Vehicle < handle
     %   'busy'
     tfm_status = 'idle'
     
+    %% Platoon-related properties
     p           % Pointer to platoon
     idx         % Vehicle index in platoon (determines phantom position)
-    
-    pJoin   % platoon that vehicle is trying to join
-    
-    Leader             % Pointer to leader of this quadrotor
     FQ                 % Pointer to quadrotor in front (self if leader)
     BQ                 % Pointer to quadrotor behind (self if tail)
+    
+    pJoin   % platoon that vehicle is trying to join
     
     %% Figure handles
     hpxpy           % Position

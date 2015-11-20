@@ -1,22 +1,22 @@
-function regVehicle(obj, agent)
+function regVehicle(obj, vehicle)
 % function regVehicle(obj, agents)
 %
-% Adds a list of agents to the active list
+% Registers a vehicle
 %
 % Mo Chen 2015-11-03
 % Modified: Mo Chen, 2015-11-19
 
 % If adding an empty set, do nothing
-if isempty(agent)
+if isempty(vehicle)
   return
 end
 
 % Check vehicle type
-if ~isa(agent, 'Vehicle')
+if ~isa(vehicle, 'Vehicle')
   error('Agent must be a Vehicle!')
 end
 
 % Expand cell array and assign an ID to the agent
-obj.aas{length(obj.aas) + 1, 1} = agent;
-agent.ID = length(obj.aas);
+obj.aas{length(obj.aas) + 1, 1} = vehicle;
+vehicle.ID = length(obj.aas);
 end

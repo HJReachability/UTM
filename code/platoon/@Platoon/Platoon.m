@@ -13,9 +13,6 @@ classdef Platoon < handle
     % Maximum allowable number of vehicles in platoon
     nmax
     
-    % Cell array of handles to vehicles attempting to join the platoon
-    vJoin
-    
     % List of slots in platoon (vector of length nmax)
     %   1:  Slot is occupied
     %   0:  Slot is empty
@@ -28,9 +25,6 @@ classdef Platoon < handle
     
     % Number of vehicles in platoon
     n
-    
-    % Last occupied slot index
-    loIdx
     
     % Front and back platoons (points to self if there are no from and back
     % platoons)
