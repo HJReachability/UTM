@@ -1,4 +1,4 @@
-classdef TFM < handle
+classdef TFM < Node
   % Traffic flow manager
   properties
     % Highways

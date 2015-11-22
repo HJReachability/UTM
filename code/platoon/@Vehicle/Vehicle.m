@@ -1,4 +1,4 @@
-classdef Vehicle < handle
+classdef Vehicle < Node
   % Vehicle class
   %   Subclasses: quadrotor, Dubins vehicle (under construction)
   

@@ -1,4 +1,4 @@
-classdef Linpath < handle
+classdef Linpath < Node
   % linear path class
   
   properties
