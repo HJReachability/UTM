@@ -5,7 +5,7 @@ addpath('..')
 v = 3;
 z0 = [-30 -15];
 z1 = [80 40];
-hw = highway(z0, z1, v);
+hw = Highway(z0, z1, v);
 
 %% Plot 2D slices of reachable sets
 N = 4;

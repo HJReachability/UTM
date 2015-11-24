@@ -11,8 +11,8 @@ pl1 = Plane([0 0 0]);
 pl1.speed = 10;
 pl2 = Plane([100 0 pi]);
 pl2.speed = 10;
-tfm.addActiveAgents(pl1);
-tfm.addActiveAgents(pl2);
+tfm.regVehicle(pl1);
+tfm.regVehicle(pl2);
 
 % Plot initial setup
 figure;

@@ -23,8 +23,8 @@ v1 = rotate2D([10 0], theta);
 
 % Add quadrotors to TFM
 tfm.aas = {};
-tfm.addActiveAgents(Quadrotor([p1(1) v1(1) p1(2) v1(2)]));
-tfm.addActiveAgents(Quadrotor([p2(1) -v1(1) p2(2) -v1(2)]));
+tfm.regVehicle(Quadrotor([p1(1) v1(1) p1(2) v1(2)]));
+tfm.regVehicle(Quadrotor([p2(1) -v1(1) p2(2) -v1(2)]));
 
 % Plot initial setup
 figure;

@@ -3,13 +3,9 @@ function dx = dynamics(obj, t, x, u)
 %
 % Dynamics of the quadrotor
 %
-% 2015-11-03
-
-% A and B matrices
-A = [0 1 0 0; 0 0 0 0; 0 0 0 1; 0 0 0 0];
-B = [0 0; 1 0; 0 0; 0 1];
+% 2015-11-24
 
 % Dynamics
-dx = A * x + B * u;
+dx = obj.A * x + obj.B * u;
 end
 

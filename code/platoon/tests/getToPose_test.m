@@ -45,7 +45,7 @@ target_heading = 2*pi*rand;
 % Add quadrotor to TFM
 init_x = zeros(4,1);
 tfm.aas = {};
-tfm.addActiveAgents(Quadrotor(init_x));
+tfm.regVehicle(Quadrotor(init_x));
 
 % Target state (random angle at 50 distance away; angle may be different
 % from heading)

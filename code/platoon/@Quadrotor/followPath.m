@@ -40,13 +40,20 @@ end
 
 if LQR
   % ----- BEGIN LQR ---
-  K = createLQR;
+  K = lqr(obj.A, obj.B, diag([1 2 1 2]), eye(2)*.01);
   sref = s0;
   rref = linpath.fn(sref);
   u1 = -K* (obj.x - [rref(1); vref(1); rref(2); vref(2)]);
-  if any(abs(u1) > obj.uMax)
-    u1 = u1 / max(abs(u1)) * obj.uMax;
+  
+  % Acceleration limit
+  if any(u1 > obj.uMax)
+    u1 = u1 / max(u1) * obj.uMax;
   end
+
+  if any(u1 < obj.uMin)
+    u1 = u1 / min(u1) * obj.uMin;
+  end
+  
   return
 end
 % ----- END LQR -----

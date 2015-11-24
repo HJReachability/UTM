@@ -155,8 +155,7 @@ gridLim = ...
 [~, ~, base_TTR_out] = recon2x2D(tau, grids, datas, gridLim, tau(end));
 
 % Visualize the base reachable set
-[g2D, data2D] = proj2D(base_TTR_out.g, [0 1 0 1], ...
-  base_TTR_out.g.N([1 3]), base_TTR_out.value, v);
+[g2D, data2D] = proj2D(base_TTR_out.g, base_TTR_out.value, [0 1 0 1], v);
 figure
 contour(g2D.xs{1}, g2D.xs{2}, data2D, [4 4])
 hold on
@@ -176,8 +175,7 @@ gridLim = ...
 [~, ~, rot_TTR_out] = recon2x2D(tau, grids, datas, gridLim, tau(end));
 
 % Visualize the rotated reachable set
-[g2D, data2D] = proj2D(rot_TTR_out.g, [0 1 0 1], ...
-  rot_TTR_out.g.N([1 3]), rot_TTR_out.value, v);
+[g2D, data2D] = proj2D(rot_TTR_out.g, rot_TTR_out.value, [0 1 0 1], v);
 contour(g2D.xs{1}, g2D.xs{2}, data2D, [4 4])
 
 grid on

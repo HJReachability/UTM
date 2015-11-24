@@ -51,8 +51,8 @@ follower = Quadrotor(rand(4,1));
 
 % Add vehicles to tfm
 tfm.aas = {};
-tfm.addActiveAgents(leader);
-tfm.addActiveAgents(follower);
+tfm.regVehicle(leader);
+tfm.regVehicle(follower);
 
 %% Initialize figures
 figure;

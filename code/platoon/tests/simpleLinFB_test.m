@@ -1,9 +1,8 @@
-function followPlatoon_test()
+function simpleLinFB_test()
 addpath('..')
 
 %% TFM
 tfm = TFM;
-tfm.computeRS('qr_rel_target_V');
 
 %% Highway
 hw = Highway([-50 0], [250 0]);
