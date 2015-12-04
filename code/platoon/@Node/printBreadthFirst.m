@@ -1,4 +1,9 @@
 function printBreadthFirst(obj)
+% printBreadthFirst(obj)
+% method of the Node class
+%
+% Prints the entire subtree with the current object as root, breadth first
+
 queue = {obj};
 
 while ~isempty(queue)

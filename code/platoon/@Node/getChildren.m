@@ -1,6 +1,8 @@
 function children = getChildren(obj)
 % getChildren(obj)
 % method of Node class
+%
+% Returns the children of a node
 
 if isa(obj, 'TFM')
   children = obj.hws;
@@ -20,7 +22,7 @@ elseif isa(obj, 'Vehicle')
   children = {};
   
 else
-  error('Unknown elements in printing queue!')
+  error('Unknown Node type!')
   
 end
 

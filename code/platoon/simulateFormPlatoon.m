@@ -24,7 +24,7 @@ hw.lpPlot;
 hold on
 
 %% Quadrotors
-xs = 0:25:100;
+xs = 100:-25:0;
 ys = sign(rand(size(xs))-0.5).*(125 - xs);
 xs_ys = rotate2D([xs; ys], theta);
 xs = xs_ys(1,:);
@@ -63,6 +63,7 @@ for i = 1:length(t)
 
 end
 
+tfm.printBreadthFirst;
 
 end
 

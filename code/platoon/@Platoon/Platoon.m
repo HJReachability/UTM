@@ -20,6 +20,9 @@ classdef Platoon < Node
     %       attempting to occupy the slot by joining platoon
     slotStatus
     
+    % List of vehicles joining the platoon
+    joiners
+    
     % handle to the highway the platoon is on
     hw
     
@@ -77,6 +80,7 @@ classdef Platoon < Node
       obj.vehicles{1} = leader;
       obj.slotStatus = zeros(nmax, 1);
       obj.slotStatus(1) = 1;
+      obj.joiners = cell(obj.nmax, 1);
       
       % Set vehicle mode to leader
       obj.vehicles{1}.q = 'Leader';

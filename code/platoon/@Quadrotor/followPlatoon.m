@@ -21,7 +21,10 @@ end
 idx = obj.p.getFirstEmptySlot;
 if idx < obj.idx
   obj.p.slotStatus(obj.idx) = 0;
+  obj.p.vehicles{obj.idx} = [];
+  
   obj.p.slotStatus(idx) = 1;
+  obj.p.vehicles{idx} = obj;
   obj.idx = idx;
 end
 

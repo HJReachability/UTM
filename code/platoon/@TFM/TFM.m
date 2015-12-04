@@ -1,5 +1,9 @@
 classdef TFM < Node
   % Traffic flow manager
+  % Checks safety of all vehicles
+  % Stores necessary reachable sets for safety and liveness
+  % Stores global constants in the air space
+  
   properties
     % Highways
     hws = {};

@@ -24,12 +24,11 @@ dots = dots(imInd1, imInd2, :);
 g2.N = size(dots,1);
 g2 = processGrid(g2);
 
-figure;
-subplot(1,2,1)
+f1 = figure;
 image(g2.vs{1}, g2.vs{2},dots); hold on
 axis square
 
-subplot(1,2,2)
+f2 = figure;
 image(g2.vs{1}, g2.vs{2},dots,'visible','off'); hold on
 axis square
 
@@ -47,7 +46,7 @@ for i = 1:length(spath)
   pts{i} = path2hws(raw_path);
   
   % ----- Plot -----
-  subplot(1,2,2)
+  figure(f2)
   plot(pts{i}(2,:), pts{i}(1,:), '.:', 'color', colors(i,:))
   axis square
 end
@@ -55,11 +54,11 @@ end
 % ----- Sparsify -----
 sparse_pts = sparsify_paths(pts);
 for i = 1:length(sparse_pts)
-  subplot(1,2,1)
+  figure(f1)
   plot(sparse_pts{i}(2,:), sparse_pts{i}(1,:), 'x-', ...
     'color', colors(i,:), 'linewidth', 2)
   
-  subplot(1,2,2)
+  figure(f2)
   plot(sparse_pts{i}(2,:), sparse_pts{i}(1,:), 'x-', ...
     'color', colors(i,:))
 end

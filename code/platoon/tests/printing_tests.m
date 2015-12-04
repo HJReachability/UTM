@@ -1,6 +1,15 @@
 function printing_tests()
 % printing_tests()
 % Tests functions that print information of nodes
+%
+%      TFM
+%     /     \
+%   hw1     hw2
+%   /          \
+%  p1          p2
+% /  \        /  \
+% q1  q3     q2  pl1
+%
 
 addpath('..')
 tfm = TFM;
