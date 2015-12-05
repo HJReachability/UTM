@@ -9,6 +9,7 @@ function computeRS(obj, type)
 %   qr_qr_safeV
 %
 % Mo Chen, 2015-11-03
+% Updated by Mahesh Vashishtha, 2015-12-03
 
 % For now, always assume we have a reconstructed set; deal with
 % reconstruction on the fly later...
@@ -145,6 +146,36 @@ switch type
     obj.pl_pl_safe_V.g = g;
     obj.pl_pl_safe_V.data = data;
     obj.pl_pl_safe_V.grad = grad;
+    
+  case 'pl4_pl4_safe_V'
+    %% Safety between two Plane4's
+    filename = [fileparts(mfilename('fullpath')) ... 
+      '/../RS_core/saved/pl4_pl4_safe_V_' ...
+      num2str(obj.cr) '_' num2str(obj.hw_speed) '.mat'];
+
+    if exist(filename, 'file')
+      load(filename)
+    else
+      [data, g, tau] = ...
+        pl4_pl4_collision_2D(obj.cr, obj.hw_speed, visualize);
+      
+      if fourD
+      % Reconstruct the base reachable set
+        gridLim = [g.min-1 g.max+1; g.min-1 g.max+1];
+        [~, ~, TTR_out] = ...
+          recon2x2D(tau, {g; g}, {data; data}, gridLim, tau(end));
+        g = TTR_out.g;
+        data = TTR_out.value;
+        grad = TTR_out.grad;
+        save(filename, 'g', 'data', 'grad', 'tau')
+      else
+        error('Plane4 must be 4D');
+      end
+    end
+    obj.pl4_pl4_safe_V.g = g;
+    obj.pl4_pl4_safe_V.data = data;
+    obj.pl4_pl4_safe_V.grad = grad;
+    obj.pl4_pl4_safe_V.tau = tau;
     
   otherwise
     error('Undefined reachable set type.')

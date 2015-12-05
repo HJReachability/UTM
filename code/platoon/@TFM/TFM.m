@@ -48,6 +48,9 @@ classdef TFM < Node
     % Plane-plane safety reachable set
     pl_pl_safe_V
     
+    % Plane4-Plane4 safety reachable set
+    pl4_pl4_safe_V
+        
   end
   
   % No explicit constructor

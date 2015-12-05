@@ -60,10 +60,10 @@ dissType = 'global';
 
 %---------------------------------------------------------------------------
 % Problem Parameters.
-u1Max = 3;
-u1Min = -3;
-u2Max = 3;
-u2Min = -3;
+u1Max = sqrt(3^2+(2*pi/10*12)^2);
+u1Min = -u1Max;
+u2Max = 3 / sqrt(2);
+u2Min = -u2Max;
 
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
