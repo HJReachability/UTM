@@ -42,7 +42,8 @@ classdef Vehicle < Node
     hpvhist = cell(2,1);
     
     h_abs_target_V     % for getting to an absolute target
-    h_safe_V % Safety sets
+    h_rel_target_V     % for getting to a relative target
+    h_safe_V           % Safety sets
 
   end % end properties
 

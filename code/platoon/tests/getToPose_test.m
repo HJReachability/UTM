@@ -70,7 +70,7 @@ end
 hold on
 
 % Plot initial setup
-level = tfm.rtt/2; % Level of the value function to show
+level = tfm.rtt; % Level of the value function to show
 %% Main plot showing position and reachable set in position space
 tfm.aas{1}.plotPosition('b');
 tfm.aas{1}.plot_abs_target_V( ...

@@ -1,20 +1,20 @@
 function [data, g, tau] = quad_quad_collision_2D(d, speed, visualize)
-% function [dataC, g2D, tau] = quad2Dcollision(d, visualize)
+% function [data, g2D, tau] = quad2Dcollision(d, speed, visualize)
 %
 % Computes collision reachable set for 4D relative quadrotor dynamics by
 % first computing 2D reachable sets in each axis and the reconstructing the
 % 4D reachable set
 %
 % The relative coordinate dynamics in each axis is
+% \dot x_r = v_r (= ve - vp)
+% \dot v_r = ue - up
 %
-% \dot x_r = v_r (= v1 - v2)
-% \dot v_r = u1 - u2
-%
-% where input u2 trying to avoid the target and
-%       input u1 trying to hit the target.
+% where input up trying to hit the target and
+%       input ue trying to avoid the target.
+%       
 %
 % Inputs:
-%   d         - separation distance (default = 2)
+%   d         - separation distance (default = 5)
 %   visualize - whether to visualize the 2D reachable set (default = 1)
 %
 % Outputs:
@@ -60,10 +60,10 @@ dissType = 'global';
 
 %---------------------------------------------------------------------------
 % Problem Parameters.
-u1Max = 3;
-u1Min = -3;
-u2Max = 3;
-u2Min = -3;
+upMax = 3;
+upMin = -3;
+ueMax = 3;
+ueMin = -3;
 
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
@@ -88,10 +88,10 @@ schemeData.hamFunc = @HamFunc;
 schemeData.partialFunc = @PartialFunc;
 
 % The Hamiltonian and partial functions need problem parameters.
-schemeData.u1Max = u1Max;
-schemeData.u1Min = u1Min;
-schemeData.u2Max = u2Max;
-schemeData.u2Min = u2Min;
+schemeData.upMax = upMax;
+schemeData.upMin = upMin;
+schemeData.ueMax = ueMax;
+schemeData.ueMin = ueMin;
 
 %---------------------------------------------------------------------------
 % Choose degree of dissipation.
@@ -206,26 +206,29 @@ function hamValue = HamFunc(t, data, deriv, schemeData)
 %   For this function it contains the field(s):
 
 
-checkStructureFields(schemeData, 'u1Max','u1Min', 'u2Max','u2Min', 'grid');
+checkStructureFields(schemeData, 'upMax','upMin', 'ueMax','ueMin', 'grid');
 
 grid = schemeData.grid;
 
-u1Max = schemeData.u1Max;
-u1Min = schemeData.u1Min;
-u2Max = schemeData.u2Max;
-u2Min = schemeData.u2Min;
+upMax = schemeData.upMax;
+upMin = schemeData.upMin;
+ueMax = schemeData.ueMax;
+ueMin = schemeData.ueMin;
 
 
 % Dynamics:
-% \dot{x}_r = v_r
-% \dot{v}_r = u_2 - u_1
+% \dot{x}_r = vr
+% \dot{v}_r = ue - up
 
-% quadrotor 1 maximizes value, quadrotor 2 minimizes value
+% Hamiltonian
+% H = min_up max_ue p1 * x2 + p2 * ue - p2 * up
+
+% quadrotor 1 minimizes value, quadrotor 2 maximizes value
 hamValue = deriv{1} .* grid.xs{2} + ...
-  (deriv{2}>=0) .* (deriv{2}) * u1Min + ...
-  (deriv{2}<0) .* (deriv{2}) * u1Max + ...
-  (-deriv{2}>=0) .* (-deriv{2}) * u2Max + ...
-  (-deriv{2}<0) .* (-deriv{2}) * u2Min;
+  (deriv{2}>=0) .* (deriv{2}) * ueMax + ...
+  (deriv{2}<0) .* (deriv{2}) * ueMin + ...
+  (-deriv{2}>=0) .* (-deriv{2}) * upMin + ...
+  (-deriv{2}<0) .* (-deriv{2}) * upMax;
 
 % backwards reachable set
 hamValue = -hamValue;
@@ -255,22 +258,22 @@ function alpha = PartialFunc(t, data, derivMin, derivMax, schemeData, dim)
 %		   at each node of the grid.
 
 
-checkStructureFields(schemeData, 'u1Max','u1Min', 'u2Max','u2Min', 'grid');
+checkStructureFields(schemeData, 'ueMax','ueMin', 'upMax','upMin', 'grid');
 
 grid = schemeData.grid;
 
 
-u1Max = schemeData.u1Max;
-u1Min = schemeData.u1Min;
-u2Max = schemeData.u2Max;
-u2Min = schemeData.u2Min;
+ueMax = schemeData.ueMax;
+ueMin = schemeData.ueMin;
+upMax = schemeData.upMax;
+upMin = schemeData.upMin;
 
 switch dim
   case 1
     alpha = abs(grid.xs{2});
     
   case 2
-    alpha = max(abs([u1Min u1Max])) + max(abs([u2Min u2Max]));
+    alpha = max(abs([ueMin ueMax])) + max(abs([upMin upMax]));
     
   otherwise
     error([ 'Partials only exist in dimensions 1-2' ]);

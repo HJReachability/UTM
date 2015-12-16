@@ -1,7 +1,13 @@
-function simulateChangeHighway()
+function simulateChangeHighway(save_figures)
 % simulateFormPlatoon()
 %
 % Simulates 5 quadrotors forming a single platoon on a highway
+
+addpath('..')
+
+if nargin < 1
+  save_figures = false;
+end
 
 %% TFM
 tfm = TFM;
@@ -77,6 +83,16 @@ title('t=0')
 axis square
 drawnow
 
+if save_figures
+  fig_dir = [fileparts(mfilename('fullpath')) '/' mfilename '_figs'];
+  if ~exist(fig_dir, 'dir')
+    cmd = ['mkdir -p ' fig_dir];
+    system(cmd)
+  end
+  export_fig([fig_dir '/0'], '-png', '-m2')
+end
+
+
 %% Integration
 tMax = 23;
 t = 0:tfm.dt:tMax;
@@ -99,6 +115,9 @@ for i = 1:length(t)
   title(['t=' num2str(t(i))])
   drawnow
 
+  if save_figures
+    export_fig([fig_dir '/' num2str(i)], '-png', '-m2')
+  end
 end
 
 tfm.printBreadthFirst;

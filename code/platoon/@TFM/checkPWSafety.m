@@ -1,4 +1,4 @@
-function [safe, uSafe] = checkPWSafety(obj, i, j)
+function [safe, uSafe, safe_val] = checkPWSafety(obj, i, j)
 % function checkPWSafety(obj, i, j)
 %          (check pairwise safety)
 %
@@ -6,18 +6,20 @@ function [safe, uSafe] = checkPWSafety(obj, i, j)
 % gives a safety-preserving input if necessary
 %
 % Inputs:  obj - tfm object
-%          i   - index of agent for whom safety is checked
-%          j   - index of agent against whom safety is checked
+%          i   - index of agent for whom safety is checked (evader)
+%          j   - index of agent against whom safety is checked (pursuer)
 % Outputs: safe - boolean specifying whether agent i is safe with respect
 %                 to agent j
 %          uSafe - safety-preserving input (empty if not needed)
 %
 % Mo Chen, 2015-11-04
+% Modified: Mo Chen, 2015-12-13
 
 % Vehicle is safe with respect to itself
 if isempty(obj.aas{j}) || obj.aas{i} == obj.aas{j}
   safe = 1;
   uSafe = [];
+  safe_val = 10;
   return
 end
 
@@ -26,7 +28,7 @@ switch(class(obj.aas{i}))
     %% agent i is a quadrotor
     switch(class(obj.aas{j}))
       case 'Quadrotor'
-        [safe, uSafe] = checkPWSafety_qr_qr(obj.qr_qr_safe_V, ...
+        [safe, uSafe, safe_val] = checkPWSafety_qr_qr(obj.qr_qr_safe_V, ...
           obj.safetyTime, obj.aas{i}, obj.aas{j});
         
       otherwise
@@ -38,7 +40,7 @@ switch(class(obj.aas{i}))
     %% agent i is a Plane
     switch(class(obj.aas{j}))
       case 'Plane'
-        [safe, uSafe] = checkPWSafety_pl_pl(obj.pl_pl_safe_V, ...
+        [safe, uSafe, safe_val] = checkPWSafety_pl_pl(obj.pl_pl_safe_V, ...
           obj.aas{i}, obj.aas{j});
         
       otherwise
@@ -48,7 +50,7 @@ switch(class(obj.aas{i}))
     %%  agent i is a Plane4
     switch(class(obj.aas{j}))
       case 'Plane4'
-        [safe, uSafe] = checkPWSafety_pl4_pl4(obj.pl4_pl4_safe_V, ...
+        [safe, uSafe, safe_val] = checkPWSafety_pl4_pl4(obj.pl4_pl4_safe_V, ...
           obj.safetyTime, obj.aas{i}, obj.aas{j});
         
       otherwise
@@ -61,16 +63,16 @@ end % end outer switch
 end % end function
 
 %%
-function [safe, uSafe] = checkPWSafety_qr_qr(qr_qr_safe_V, safetyTime, ...
-  qr1, qr2)
+function [safe, uSafe, valuex] = checkPWSafety_qr_qr(qr_qr_safe_V, safetyTime, ...
+  evader, pursuer)
 % Safety of quadrotor qr1 with respect to quadrotor qr2
 
-% Heading of "pursuer"
-theta = qr2.getHeading;
+% Heading of evader
+theta = evader.getHeading;
 
 % Get relative state assuming pursuer faces 0 degrees
-base_pos = rotate2D(qr2.getPosition - qr1.getPosition, -theta);
-base_vel = rotate2D(qr2.getVelocity - qr1.getVelocity, -theta);
+base_pos = rotate2D(evader.getPosition - pursuer.getPosition, -theta);
+base_vel = rotate2D(evader.getVelocity - pursuer.getVelocity, -theta);
 base_x = [base_pos(1); base_vel(1); base_pos(2); base_vel(2)];
 
 % Check if state is within grid bounds for a closer safety check
@@ -78,6 +80,7 @@ if any(base_x <= qr_qr_safe_V.g.min) || ...
     any(base_x >= qr_qr_safe_V.g.max)
   safe = 1;
   uSafe = [];
+  valuex = 10;
   return
 end
 
@@ -97,8 +100,8 @@ safe = 0;
 
 % Compute control assuming "pursuer" is facing 0 degrees
 base_grad = calculateCostate(qr_qr_safe_V.g, qr_qr_safe_V.grad, base_x);
-ux = (base_grad(2)>=0)*qr1.uMin + (base_grad(2)<0)*qr1.uMax;
-uy = (base_grad(4)>=0)*qr1.uMin + (base_grad(4)<0)*qr1.uMax;
+ux = (base_grad(2)>=0)*evader.uMax + (base_grad(2)<0)*evader.uMin;
+uy = (base_grad(4)>=0)*evader.uMax + (base_grad(4)<0)*evader.uMin;
 u = [ux; uy];
 
 % Rotate the control to correspond with the actual heading of the
@@ -108,7 +111,7 @@ uSafe = rotate2D(u, theta);
 end
 
 %%
-function [safe, uSafe] = checkPWSafety_pl_pl(pl_pl_safe_V, pl1, pl2)
+function [safe, uSafe, valuex] = checkPWSafety_pl_pl(pl_pl_safe_V, pl1, pl2)
 % Safety of plane 1 with respect to plane 2
 % Notice that even though Plane has a 4D state space, currently we're still
 % using a 3D safety value function, assuming a constant velocity
@@ -135,6 +138,7 @@ if any(xr <= pl_pl_safe_V.g.min) || ...
     any(xr >= pl_pl_safe_V.g.max)
   safe = 1;
   uSafe = [];
+  valuex = 10;
   return
 end
 
@@ -157,7 +161,7 @@ else
 end
 end
 %%
-function [safe, uSafe] = checkPWSafety_pl4_pl4(pl4_pl4_safe_V, safetyTime, ...
+function [safe, uSafe, valuex] = checkPWSafety_pl4_pl4(pl4_pl4_safe_V, safetyTime, ...
   pl4_1, pl4_2)
 % Safety of Plane4 pl4_1 with respect to Plane4 pl4_2
 
@@ -174,6 +178,7 @@ if any(base_x <= pl4_pl4_safe_V.g.min) || ...
     any(base_x >= pl4_pl4_safe_V.g.max)
   safe = 1;
   uSafe = [];
+  valuex = 10;
   return
 end
 
@@ -206,17 +211,17 @@ uSafe = rotate2D(u, theta);
 end
 
 %%
-function [safe, uSafe] = checkPWSafety_qr_qrp(qr, qrp)
+function [safe, uSafe, valuex] = checkPWSafety_qr_qrp(qr, qrp)
 % Safety of quadrotor qr with respect to quadrotor platoon qrp
 error('Not implemented yet')
 end
 
-function [safe, uSafe] = checkPWSafety_qrp_qr(qrp, qr)
+function [safe, uSafe, valuex] = checkPWSafety_qrp_qr(qrp, qr)
 % Safety of quadrotor platoon qrp with respect to quadrotor qr
 error('Not implemented yet')
 end
 
-function [safe, uSafe] = checkPWSafety_qrp_qrp(qrp1, qrp2)
+function [safe, uSafe, valuex] = checkPWSafety_qrp_qrp(qrp1, qrp2)
 % Safety of quadrotor platoon qrp1 with respect to quadrotor platoon qrp2
 error('Not implemented yet')
 end

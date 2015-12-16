@@ -19,11 +19,11 @@ if numel(level) == 1
 end
 
 shift = other.getPosition;
-theta = other.getHeading;
+theta = obj.getHeading;
 
 % Project reachable set to 2D
 [g2D, data2D] = proj2D(safe_V.g, safe_V.data, [0 1 0 1], ...
-  rotate2D(obj.getVelocity, -theta));
+  rotate2D(obj.getVelocity - other.getVelocity, -theta));
 
 % translation and rotation
 gRot = rotateGrid(g2D, theta);
@@ -32,7 +32,7 @@ gFinal = shiftGrid(gRot, shift);
 % Plot result
 if isempty(obj.h_safe_V)
   [~, obj.h_safe_V] = contour(gFinal.xs{1}, gFinal.xs{2}, data2D, ...
-    level, 'linestyle', ':', 'linewidth', 2, 'color', other.hpxpy.Color);
+    level, 'linestyle', '--', 'linewidth', 2, 'color', obj.hpxpy.Color);
 else
   obj.h_safe_V.XData = gFinal.xs{1};
   obj.h_safe_V.YData = gFinal.xs{2};

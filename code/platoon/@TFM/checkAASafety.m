@@ -1,4 +1,4 @@
-function [safe, uSafe] = checkAASafety(obj)
+function [safe, uSafe, safe_val] = checkAASafety(obj)
 % function [safe, uSafe] = checkAASafety(obj)
 %
 % Checks the safety of every active agent with respect to all other active
@@ -16,16 +16,20 @@ function [safe, uSafe] = checkAASafety(obj)
 % different agents
 safe = ones(length(obj.aas));
 uSafe = cell(length(obj.aas), 1);
+safe_val = 10*ones(length(obj.aas));
 
 % Go through every pair of agents and return safety indicator and control
 for i = 1:length(obj.aas)
   uSafei = cell(1, length(obj.aas));
 
-  % Free vehicles check safety against all other free vehicles and leaders
+  % Free vehicles check safety against 
+  %   all other free vehicles
+  %   all leaders
   if strcmp(obj.aas{i}.q, 'Free')
     for j = 1:length(obj.aas)
-      if strcmp(obj.aas{j}.q, 'Free') || strcmp(obj.aas{j}.q, 'Leader')
-        [safe(i,j), uSafei{j}] = obj.checkPWSafety(i, j);
+      if strcmp(obj.aas{j}.q, 'Free') || ...
+          strcmp(obj.aas{j}.q, 'Leader') 
+        [safe(i,j), uSafei{j}, safe_val(i,j)] = obj.checkPWSafety(i, j);
       end
     end
   end
@@ -36,16 +40,20 @@ for i = 1:length(obj.aas)
     for j = 1:length(obj.aas)
       if obj.aas{j} == obj.aas{i}.BQ || strcmp(obj.aas{j}.q, 'Free') ...
           || strcmp(obj.aas{j}.q, 'Leader')
-        [safe(i,j), uSafei{j}] = obj.checkPWSafety(i, j);
+        [safe(i,j), uSafei{j}, safe_val(i,j)] = obj.checkPWSafety(i, j);
       end
     end
   end
 
-  % Followers check safety against vehicles in front and behind
+  % Followers check safety against 
+  %   Vehicle in the same platoon that is in front
+  %   Vehicle in the same platoon that is behind
+  %   'Free' vehicles (for CDC 2015 paper)
   if strcmp(obj.aas{i}.q, 'Follower')
     for j = 1:length(obj.aas)
-      if obj.aas{j} == obj.aas{i}.BQ || obj.aas{j} == obj.aas{i}.FQ
-        [safe(i,j), uSafei{j}] = obj.checkPWSafety(i, j);
+      if strcmp(obj.aas{j}.q, 'Free') || obj.aas{j} == obj.aas{i}.BQ || ...
+          obj.aas{j} == obj.aas{i}.FQ
+        [safe(i,j), uSafei{j}, safe_val(i,j)] = obj.checkPWSafety(i, j);
       end
     end
   end
@@ -65,5 +73,8 @@ end
 
 % Overall safety indicator; vehicle i is safe overall only if it is safe
 % with respect to all other vehicles against which safety is checked
-safe = prod(safe,2);
+safe = prod(safe, 2);
+
+% Minimum safety value
+safe_val = min(safe_val, [], 2);
 end
