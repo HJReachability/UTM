@@ -1,12 +1,16 @@
 \documentclass[letterpaper]{AIAA}
 
+\newcommand{\pos}{p}
+\newcommand{\vel}{v}
 \newcommand{\hw}{\mathbb{H}}
 \newcommand{\hwd}{\hat{d}}
 \newcommand{\cost}[1]{c_\text{#1}}
 \newcommand{\hpath}{\mathcal{P}}
 \newcommand{\wpt}{\mathcal{W}}
-\new
-\begin{document}
+\newcommand{\cmap}{c}
+\newcommand{\ccost}{C}
+\newcommand{\ppath}{\mathbb{P}}
+\newcommand{\ocost}{V}
 
 \title{Guaranteeing Safety and Liveness of Unmanned Aerial Vehicle Platoons on Air Highways}
 
@@ -25,7 +29,7 @@
 \section*{Nomenclature}
 (Nomenclature entries should have the units identified)\\
 \noindent\begin{tabular}{@{}lcl@{}}
-\textit{x}  &=& System state \\
+\textit{x} &=& System state \\
 \end{tabular} \\
 
 \input{introduction.tex}
@@ -49,25 +53,7 @@ This work is supported in part by NSF under CPS:ActionWebs (CNS-0931843) and CPS
 \section*{References}
 
 \begin{thebibliography}{}
-\bibitem{1} Vatistas, G. H., Lin, S., and Kwok, C. K., ``Reverse Flow Radius in Vortex Chambers,'' \textit{AIAA Journal}, Vol. 24, No. 11, 1986, pp. 1872, 1873. doi: 10.2514/3.13046
-\bibitem{2} Dornheim, M. A., ``Planetary Flight Surge Faces Budget Realities,'' \textit{Aviation Week and Space Technology}, Vol. 145, No. 24, 9 Dec. 1996, pp. 44--46.
-\bibitem{3} Terster, W., ``NASA Considers Switch to Delta 2,'' \textit{Space News}, Vol. 8, No. 2, 13--19 Jan. 1997, pp. 1, 18.
-\bibitem{4} Peyret, R., and Taylor, T. D., \textit{Computational Methods in Fluid Flow}, 2$^{{\rm nd}}$ ed., Springer-Verlag, New York, 1983, Chaps. 7, 14.
-\bibitem{5} Oates, G. C. (ed.), \textit{Aerothermodynamics of Gas Turbine and Rocket Propulsion}, AIAA Education Series, AIAA, New York, 1984, pp. 19, 136.
-\bibitem{6} Volpe, R., ``Techniques for Collision Prevention, Impact Stability, and Force Control by Space Manipulators,'' \textit{Teleoperation and Robotics in Space}, edited by S. B. Skaar and C. F. Ruoff, Progress in Astronautics and Aeronautics, AIAA, Washington, DC, 1994, pp. 175--212.
-\bibitem{7} Thompson, C. M., ``Spacecraft Thermal Control, Design, and Operation,'' \textit{AIAA Guidance, Navigation, and Control Conference}, CP849, Vol. 1, AIAA, Washington, DC, 1989, pp. 103--115
-\bibitem{8} Chi, Y. (ed.), \textit{Fluid Mechanics Proceedings}, NASA SP-255, 1993.
-\bibitem{9} Morris, J. D., ``Convective Heat Transfer in Radially Rotating Ducts,'' \textit{Proceedings of the Annual Heat Transfer Conference}, edited by B. Corbell, Vol. 1, Inst. of Mechanical Engineering, New York, 1992, pp. 227--234.
-\bibitem{10} Chapman, G. T., and Tobak, M., ``Nonlinear Problems in Flight Dynamics,'' NASA TM-85940, 1984.
-\bibitem{11} Steger, J. L., Jr., Nietubicz, C. J., and Heavey, J. E., ``A General Curvilinear Grid Generation Program for Projectile Configurations,'' U.S. Army Ballistic Research Lab., Rept. ARBRL-MR03142, Aberdeen Proving Ground, MD, Oct. 1981.
-\bibitem{12} Tseng, K., ``Nonlinear Green's Function Method for Transonic Potential Flow,'' Ph.D. Dissertation, Aeronautics and Astronautics Dept., Boston Univ., Cambridge, MA, 1983.
-\bibitem{13} Richard, J. C., and Fralick, G. C., ``Use of Drag Probe in Supersonic Flow,'' \textit{AIAA Meeting Papers on Disc} [CD-ROM], Vol. 1, No. 2, AIAA, Reston, VA, 1996.
-\bibitem{14} Atkins, C. P., and Scantelbury, J. D., ``The Activity Coefficient of Sodium Chloride in a Simulated Pore Solution Environment,'' \textit{Journal of Corrosion Science and Engineering} [online journal], Vol. 1, No. 1, Paper 2, URL: \url{http://www.cp/umist.ac.uk/JCSE/vol1/vol1.html} [cited 13 April 1998].
-\bibitem{15} Vickers, A., ``10-110 mm/hr Hypodermic Gravity Design A,'' \textit{Rainfall Simulation Database} [online database], URL: \url{http://www.geog.le.ac.uk/bgrg/lab.htm} [cited 15 March 1998].
-\bibitem{16} TAPP, Thermochemical and Physical Properties, Software Package, Ver. 1.0, E. S. Microware, Hamilton, OH, 1992.
-\bibitem{17} Scherrer, R., Overholster, D., and Watson, K., Lockheed Corp., Burbank, CA, U.S. Patent Application for a ``Vehicle,'' Docket No. P-01-1532, filed 11 Feb. 1979.
-\bibitem{18} Doe, J., ``Title of Paper,'' \textit{Name of Journal} (to be published).
-\bibitem{19} Doe, J., ``Title of Chapter,'' \textit{Name of Book}, edited by\ldots , Publisher's name and location (to be published).
-\bibitem{20} Doe, J., ``Title of Work,'' Name of Archive, Univ. (or organization), City, State, Year (unpublished).
+\bibitem{1} J. A. Sethian , ``A fast marching level set method for monotonically advancing fronts,'' \textit{Proceedings of the National Academy of Sciences of the United States of America}, Vol. 93, 1996, pp. 1591-1595
+
 \end{thebibliography}
 \end{document}

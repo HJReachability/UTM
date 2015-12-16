@@ -1,2 +1,29 @@
 % !TEX root = main.tex
 \subsection{The Eikonal Equation -- Cost-Minimizing Path}
+Consider the cost map $\cmap(\pos_x, \pos_y)$ which captures the cost incurred for UAVs flying over the position $\pos = (\pos_x, \pos_y)$. Potential costs include fuel, noise pollution, and damage due to accidents. A position with high cost indicates that the position is undesirable for UAVs to fly over. For example, highly populated areas or the region around airports may be assigned high costs, while unpopulated areas may be assigned a low cost.
+
+Given the cost map $\cmap(\pos_x, \pos_y)$, suppose a UAV flies from an origin point $p^o = (\pos_x^o, \pos_y^o)$ to a destination point $p^d = (\pos_x^d, \pos_y^d)$ along some path $\ppath(s)$ parametrizes by the parameters $s$. Let $\ppath(s_0) = p^o$ denote the origin, and $\ppath(s_1) = p^d$ denote the destination. All intermediate $s$ values denote the intermediate positions of the path, i.e. $\ppath(s) = \pos(s) = (\pos_x(s), \pos_y(s))$.
+
+Along the entire path $\ppath(s)$, the cumulative cost $\ccost(\ppath)$ is incurred. Define $\ccost$ as follows:
+
+\begin{equation}
+\ccost(\ppath) = \int_{s_0}^{s_1} \cmap(\ppath(s)) ds
+\end{equation}
+
+The problem of finding the cost-minimizing path is finding the path such that the above cost is minimized. More generally, given an origin point $p^o$, we would like to compute the function $\ocost$ representing optimal cumulative cost for any destination point $\pos$:
+
+\begin{equation}
+\begin{aligned}
+\ocost(\pos_x, \pos_y) &= \min_{\ppath(\cdot)} \ccost(\ppath) \\
+&= \min_{\ppath(\cdot)} \int_{s_0}^{s_1} \cmap(\ppath(s)) ds
+\end{aligned}
+\end{equation}
+
+The solution to the Eikonal equation \eqref{eq:eikonal} precisely computes the function $\ocost$ given the cost map $\cmap$. Once $V$ is found, the path $\ppath$ can be obtained via gradient descent.
+
+\begin{equation}
+\label{eq:eikonal}
+\cmap(\pos)|\nabla \ocost(\pos)| = 1
+\end{equation}
+
+\eqref{eq:eikonal} can be efficiently computed numerically using the fast marching method \cite{}

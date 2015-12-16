@@ -88,20 +88,5 @@ classdef Plane4 < Vehicle
       end
     end
 
-    function plotSafeV(obj, others, safeV, t)
-      % function plotSafeV(obj, others, safeV, t)
-      %
-      % Plots the safe region around others that obj must stay out of in order to
-      % be safe.
-      %
-      % Inputs: obj   - this plane
-      %         other - other plane
-      %         safeV - Reachable set
-      %         t     - time horizon
-      %
-      % TODO: implement this function
-      % Mahesh Vashishtha, 2015-12-3
-      others = checkVehiclesList(others, 'plane');
-    end
   end % end methods
 end % end classdef
