@@ -1,5 +1,5 @@
-function safety_value = compute_safety_value(evader, pursuer, g, ...
-    data, costates)
+function [safety_value xr] = compute_safety_value(evader, pursuer, g, ...
+    data)
 %% Description
 %  Computes the safety value for specified pair of evader and pursuer
 %
