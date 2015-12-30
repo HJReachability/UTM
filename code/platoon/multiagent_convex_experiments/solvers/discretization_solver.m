@@ -122,7 +122,10 @@ for i=1:num_discretized
             matrix_penalize_0 = matrix_penalize_0.^4;
             matrix_penalize_1 = matrix_penalize_1.^2;
             matrix_penalize_2 = matrix_penalize_2;
-            objective = sum(sum(matrix_penalize_1)) + alpha * sum(sum(matrix_penalize_2));
+            objective = sum(sum(matrix_penalize_1)) + abs(u_discretized(i))  + abs(u_discretized(j))  + abs(u_discretized(k));
+            %objective = sum(sum(matrix_penalize_1));
+            %objective = max(max(matrix_penalize_1)) + alpha * max(max(matrix_penalize_2));
+            %objective = sum(sum(matrix_penalize_1)) + alpha * max(max(matrix_penalize_2));
             objectives(i, j, k) = objective;
             
             if objective < min_objective

@@ -67,7 +67,7 @@ for i = 1:num_planes-1
     end
 end
 
-num_trials = 1000;
+num_trials = 500;
 trial = 1;
 all_possible_solutions = [];
 optimum = nan;
