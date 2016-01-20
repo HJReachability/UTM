@@ -1,4 +1,4 @@
-function simulateIntruder(save_figures)
+function simulateIntruder(save_figures, fig_formats)
 % simulateFormPlatoon()
 %
 % Simulates 5 quadrotors forming a single platoon on a highway
@@ -7,6 +7,10 @@ addpath('..')
 
 if nargin < 1
   save_figures = false;
+end
+
+if nargin < 2
+  fig_formats = {'png'};
 end
 
 %% TFM
@@ -74,7 +78,20 @@ if save_figures
     cmd = ['mkdir -p ' fig_dir];
     system(cmd)
   end
-  export_fig([fig_dir '/0'], '-png', '-m2')
+  
+  for ii = 1:length(fig_formats)
+    if strcmp(fig_formats{ii}, 'png')
+      export_fig([fig_dir '/0'], '-png', '-m2', '-transparent')
+    end
+    
+    if strcmp(fig_formats{ii}, 'pdf')
+      export_fig([fig_dir '/0'], '-pdf', '-m2', '-transparent')
+    end
+    
+    if strcmp(fig_formats{ii}, 'fig')
+      savefig([fig_dir '/0.fig']);
+    end
+  end
 end
 
 
@@ -103,7 +120,19 @@ for i = 1:length(t)
   drawnow
 
   if save_figures
-    export_fig([fig_dir '/' num2str(i)], '-png', '-m2')
+    for ii = 1:length(fig_formats)
+      if strcmp(fig_formats{ii}, 'png')
+        export_fig([fig_dir '/' num2str(i)], '-png', '-m2', '-transparent')
+      end
+
+      if strcmp(fig_formats{ii}, 'pdf')
+        export_fig([fig_dir '/' num2str(i)], '-pdf', '-m2', '-transparent')
+      end
+
+      if strcmp(fig_formats{ii}, 'fig')
+        savefig([fig_dir '/' num2str(i) '.fig']);
+      end
+    end
   end
 end
 
