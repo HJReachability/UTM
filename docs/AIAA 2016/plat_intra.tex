@@ -1,0 +1,92 @@
+% !TEX root = main.tex
+\subsection{Intra-Platoon Controllers}
+\subsubsection{Merging onto a Highway \label{subsec:highway_merge}}
+We model the merging of a vehicle onto an air highway as a path planning problem, where we specify a target position and velocity whose magnitude (the speed) is given by the highway specification, and whose direction is along the highway. Thus, for a quadrotor, the objective would be to drive the system in \eqref{eq:dyn} to a specific state $\bar{x}_H=(\bar{p}_x, \bar{v}_x, \bar{p}_y, \bar{v}_y)$, or a small range of states defined by the set
+
+\begin{equation}
+\begin{aligned}
+\mathcal{L}_H = \{x: |p_x-\bar{p}_x|\le r_{p_x}, |v_x-\bar{v}_x|\le r_{v_x}, \\
+|p_y - \bar{p}_y| \le r_{p_y}, |v_y - \bar{v}_y|\le r_{v_y} \}.
+\end{aligned}
+\end{equation}
+
+In this reachability problem, $\mathcal{L}_H$ is the target set, represented by the zero sublevel set of the function $l_H(x)$, which specifies the terminal condition of the HJB PDE that we need to solve. The solution we obtain, $V_H(t,x)$, is the implicit surface function representing the reachable set $\mathcal V_H(t)$; $V_H(-T,x)\le 0$, then, specifies the reachable set $\mathcal{V}_H(T)$, the set of states from which the system can be driven to the target $\mathcal{L}_H$ within a duration of $T$. This gives the algorithm for merging onto the highway:
+
+\begin{enumerate}
+\item Move towards $\bar{x}_H$ in a straight line, with some velocity, until $V_H(-T,x)\le 0$.
+\item Apply the optimal control extracted from $V_H(-T,x)$ according to \eqref{eq:HJB_ctrl_syn} until $\mathcal{L}_H$ is reached.
+\end{enumerate}
+
+\subsubsection{Merging into a Platoon \label{subsec:platoon_merge}}
+We again pose the merging of a quadrotor into a platoon on an air highway as a reachability problem. Here, we would like quadrotor $Q_i$ to merge onto the highway and follow another quadrotor $Q_j$ in a platoon. Thus, we would like to drive the system given by \eqref{eq:rel_dyn_aug} to a specific $\bar{x}_P = (\bar{p}_{x,r}, \bar{v}_{x,r}, \bar{p}_{y,r}, \bar{v}_{y,r})$, or a small range of relative states defined by the set
+
+\begin{equation}
+\begin{aligned}
+\mathcal{L}_P = \{x: |p_{x,r}-\bar{p}_{x,r}|\le r_{p_x}, |v_{x,r}-\bar{v}_{x,r}|\le r_{v_x}, \\
+|p_{y,r} - \bar{p}_{y,r}| \le r_{p_y}, |v_{y,r} - \bar{v}_{y,r}|\le r_{v_y} \}
+\end{aligned}
+\end{equation}
+
+The target set $\mathcal{L}_P$ is represented by the implicit surface function $l_P(x)$, which specifies the terminal condition of the HJI PDE \eqref{eq:HJIPDE}. The zero sublevel set of the solution to \eqref{eq:HJIPDE}, $V_P(-T,x)$, gives us the set of relative states from which $Q_i$ can reach the target and join the platoon following $Q_j$ within a duration of $T$. We assume that $Q_j$ moves along the highway at constant speed, so that $u_j(t)$ = 0. The following is a suitable algorithm for a quadrotor merging onto a highway and joining a platoon to follow $Q_j$:
+
+\begin{enumerate}
+\item Move towards $\bar{x}_P$ in a straight line, with some velocity, until $V_P(-T,x)\le 0$.
+\item Apply the optimal control extracted from $V_P(-T,x)$ according to \eqref{eq:HJI_ctrl_syn} until $\mathcal{L}_P$ is reached.
+\end{enumerate}
+
+\subsubsection{Other Quadrotor Maneuvers}
+Reachability was used in Sections \ref{subsec:highway_merge} and \ref{subsec:platoon_merge} for the relatively complex maneuvers. For the simpler maneuvers of traveling along a highway and following a platoon, we resort to simpler controllers described below.
+
+\subsubsection{Traveling along a highway} \label{sec:travel_hwy}
+We use a model-predictive controller (MPC) for traveling along a highway; this controller allows the leader to travel along a highway at a pre-specified speed. Here, the goal is for a leader quadrotor to track a constant-altitude path, defined as a curve $\bar{p}(s)$ parametrized by $s\in[0,1]$ in $p=(p_x, p_y)$ space (position space), while maintaining a velocity $\bar{v}(s)$ that corresponds to constant speed in the direction of the highway. Assuming that the initial position on the highway, $s_0=s(t_0)$ is specified, such a controller can be obtained from the following optimization problem over the time horizon $[t_0, t_1]$:
+
+\begin{equation}
+\begin{aligned}
+\text{minimize } & \int_{t_0}^{t_1} \big\{\| p(t)-\bar{p}(s(t)) \|_2 + \\ 
+&\qquad \| v(t) - \bar{v}(s(t)) \|_2 + 1-s \big\} dt \\
+\text{subject to } & \dot{x} = f(x,u) \text{ where } f \text{ is given in \eqref{eq:dyn}} \\
+& |u_x|, |u_y| \le u_\text{max}, |v_x|, |v_y| \le v_\text{max} \\
+& s(t_0) = s_0, \dot{s} \ge 0
+\end{aligned}
+\end{equation}
+
+If we discretize time, and assume that $\bar{p}(\cdot)$ is linear, then the above optimization is convex, and can be quickly solved.
+
+\subsubsection{Following a Platoon} \label{sec:follow_platoon}
+Follower vehicles use a feedback control law tracking a nominal position and velocity in the platoon, with an additional feed-forward term given by the leader's acceleration input; here, for simplicity, we assume perfect communication between the leader and the follower vehicles. This following law enables smooth vehicle trajectories in the relative platoon frame, while allowing the platoon as a whole to perform agile maneuvers by transmitting the leader's acceleration command $u_{P_1}(t)$ to all vehicles.
+
+The $i$-th member of the platoon, $Q_{P_i}$, is expected to track a relative position in the platoon $r^i = (r_x^i,r_y^i)$ with respect to the leader's position $p_{P_1}$, and the leader's velocity $v_{P_1}$ at all times. The resulting control law has the form:
+\begin{equation}\label{eq:follow}
+u^i(t) = k_p \big[p_{P_1}(t) + r^i(t) - p^i(t) \big] + k_v\big[v_{P_1}(t) - v^i(t)\big] + u_{P_1}(t)
+\end{equation}
+for some $k_p,k_v>0$. The leader can modify the nominal position of vehicles in the platoon, for example to command the formation to turn. In particular, a simple rule for determining $r^i(t)$ in a single-file platoon is given for $Q_{P_i}$ as:
+\begin{equation}\label{eq:nominal_pos}
+r^i(t) = - (i-1) b \frac{v_{P_1}}{\|v_{P_1}\|_2}
+\end{equation}
+where $b$ is the spacing between vehicles along the platoon. and $\frac{v_{P_1}}{\|v_{P_1}\|_2}$ is the platoon leader's direction of travel.
+
+\subsection{Safety Controllers \label{sec:safety}}
+\subsubsection{Wrapping Reachability Around Existing Controllers}
+A quadrotor can use a liveness controller when it is not in any danger of collision with other quadrotors or obstacles. If the quadrotor could potentially be involved in a collision within the next short period of time, it must switch to a safety controller. In this section, we will demonstrate how HJ reachability can be used to both detect imminent danger and synthesize a controller that guarantees safety within a specified time horizon. For our safety analysis, we will use the model in Equation \eqref{eq:rel_dyn_aug}.
+
+We begin by defining the target set $\mathcal{L}_S$, which characterizes configurations in relative coordinates for which quadrotors $Q_i,Q_j$ are considered to be in collision:
+
+\begin{equation}
+\begin{aligned}
+\mathcal{L}_S = \{x: &|p_{x,r}|, |p_{y,r}|\le d \vee |v_{x,i}| \ge v_\text{max} \vee |v_{y,i}| \ge v_\text{max} \}
+\end{aligned}
+\end{equation}
+
+With this definition, $Q_i$ is considered to be unsafe if $Q_i$ and $Q_j$ are within a distance $d$ in both $x$- and $y$-directions simultaneously, or if $Q_i$ has exceeded some maximum speed $v_\text{max}$ in either $x$- or $y$-direction. For illustration purposes, we choose $d=2$ meters, and $v_\text{max}= 5$ m/s.
+
+We can now define the implicit surface function $l_S(x)$ corresponding to $\mathcal{L}_S$, and solve the HJI PDE \eqref{eq:HJIPDE} using $l_S(x)$ as the terminal condition. As before, the zero sublevel set of the solution $V_S(t,x)$ specifies the reachable set $\mathcal{V}_S(t)$, which characterizes the states in the augmented relative coordinates, as defined in \eqref{eq:rel_dyn_aug}, from which $Q_i$ \textit{cannot} avoid $\mathcal{L}_S$ for a time period of $t$, if $Q_j$ uses the worst case control. To avoid collisions, $Q_i$ must apply the safety controller according to \eqref{eq:HJI_ctrl_syn} on the boundary of the reachable set in order to avoid going into the reachable set. The following algorithm wraps our safety controller around liveness controllers:
+
+\begin{enumerate}
+\item For a specified time horizon $t$, evaluate$V_S(-t,x_i-x_j)$ for all $j\in \mathcal{Q}(i)$.
+
+$\mathcal{Q}(i)$ is the set of quadrotors with which quadrotor $i$ checks safety against. We discuss $\mathcal{Q}(i)$ in Section \ref{subsec:safety_guarantees}.
+
+\item Use the safety or liveness controller depending on the values $V_S(-t,x_i-x_j),j\in \mathcal{Q}(i)$: 
+
+If $\exists j\in \mathcal{Q}(i),V_S(-t,x_i-x_j)\le 0$, then $Q_i,Q_j$ are in potential conflict, and $Q_i$ must use a safety controller; otherwise $Q_i$ uses a liveness controller.
+\end{enumerate}

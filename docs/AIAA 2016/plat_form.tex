@@ -11,8 +11,11 @@ Consider a UAV whose dynamics are given by
 
 \begin{equation} \label{eq:dyn}
 \begin{aligned}
-\dot{\pos}_x &= \vel_x, \qquad \dot{\pos}_y = \vel_y  \\
-\dot{\vel}_x &= u_x, \qquad \dot{\vel}_y = u_y, \qquad |u_x|,|u_y| \le u_\text{max}
+\dot{\pos}_x &= \vel_x \\
+\dot{\pos}_y &= \vel_y  \\
+\dot{\vel}_x &= u_x \\
+\dot{\vel}_y &= u_y \\
+|u_x|,|u_y| &\le u_\text{max}
 \end{aligned}
 \end{equation}
 
@@ -47,7 +50,7 @@ The available maneuvers and associated mode transitions are shown in Figure \ref
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.45\textwidth]{"fig/vehicleModes"}
+	\includegraphics[width=0.5\textwidth]{"fig/vehicleModes"}
 	\caption{Hybrid modes for vehicles in platoons.}
 	\label{fig:vehicleModes}
 \end{figure}
@@ -61,4 +64,4 @@ Using the previously-mentioned modeling assumptions, we would like to address th
 \item How can the platoon respond to intruders such as unresponsive UAVs, birds, or other aerial objects?
 \end{enumerate}
 
-The answers to these questions can be broken down into the maneuvers listed in Section \ref{subsec:platoon_def}. In general, the control strategies of each quadrotor have a liveness component, which specifies a set of states towards which the quadrotor aims to reach, and a safety component, which specifies a set of states that it must avoid. In this paper, we address both the liveness and safety component using reachability analysis.
+The answers to these questions can be broken down into the maneuvers listed in Section \ref{subsec:platoon_def}. In general, the control strategies of each vehicle have a liveness component, which specifies a set of states towards which the vehicle aims to reach, and a safety component, which specifies a set of states that it must avoid. Together, the liveness and safety controllers guarantee the success and safety of a vehicle in the airspace making any desired mode transition. In this paper, these guarantees are provided using reachability analysis.

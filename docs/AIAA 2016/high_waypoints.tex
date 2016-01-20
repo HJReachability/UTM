@@ -1,0 +1,17 @@
+% !TEX root = main.tex
+\subsection{From Paths to Waypoints}
+Each of the cost-minimizing paths $\ppath_i$ computed from the solution to the Eikonal equation consists of a continuous set of points. Each path $\ppath_i$ is an approximation to the sequence of highways $\hws_{N_i}^i = \{\hw^i_j\}_{i=1,j=1}^{i=M,j=N_i}$ defined in \eqref{eq:ahpp}, but now indexes by the corresponding path. 
+
+For each path $\ppath_i$, we would like to sparsify the points on the path to obtain a collection of waypoints, $\wpt_{i,j}, j = 1,\ldots, N_i+1$, which are the end points of the highways:
+
+\begin{equation}
+\begin{aligned}
+\hw^i_j(0) &= \wpt_{i,j}, \\
+\hw^i_j(1) &= \wpt_{i,j+1}, \\
+j &= 1,\ldots,N_i
+\end{aligned}
+\end{equation}
+
+ we sparsify this set of points to obtain a collection of waypoints, $\wpt$, which are also endpoints of air highways, we first add the destination point to the collection and note the path's heading. Next, we add to the collection of waypoints the first point on the path at which the heading changes by some threshold $\theta_C$. This process is repeated along the entire path. Finally, we add the origin points to the collection. We create a collection of these points for all the cost-minimizing paths.
+
+If there is a large change in heading within a small section of the cost-minimizing path, then the collections $\wpt_{ij}$ may contain many points which are close together. In addition, there may be multiple paths that are very close to each other (in fact, this behavior is desirable), also cluttering the airspace with too many waypoints. We propose to sparsify the waypoints by clustering the points in $\wpt_{ij}$. Each cluster contains points that are within a certain distance to the closest point in the cluster, and all points in each cluster are replaced with a single point located at the centroid of the cluster.

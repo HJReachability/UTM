@@ -253,7 +253,7 @@
 \RequirePackage{verbatim}   % New verbatim format
 \RequirePackage{textcomp}   % proper single quotes in verbatim
 \RequirePackage{ifthen}     % logical structure
-\RequirePackage[BF,bf]{subfigure}     % subfigures
+\RequirePackage{subcaption}     % subfigures
 \RequirePackage{amsmath}    % AMS packages
 \RequirePackage{amsfonts}
 \RequirePackage{amssymb}

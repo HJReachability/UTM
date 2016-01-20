@@ -1,0 +1,51 @@
+\documentclass[journal]{aiaa-pretty}
+
+\newcommand{\pos}{p} % position
+\newcommand{\vel}{v} % velocity
+\newcommand{\hw}{\mathbb{H}} % a single highway
+\newcommand{\hws}{\mathbb{S}} % a sequence of highways
+\newcommand{\hwd}{\hat{d}}
+\newcommand{\cost}[1]{c_\text{#1}}
+\newcommand{\wpt}{\mathcal{W}}
+\newcommand{\cmap}{c}
+\newcommand{\ccost}{C}
+\newcommand{\ppath}{\mathbb{P}}
+\newcommand{\ocost}{V}
+
+\author{Mo Chen}
+\title{Guaranteeing Safety and Liveness of Unmanned Aerial Vehicle Platoons on Air Highways}
+
+\abstract{Recently, there has been immense interest in using unmanned aerial vehicles (UAVs) for civilian operations such as package delivery, firefighting, and fast disaster response. As a result, UAV traffic management systems are needed to support potentially thousands of UAVs flying simultaneously in the airspace, in order to ensure their liveness and safety requirements are met. Hamilton-Jacobi (HJ) reachability is a powerful framework for providing conditions under which these requirements can be met, and for synthesizing the optimal controller for meeting them. However, due to the curse of dimensionality, HJ reachability is only tractable for a small number of vehicles if their set of maneuvers is unrestricted. In this paper, we define a platoon to be a group of UAVs in a single-file formation. We model each vehicle as a hybrid system with modes corresponding to its role in the platoon, and specify the set of allowed maneuvers in each mode to make the analysis tractable. We propose several liveness controllers based on HJ reachability, and wrap a safety controller, also based on HJ reachability, around the liveness controllers. For a single altitude range, our approach guarantees safety for one safety breach; in the unlikely event of multiple safety breaches, safety can be guaranteed over multiple altitude ranges. We demonstrate the satisfaction of liveness and safety requirements through simulations of three common scenarios.}
+
+\begin{document}
+
+\maketitle
+
+\section*{Nomenclature}
+(Nomenclature entries should have the units identified)\\
+\noindent\begin{tabular}{@{}lcl@{}}
+$x$ &=& System state \\
+$\pos=(\pos_x, \pos_y)$ &$=$& Horizontal position \\
+$\vel=(\vel_x, \vel_y)$ &$=$& Horizontal velocity
+\end{tabular} \\
+
+\input{introduction.tex}
+\input{high_form.tex}
+\input{high_eikon.tex}
+\input{high_waypoints.tex}
+\input{high_sim.tex}
+\input{plat_form.tex}
+\input{plat_reach.tex}
+\input{plat_intra.tex}
+\input{plat_inter.tex}
+\input{plat_safety.tex}
+\input{plat_sim.tex}
+\input{conclusions.tex}
+
+\section*{Appendix}
+
+\section*{Acknowledgments}
+This work is supported in part by NSF under CPS:ActionWebs (CNS-0931843) and CPS:FORCES (CNS1239166), by NASA under grants NNX12AR18A and UCSCMCA-14-022 (UARC), by ONR under grants N00014-12-1-0609, N000141310341 (Embedded Humans MURI), and MIT\_5710002646 (SMARTS MURI), and by AFOSR under grants UPenn-FA9550-10-1-0567 (CHASE MURI) and the SURE project.
+
+\bibliography{references}
+\end{document}
