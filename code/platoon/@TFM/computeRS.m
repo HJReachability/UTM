@@ -125,6 +125,66 @@ switch type
     
   case 'pl_join_platoon_V'
     error('Not implemented yet.')
+  
+   case 'qr_pl4_safe_V'
+    %% Safety for quadrotor pursuing a plane4
+    filename = [fileparts(mfilename('fullpath')) ... 
+      '/../RS_core/saved/qr_pl4_safe_V_' ...
+      num2str(obj.cr) '_' num2str(obj.hw_speed) '.mat'];
+
+    if exist(filename, 'file')
+      load(filename)
+    else
+      [data, g, tau] = ...
+        quad_pl4_collision_2D(obj.cr, obj.hw_speed, visualize);
+
+      if fourD
+      % Reconstruct the base reachable set
+        gridLim = [g.min-1 g.max+1; g.min-1 g.max+1];
+        [~, ~, TTR_out] = ...
+          recon2x2D(tau, {g; g}, {data; data}, gridLim, tau(end));
+        g = TTR_out.g;
+        data = TTR_out.value;
+        grad = TTR_out.grad;
+        save(filename, 'g', 'data', 'grad', 'tau')
+      else
+        grad = [];      
+      end
+    end
+    obj.qr_pl4_safe_V.g = g;
+    obj.qr_pl4_safe_V.data = data;
+    obj.qr_pl4_safe_V.grad = grad;
+    obj.qr_pl4_safe_V.tau = tau; 
+
+   case 'pl4_qr_safe_V'
+    %% Safety for plane4 pursuing a quadrotor
+    filename = [fileparts(mfilename('fullpath')) ... 
+      '/../RS_core/saved/pl4_qr_safe_V_' ...
+      num2str(obj.cr) '_' num2str(obj.hw_speed) '.mat'];
+
+    if exist(filename, 'file')
+      load(filename)
+    else
+      [data, g, tau] = ...
+        pl4_quad_collision_2D(obj.cr, obj.hw_speed, visualize);
+
+      if fourD
+      % Reconstruct the base reachable set
+        gridLim = [g.min-1 g.max+1; g.min-1 g.max+1];
+        [~, ~, TTR_out] = ...
+          recon2x2D(tau, {g; g}, {data; data}, gridLim, tau(end));
+        g = TTR_out.g;
+        data = TTR_out.value;
+        grad = TTR_out.grad;
+        save(filename, 'g', 'data', 'grad', 'tau')
+      else
+        grad = [];      
+      end
+    end
+    obj.pl4_qr_safe_V.g = g;
+    obj.pl4_qr_safe_V.data = data;
+    obj.pl4_qr_safe_V.grad = grad;
+    obj.pl4_qr_safe_V.tau = tau; 
     
   case 'pl_pl_safe_V'
     %% Safety between two Planes
@@ -176,6 +236,26 @@ switch type
     obj.pl4_pl4_safe_V.data = data;
     obj.pl4_pl4_safe_V.grad = grad;
     obj.pl4_pl4_safe_V.tau = tau;
+    
+  case 'pl4_rel_target_V'
+    %% Join platoon / merge onto highway for plane4
+    x = [0 0 0 0]; % Base reachable set assumes 0 relative state
+    
+    filename = [fileparts(mfilename('fullpath')) ...
+      '/../RS_core/saved/pl4_rel_target_V.mat'];
+    
+    if exist(filename, 'file')
+      load(filename)
+    else
+      [g, data] = pl4_rel_target_4D(visualize);
+      grad = extractCostates(g, data);    
+      save(filename, 'g', 'data', 'grad', 'tau')
+    end
+    
+    obj.pl4_rel_target_V.g = g;
+    obj.pl4_rel_target_V.data = data;
+    obj.pl4_rel_target_V.grad = grad;
+    %obj.pl4_rel_target_V.tau = tau;
     
   otherwise
     error('Undefined reachable set type.')
