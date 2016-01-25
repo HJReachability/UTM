@@ -1,4 +1,4 @@
-function [g, data] = pl4_rel_target_4D(x, visualize)
+function [g, data] = pl4_rel_target_4D()
 % air3D: demonstrate the 3D aircraft collision avoidance example
 %
 %   [ data, g, data0 ] = air3D(accuracy)
@@ -62,8 +62,8 @@ function [g, data] = pl4_rel_target_4D(x, visualize)
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 15;                  % End time.
-plotSteps = 1;               % How many intermediate plots to produce?
+tMax = 2;                 % End time.
+plotSteps = 2;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
 
@@ -105,7 +105,7 @@ useSubplots = 0;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 25;
+Nx = 35;
 
 % Create the grid.
 g.dim = 4;
@@ -119,9 +119,8 @@ g.max(3) = g.max(3) * (1 - 1 / g.N(3));
 g = processGrid(g);
 
 % ----------------- Target -----------------
-% Below minimum relative distance, small relative velocity, any velocity in x
-data0 = shapeRectangleByCorners(g, [0 0 0 0]-1.1*g.dx, [0 0 0 0]+1.1*g.dx);
-data = shapeCylinder(g, 3, [ 0; 0; 0 ], targetRadius);
+data = shapeCylinder(g, [3;4] , [ 0; 0; 0; 0], 1.1*g.dx(1));
+data0 = data;
 
 
 %---------------------------------------------------------------------------
@@ -132,10 +131,11 @@ schemeData.partialFunc = @PartialFunc;
 schemeData.grid = g;
 
 % The Hamiltonian and partial functions need problem parameters.
-schemeData.velocityA = velocityA;
-schemeData.velocityB = velocityB;
-schemeData.inputA = inputA;
-schemeData.inputB = inputB;
+
+% max angular speed
+schemeData.max_u1 = 5;
+% max ||acceleration||
+schemeData.max_u2 = 1;
 
 %---------------------------------------------------------------------------
 % Choose degree of dissipation.
@@ -206,7 +206,9 @@ if(useSubplots)
   subplot(rows, cols, plotNum);
 end
 
-h = visualizeLevelSet(g, data, displayType, level, [ 't = ' num2str(t0) ]);
+
+[g3d, data3d] = proj3D(g,data,[0 0 0 1],5,35);
+h = visualizeLevelSet(g3d, data3d, displayType, level, [ 't = ' num2str(t0) ]);
 
 camlight right;  camlight left;
 hold on;
@@ -254,7 +256,8 @@ while(tMax - tNow > small * tMax)
   end
 
   % Create new visualization.
-  h = visualizeLevelSet(g, data, displayType, level, [ 't = ' num2str(tNow) ]);
+  [g3d, data3d] = proj3D(g,data,[0 0 0 1],5,35);
+  h = visualizeLevelSet(g3d, data3d, displayType, level, [ 't = ' num2str(tNow) ]);
 
   % Restore view.
   view(view_az, view_el);
@@ -298,9 +301,11 @@ function hamValue = HamFunc(t, data, deriv, schemeData)
 %
 % Ian Mitchell 3/26/04
 
-checkStructureFields(schemeData, 'grid',  'inputA', 'inputB');
+checkStructureFields(schemeData, 'grid',  'max_u1', 'max_u2');
 
 grid = schemeData.grid;
+max_u1 = schemeData.max_u1;
+max_u2 = schemeData.max_u2;
 
 % implements equation (3.3) from my thesis term by term
 %   with allowances for \script A and \script B \neq [ -1, +1 ]
@@ -310,7 +315,7 @@ grid = schemeData.grid;
 %         \script A is inputA and \script B is inputB
 hamValue = deriv{1} .* grid.xs{4} .* cos(grid.xs{3}) +  ...
            deriv{2} .* grid.xs{4} .* sin(grid.xs{3}) + ...
-           abs(deriv{3})*inputA + abs(deriv{4}) * inputB;
+           abs(deriv{3}) * max_u1 + abs(deriv{4}) * max_u2;
 
 
 %---------------------------------------------------------------------------
@@ -353,26 +358,27 @@ function alpha = PartialFunc(t, data, derivMin, derivMax, schemeData, dim)
 %
 % Ian Mitchell 3/26/04
 
-checkStructureFields(schemeData, 'grid', 'velocityA', 'velocityB', ...
-                                 'inputA', 'inputB');
+checkStructureFields(schemeData, 'grid','max_u1', 'max_u2');
 
 grid = schemeData.grid;
+max_u1 = schemeData.max_u1;
+max_u2 = schemeData.max_u2;
 
 switch dim
   case 1
-    alpha = abs(-schemeData.velocityA + ...
-                + schemeData.velocityB * cos(grid.xs{3})) ...
-            + schemeData.inputA * abs(grid.xs{2});
+   % alpha = abs(-schemeData.velocityA + ...
+     %           + schemeData.velocityB * cos(grid.xs{3})) ...
+     %       + schemeData.inputA * abs(grid.xs{2});
+     alpha = abs(grid.xs{4} .* cos(grid.xs{3}));
 
   case 2
-    alpha = abs(schemeData.velocityB * sin(grid.xs{3})) ...
-            + schemeData.inputA * abs(grid.xs{1});
-
+   % alpha = abs(schemeData.velocityB * sin(grid.xs{3})) ...
+   %         + schemeData.inputA * abs(grid.xs{1});
+     alpha = abs(grid.xs{4} .* sin(grid.xs{3}));
   case 3
-    alpha = schemeData.inputA + schemeData.inputB;
-
+    alpha = max_u1;
   case 4 
-    alpha
+    alpha = max_u2;
   otherwise
     error([ 'Partials only exist in dimensions 1-4' ]);
 end

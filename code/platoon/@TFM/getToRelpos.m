@@ -93,7 +93,7 @@ function u = getToRelpos_pl4_pl4(obj, veh, veh_ref, relpos, debug)
 
 % Reference vehicle heading
 heading = veh_ref.getHeading;
-
+   
 base_pos = ...
   rotate2D(veh.getPosition - veh_ref.getPosition - relpos, -heading);
 base_vel = rotate2D(veh.getVelocity - veh_ref.getVelocity, -heading);
