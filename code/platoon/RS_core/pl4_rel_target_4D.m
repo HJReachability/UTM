@@ -1,4 +1,4 @@
-function [g, data] = pl4_rel_target_4D()
+function [g, data] = pl4_rel_target_4D(accuracy)
 % air3D: demonstrate the 3D aircraft collision avoidance example
 %
 %   [ data, g, data0 ] = air3D(accuracy)
@@ -62,8 +62,8 @@ function [g, data] = pl4_rel_target_4D()
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 2;                 % End time.
-plotSteps = 2;               % How many intermediate plots to produce?
+tMax = 3;                    % End time.
+plotSteps = 1;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
 
@@ -77,11 +77,7 @@ small = 100 * eps;
 dissType = 'global';
 
 %---------------------------------------------------------------------------
-% Problem Parameters.
-u1Max = 2*pi/10;
-u1Min = -2*pi/10;
-u2Max = 3;
-u2Min = -3;
+
 
 %---------------------------------------------------------------------------
 % What level set should we view?
@@ -105,7 +101,7 @@ useSubplots = 0;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 35;
+Nx = 30;
 
 % Create the grid.
 g.dim = 4;
@@ -132,10 +128,12 @@ schemeData.grid = g;
 
 % The Hamiltonian and partial functions need problem parameters.
 
-% max angular speed
-schemeData.max_u1 = 5;
-% max ||acceleration||
-schemeData.max_u2 = 1;
+% max angular velocity
+schemeData.max_u1 = 2*pi/10;
+schemeData.min_u1 = -2*pi/10;
+% max acceleration
+schemeData.max_u2 = 3;
+schemeData.min_u2 = -3;
 
 %---------------------------------------------------------------------------
 % Choose degree of dissipation.
@@ -256,6 +254,7 @@ while(tMax - tNow > small * tMax)
   end
 
   % Create new visualization.
+  
   [g3d, data3d] = proj3D(g,data,[0 0 0 1],5,35);
   h = visualizeLevelSet(g3d, data3d, displayType, level, [ 't = ' num2str(tNow) ]);
 
@@ -301,21 +300,22 @@ function hamValue = HamFunc(t, data, deriv, schemeData)
 %
 % Ian Mitchell 3/26/04
 
-checkStructureFields(schemeData, 'grid',  'max_u1', 'max_u2');
+checkStructureFields(schemeData, 'grid',  'max_u1', 'max_u2', ...
+                                  'min_u1', 'min_u2');
 
 grid = schemeData.grid;
 max_u1 = schemeData.max_u1;
+min_u1 = schemeData.min_u1;
 max_u2 = schemeData.max_u2;
+min_u2 = schemeData.min_u2;
 
-% implements equation (3.3) from my thesis term by term
-%   with allowances for \script A and \script B \neq [ -1, +1 ]
-%   where deriv{i} is p_i
-%         x_r is grid.xs{1}, y_r is grid.xs{2}, \psi_r is grid.xs{3}
-%         v_a is velocityA, v_b is velocityB, 
-%         \script A is inputA and \script B is inputB
+
 hamValue = deriv{1} .* grid.xs{4} .* cos(grid.xs{3}) +  ...
            deriv{2} .* grid.xs{4} .* sin(grid.xs{3}) + ...
-           abs(deriv{3}) * max_u1 + abs(deriv{4}) * max_u2;
+           deriv{3} .* ((deriv{3}>=0) * min_u1 + ...
+           (deriv{3}<0) * max_u1) + ...
+           deriv{4} .* ((deriv{4}>=0) * min_u2 + ...
+           (deriv{4}<0) * max_u2);
 
 
 %---------------------------------------------------------------------------
@@ -358,11 +358,13 @@ function alpha = PartialFunc(t, data, derivMin, derivMax, schemeData, dim)
 %
 % Ian Mitchell 3/26/04
 
-checkStructureFields(schemeData, 'grid','max_u1', 'max_u2');
+checkStructureFields(schemeData, 'grid','max_u1', 'max_u2', 'min_u1', 'min_u2');
 
 grid = schemeData.grid;
 max_u1 = schemeData.max_u1;
 max_u2 = schemeData.max_u2;
+min_u1 = schemeData.min_u1;
+min_u2 = schemeData.min_u2;
 
 switch dim
   case 1
@@ -376,9 +378,9 @@ switch dim
    %         + schemeData.inputA * abs(grid.xs{1});
      alpha = abs(grid.xs{4} .* sin(grid.xs{3}));
   case 3
-    alpha = max_u1;
+    alpha = max(abs([max_u1 min_u1]));
   case 4 
-    alpha = max_u2;
+    alpha = max(abs([max_u2 min_u2]));
   otherwise
     error([ 'Partials only exist in dimensions 1-4' ]);
 end

@@ -46,10 +46,11 @@ leader_init_pos = rotate2D([init_dist 0], pos_theta);
 vel_theta = 2*pi*rand;
 leader_init_vel = rotate2D([tfm.hw_speed 0], vel_theta);
 
-leader = Plane4([leader_init_pos(1) leader_init_pos(2) ...
-                 atan2(leader_init_vel(2),leader_init_vel(1))
+
+leader = Plane4([leader_init_pos(1); leader_init_pos(2); ...
+                 atan2(leader_init_vel(2),leader_init_vel(1));
                  norm([leader_init_vel(1),leader_init_vel(2)])]);
-follower = Plane4(rand(4,1));
+follower = Plane4([rand(3,1); rand() * 5 + 5]);
 
 % Add vehicles to tfm
 tfm.aas = {};

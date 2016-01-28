@@ -50,6 +50,10 @@ classdef TFM < Node
     
     % Plane4-Plane4 safety reachable set
     pl4_pl4_safe_V
+    
+    %%Plane4 reachable sets
+    %Plane4 relative target reachable set
+    pl4_rel_target_V
         
   end
   

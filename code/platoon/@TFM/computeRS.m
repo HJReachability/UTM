@@ -247,9 +247,9 @@ switch type
     if exist(filename, 'file')
       load(filename)
     else
-      [g, data] = pl4_rel_target_4D();
+      [g, data] = pl4_rel_target_4D('medium');
       grad = extractCostates(g, data);    
-      save(filename, 'g', 'data', 'grad', 'tau')
+      save(filename, 'g', 'data', 'grad')
     end
     
     obj.pl4_rel_target_V.g = g;

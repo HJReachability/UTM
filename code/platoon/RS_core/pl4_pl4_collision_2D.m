@@ -1,4 +1,4 @@
-function [data, g, tau] = quad_quad_collision_2D(d, speed, visualize)
+function [data, g, tau] = pl4_pl4_collision_2D(d, speed, visualize)
 % function [dataC, g2D, tau] = quad2Dcollision(d, visualize)
 %
 % Computes collision reachable set for 4D relative quadrotor dynamics by
@@ -62,7 +62,7 @@ dissType = 'global';
 % Problem Parameters.
 u1Max = sqrt(3^2+(2*pi/10*12)^2);
 u1Min = -u1Max;
-u2Max = 3 / sqrt(2);
+u2Max = sqrt(3^2+(2*pi/10*12)^2);
 u2Min = -u2Max;
 
 %---------------------------------------------------------------------------
