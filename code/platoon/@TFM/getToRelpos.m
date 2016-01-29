@@ -137,5 +137,5 @@ behind_target = ...
 
 waypoint = ...
   Linpath(veh.getPosition, behind_target, 1.2*obj.hw_speed);
-u = followPath(obj,veh,waypoint);
+% u = followPath(obj,veh,waypoint);
 end

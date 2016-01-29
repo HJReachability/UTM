@@ -69,7 +69,7 @@ if LQR
       xi3 = veh.x(3);
       xi4 = veh.x(4);
       M = [cos(xi3) sin(xi3); -sin(xi3) / xi4 cos(xi3) / xi4];
-      u = M  * [u1 u2];
+      u1 = M  * u1;
     otherwise 
       error('This has not been implemented yet.')         
   end
