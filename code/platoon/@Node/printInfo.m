@@ -65,7 +65,8 @@ elseif isa(obj, 'Vehicle')
     disp(['  BQ ID = ' num2str(obj.BQ.ID)])
   else
     disp('  Not in a platoon')
-    endelse
+  end
+else
     error('Unknown node type!')
   end
   disp('========================')

@@ -7,7 +7,7 @@ Consider a UAV whose dynamics are given by
 \dot{x} = f(x,u)
 \end{equation}
 
-\noindent where $x\in\mathbb{R}^n$ represents the state, and $u\in\mathbb{R}^{n_u}$ represents the control action. In this paper, we will assume that each vehicle has the following simple model of a quadrotor:
+\noindent where $x$ represents the state, and $u$ represents the control action. In this paper, we will assume that each vehicle has the following simple model of a quadrotor:
 
 \begin{equation} \label{eq:dyn}
 \begin{aligned}
@@ -19,34 +19,48 @@ Consider a UAV whose dynamics are given by
 \end{aligned}
 \end{equation}
 
-\noindent where the state $x=(\pos_x, \vel_x, \pos_y, \vel_y)\in\mathbb{R}^4$ represents the quadrotor's position in the $x$-direction, its velocity in the $x$-direction, and its position and velocity in the $y$-direction, respectively. For convenience, we will denote the position and velocity $\pos=(\pos_x, \pos_y),\vel=(\vel_x,\vel_y)$, respectively. We will consider a group of $N$ quadrotors $Q_i, i=1\ldots,N$.
+\noindent where the state $x=(\pos_x, \vel_x, \pos_y, \vel_y)\in\mathbb{R}^4$ represents the quadrotor's position in the $x$-direction, its velocity in the $x$-direction, and its position and velocity in the $y$-direction, respectively. The control input $u = (u_x, u_y)\in\mathbb{R}^2$ consists of the acceleration in the $x$- and $y$- directions. For convenience, we will denote the position and velocity $\pos=(\pos_x, \pos_y),\vel=(\vel_x,\vel_y)$, respectively. We will consider a group of $N$ quadrotors $Q_i, i=1\ldots,N$.
 
-In general, the problem of collision avoidance among $N$ vehicles cannot be tractably solved using traditional dynamic programming approaches because the computation complexity of these approaches scales exponentially with the number of vehicles. Thus, in our present work, we will consider the situation where UAVs travel on air highways in platoons, defined in the following secions. The structure imposed by air highways and the platoon enables us to analyze the liveness and safety of the vehicles in a tractable manner.
-
-\subsubsection{Vehicles in a Platoon\label{subsec:platoon_def}}
-We consider a platoon of quadrotors to be a group of $M$ quadrotors $Q_{P_1}, \ldots, Q_{P_M}$ in a single-file formation. Not all of the $N$ quadrotors need to be in a platoon: $\{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$. $Q_{P_1}$ is the leader of the platoon, and $Q_{P_2},\ldots,Q_{P_M}$ are the followers. We will assume that the quadrotors in a platoon travel along an air highway, which is defined by as a path inside a pre-defined altitude range. The quadrotors maintain a separation distance of $b$. In order to allow for close proximity of the quadrotors and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a quadrotor will be able to exit the altitude range of the highway within a duration of $t_\text{internal}=1.5$. Such a requirement may be implemented practically as an emergency landing procedure to which the quadrotors revert when a malfunction is detected.
-
-As part of a platoon, each quadrotor must be capable of performing a number of essential cooperative maneuvers. In this paper, we consider the following: 
-\begin{itemize}
-\item safely merging onto an air highway;
-\item safely joining a platoon;
-\item reacting to a malfunctioning vehicle in the platoon;
-\item reacting to an intruder vehicle;
-\item following the highway, a curve defined in space at constant altitude, at a specified speed;
-\item maintaining a constant relative position and velocity with the leader of a platoon.
-\end{itemize}
+In general, the problem of collision avoidance among $N$ vehicles cannot be tractably solved using traditional dynamic programming approaches because the computation complexity of these approaches scales exponentially with the number of vehicles. Thus, in our present work, we will consider the situation where UAVs travel on air highways in platoons, defined in the following sections. The structure imposed by air highways and the platoon enables us to analyze the liveness and safety of the vehicles in a tractable manner.
 
 \subsubsection{Vehicles as Hybrid Systems}
-A UAV in general may be in a number of modes of operations, depending on whether it is part of a platoon, and in the affirmative case, whether it is a leader or a follower. Therefore, it is natural to model quadrotors as hybrid systems \cite{Lygeros98,Lygeros12}. In this paper, we restrict the available maneuvers of each quadrotor depending on the mode. We assume that each quadrotor in the airspace has the following modes:
+We model each vehicle as a hybrid system \cite{Lygeros98,Lygeros12} consisting of the modes "Free", "Leader", "Follower", and "Faulty". Within each mode, a set of maneuvers is available to allow the vehicle to change modes if desired. The modes and maneuvers are as follows:
 
 \begin{itemize}
-\item Free: Vehicle not in a platoon. Available maneuvers: merge onto a highway, join a platoon on a highway.
-\item Leader: Leader of platoon (could be by itself). Available maneuvers: travel along the highway at a pre-specified speed, merge current platoon with a platoon in front, leave the highway.
-\item Follower: Vehicle following the platoon leader. Available maneuvers: follow a platoon, create a new platoon.
-\item Faulty: Malfunctioned vehicle in a platoon: reverts to default behavior and descends after a duration of $t_\text{internal}$.
+\item Free: 
+
+A Free vehicle is not in a platoon or on a highway, and its possible maneuvers or mode transitions are
+\begin{itemize}
+\item remain a Free vehicle by staying away from highways,
+\item become a Leader by entering a highway to create a new platoon, and
+\item become a Follower by joining a platoon that is currently on a highway.
+\end{itemize} 
+
+\item Leader: 
+A Leader vehicle is the vehicle at the front of a platoon (which could consist of only the vehicle itself). The available maneuvers and mode transitions are
+
+\begin{itemize}
+\item remain a Leader by traveling along the highway at a pre-specified speed,
+\item become a Follower by merging the current platoon with a platoon in front, and
+\item become a Free vehicle by leaving the highway.
 \end{itemize}
 
-The available maneuvers and associated mode transitions are shown in Figure \ref{fig:vehicleModes}.
+\item Follower: 
+
+A Follower vehicle is a vehicle that is following a platoon leader. The Available maneuvers and mode transitions are 
+
+\begin{itemize}
+\item remain a Follower by staying a distance of $b$ behind the vehicle in front in the current platoon,
+\item become a Leader by splitting from the current platoon, and
+\item become a Free vehicle by leaving the highway.
+\end{itemize}
+
+\item Faulty: 
+
+If a vehicle from any of the other modes malfunction, it transitions into the Faulty mode and descends after a duration of $t_\text{internal}$.
+\end{itemize}
+
+The available maneuvers and associated mode transitions are summarized in Figure \ref{fig:vehicleModes}.
 
 \begin{figure}
 	\centering
@@ -55,8 +69,21 @@ The available maneuvers and associated mode transitions are shown in Figure \ref
 	\label{fig:vehicleModes}
 \end{figure}
 
+Suppose that there are $N$ vehicles in total. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $Q_{P_1}, \ldots, Q_{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation. We will assume that the vehicles in a platoon travel along an air highway. The vehicles maintain a separation distance of $b$ with its neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a vehicle will be able to exit the altitude range of the highway within a duration of $t_\text{internal}=1.5$. Such a requirement may be implemented practically as an emergency landing procedure to which the vehicles revert when a malfunction is detected.
+
 \subsubsection{Objectives}
-Using the previously-mentioned modeling assumptions, we would like to address the following questions:
+Given the above modeling assumptions, our goal is to provide control strategies to guarantee the success and safety of all the mode transitions. The theoretical tool used to provide the liveness and safety guarantees is reachability. The reachable sets we compute will allow each vehicle to perform actions such as 
+
+OK SHOULD EVASION BE A MODE?
+
+\begin{itemize}
+
+\item reacting to a malfunctioning vehicle in the platoon,
+\item reacting to an intruder vehicle,
+\item following the highway, a curve defined in space at constant altitude, at a specified speed, and
+\item maintaining a constant relative position and velocity with the leader of a platoon.
+\end{itemize}
+
 
 \begin{enumerate}
 \item How do vehicles form platoons?
