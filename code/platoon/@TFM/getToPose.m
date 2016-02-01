@@ -49,6 +49,7 @@ if valuex <= obj.ttt
   if debug
     disp('Arrived at target')
   end
+  vehicle.waypoints = [];
   u = [];
   return;
 end
