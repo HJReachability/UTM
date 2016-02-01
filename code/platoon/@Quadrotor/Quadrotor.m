@@ -69,5 +69,8 @@ classdef Quadrotor < Vehicle
       obj.xhist = x;
       
     end % end constructor
+    function valid = isvalidcontrol(obj,u) 
+        valid = and([obj.uMin; obj.uMin] <= u,u <= [obj.uMax; obj.uMax]);
+    end
   end % end methods
 end % end class

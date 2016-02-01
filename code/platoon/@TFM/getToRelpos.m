@@ -85,7 +85,7 @@ behind_target = ...
 
 waypoint = ...
   Linpath(veh.getPosition, behind_target, 1.2*obj.hw_speed);
-u = obj.followPath(veh,waypoint);
+u = veh.followPath(waypoint);
 end
 
 function u = getToRelpos_pl4_pl4(obj, veh, veh_ref, relpos, debug)
@@ -137,5 +137,6 @@ behind_target = ...
 
 waypoint = ...
   Linpath(veh.getPosition, behind_target, 1.2*obj.hw_speed);
-u = followPath(obj,veh,waypoint);
+u = followPath(veh,waypoint);
+
 end

@@ -32,6 +32,11 @@ if ~isnumeric(u)
   error('Control must be numeric!')
 end
 
+
+if ~obj.isvalidcontrol(u)  
+  error('Invalid control for Plane4: %s', u);
+end
+
 if numel(u) ~= obj.nu
   error(['Control input must have ' num2str(obj.nu) ' dimensions!'])
 end

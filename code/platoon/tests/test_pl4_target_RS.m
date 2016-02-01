@@ -1,4 +1,4 @@
-function getToRelpos_test_pl4()
+function test_pl4_target_RS()
 % getToRelpos_test()
 %
 % Tests a Plane4 heading to a position relative to a Plane4 going at
@@ -14,18 +14,18 @@ tfm.computeRS('pl4_rel_target_V');
 % Test N times...
 N = 10;
 for i = 1:N
-  getToRelposSingle(tfm);
+  test_pl4_target_single(tfm);
 end
 
 end
 
-function getToRelposSingle(tfm)
+function test_pl4_target_single(tfm)
 % getToRelposSingle(tfm)
 %
 % A single random trial. The following a randomized:
-%   initial position of the leader (50 distance away at an angle of
+%   initial position of the pursuer (50 distance away at an angle of
 %                                   pos_theta)
-%   initial velocity of the leader (10 at an angle of vel_theta)
+%   initial velocity of the pursuer (10 at an angle of vel_theta)
 %   target relative position relpos
 %   initial follower state rand(4,1) (this is very small)
 %
@@ -37,25 +37,26 @@ init_dist = 50; % Initial distance between the two vehicles
 
 
 % Random relative position
-relpos = -10 + 20*rand(2,1);
+target_state = [-10 + 20*rand(2,1); rotate2D([5; 5]+(rand(2,1) -[.5; .5]),2*pi*rand)];
+target = Plane4(target_state);
 
-% Random leader and follower initial states
+% Random pursuer and follower initial states
 pos_theta = 2*pi*rand;
-leader_init_pos = rotate2D([init_dist 0], pos_theta);
+pursuer_init_pos = rotate2D([init_dist 0], pos_theta);
 
 vel_theta = 2*pi*rand;
-leader_init_vel = rotate2D([tfm.hw_speed 0], vel_theta);
+pursuer_init_vel = rotate2D([tfm.hw_speed 0], vel_theta);
 
 
-leader = Plane4([leader_init_pos(1); leader_init_pos(2); ...
-                 atan2(leader_init_vel(2),leader_init_vel(1));
-                 norm([leader_init_vel(1),leader_init_vel(2)])]);
-follower = Plane4([rand() rand() 2*pi*rand() 5+(rand()-.5)]);
+pursuer = Plane4([pursuer_init_pos(1); pursuer_init_pos(2); ...
+                 atan2(pursuer_init_vel(2),pursuer_init_vel(1));
+                 norm([pursuer_init_vel(1),pursuer_init_vel(2)])]);
 
 % Add vehicles to tfm
 tfm.aas = {};
-tfm.regVehicle(leader);
-tfm.regVehicle(follower);
+tfm.regVehicle(target);
+tfm.regVehicle(pursuer);
+
 
 %% Initialize figures
 figure;
@@ -65,17 +66,16 @@ for j = 1:length(tfm.aas)
   hold on
 end
 
-% Plot path of leader
+% Plot path of pursuer
 tMax = 30;
-x0 = leader_init_pos(1);
-x1 = leader_init_pos(1) + tMax*leader_init_vel(1);
-y0 = leader_init_pos(2);
-y1 = leader_init_pos(2) + tMax*leader_init_vel(2);
+x0 = pursuer_init_pos(1);
+x1 = pursuer_init_pos(1) + tMax*pursuer_init_vel(1);
+y0 = pursuer_init_pos(2);
+y1 = pursuer_init_pos(2) + tMax*pursuer_init_vel(2);
 plot([x0 x1], [y0 y1], 'k--')
 
 % plot (absolute) position of target
-abs_pos = leader.getPosition + relpos;
-ha = plot(abs_pos(1), abs_pos(2), 'ro');
+
 
 grid on
 xlim([min([x0 x1]) max([x0 x1])])
@@ -85,19 +85,17 @@ drawnow;
 
 %% Integration
 t = 0:tfm.dt:tMax;
-u = zeros(2,2);
+
 for i = 1:length(t)
-  % Leader goes straight
-  % u(:,1) is already [0; 0]
-  
-  % Follower joins leader
-  u2 = follower.getToRelpos(leader, tfm, relpos, debug);
+   
+  u2 = pursuer.getToRelpos(target, tfm, [0; 0], debug);
   
   if isempty(u2)
     u2 = [0; 0];
   end
   
-  u(:,2) = u2;
+   u(:,2) = u2;
+   u(:,1) = [0; 0];
   
   % Update position and plots
   for j = 1:length(tfm.aas)
@@ -105,7 +103,7 @@ for i = 1:length(t)
     tfm.aas{j}.plotPosition;
   end
   
-  abs_pos = leader.getPosition + relpos;
+  abs_pos = pursuer.getPosition;
   ha.XData = abs_pos(1);
   ha.YData = abs_pos(2);  
   drawnow;

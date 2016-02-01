@@ -1,4 +1,4 @@
-function [u1, u] = followPath(obj, veh, linpath, v, LQR)
+function [u1, u] = followPath(obj, linpath, v, LQR)
 % function [u1, u] = followPath(obj, tsteps, hw, v)
 %
 % Computes the next control input to follow the path rpath
@@ -17,18 +17,17 @@ function [u1, u] = followPath(obj, veh, linpath, v, LQR)
 %
 % Mo Chen, 2015-05-23
 % Modified: Mo Chen, 2015-11-12
-% Modified: Mahesh Vashishtha, 2016-01-28
 
 % Find closest point on the path to current position
-s0 = firstPathPoint(veh, linpath.fn);
+s0 = firstPathPoint(obj, linpath.fn);
 
 % Default speed
-if nargin < 4
+if nargin < 3
   v = linpath.speed;
 end
 
 % Use LQR controller by default
-if nargin < 5
+if nargin < 4
   LQR = 1;
 end
 
@@ -41,38 +40,20 @@ end
 
 if LQR
   % ----- BEGIN LQR ---
-  K = lqr(Quadrotor.A, Quadrotor.B, diag([1 2 1 2]), eye(2)*.01);
+  K = lqr(obj.A, obj.B, diag([1 2 1 2]), eye(2)*.01);
   sref = s0;
   rref = linpath.fn(sref);
-  u1 = -K* (veh.x - [rref(1); vref(1); rref(2); vref(2)]);
+  u1 = -K* (obj.x - [rref(1); vref(1); rref(2); vref(2)]);
   
-  switch class(veh)
-    case 'Quadrotor'   
-      % Acceleration limit
-        if any(u1 > veh.uMax)
-          u1 = u1 / max(u1) * veh.uMax;
-        end
-
-        if any(u1 < veh.uMin)
-          u1 = u1 / min(u1) * veh.uMin;
-        end
-    case 'Plane4'
-      uMax = 3 / sqrt(2);
-      uMin = -3 / sqrt(2);
-      if any(u1 > uMax)
-        u1 = u1 / max(u1) * uMax;
-      end
-
-      if any(u1 < uMin)
-        u1 = u1 / min(u1) * uMin;
-      end
-      xi3 = veh.x(3);
-      xi4 = veh.x(4);
-      M = [cos(xi3) sin(xi3); -sin(xi3) / xi4 cos(xi3) / xi4];
-      u1 = M  * u1;
-    otherwise 
-      error('This has not been implemented yet.')         
+  % Acceleration limit
+  if any(u1 > obj.uMax)
+    u1 = u1 / max(u1) * obj.uMax;
   end
+
+  if any(u1 < obj.uMin)
+    u1 = u1 / min(u1) * obj.uMin;
+  end
+  
   return
 end
 % ----- END LQR -----
@@ -95,21 +76,21 @@ minimize sum(sum((r-p).^2)) + 5*sum(1-s) + sum(sum( (v(1,:)-vref(1)).^2 + (v(2,:
 
 subject to
 % First time step
-x(:,1) == veh.dynamics(0, veh.x, u(:,1))*dt   % Dynamics
-p(:,1) == x(veh.pdim,1)                        % Position components
-v(:,1) == x(veh.vdim,1)
+x(:,1) == obj.dynamics(0, obj.x, u(:,1))*dt   % Dynamics
+p(:,1) == x(obj.pdim,1)                        % Position components
+v(:,1) == x(obj.vdim,1)
 s(1) == s0
 
 %             All time steps afterwards
 for i = 2:tsteps
-  x(:,i) == veh.dynamics(0, x(:,i-1), u(:,i))*dt        % Dynamics
-  p(:,i) == x(veh.pdim,i)                                % Position components
-  v(:,i) == x(veh.vdim,i)                                % Position components
+  x(:,i) == obj.dynamics(0, x(:,i-1), u(:,i))*dt        % Dynamics
+  p(:,i) == x(obj.pdim,i)                                % Position components
+  v(:,i) == x(obj.vdim,i)                                % Position components
   s(i) == s(i-1) + ds(i-1)                            % Advanced on path
 end
 
 r == linpath.fn(s)
-veh.uMin <= u <= veh.uMax              % Control bounds
+obj.uMin <= u <= obj.uMax              % Control bounds
 % obj.vMin <= v <= obj.vMax                 % Velocity bounds
 0 <= s <= 1
 ds >= 0
@@ -122,7 +103,7 @@ u1 = u(:,1);
 end % end function
 
 
-function s0 = firstPathPoint(veh, rpath)
+function s0 = firstPathPoint(obj, rpath)
 % function s0 = firstPathPoint(rpath, x)
 %
 % Computes the parameter s0 on rpath that is closest to the current
@@ -136,7 +117,8 @@ function s0 = firstPathPoint(veh, rpath)
 %
 % Mo Chen, 2015-05-23
 
-p = veh.getPosition;
+x = obj.x;
+p = x(obj.pdim); % Position components
 
 N = 1000;
 s = linspace(0,1,N);

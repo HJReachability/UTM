@@ -59,6 +59,12 @@ classdef Plane4 < Vehicle
       obj.xhist = obj.x;
     end
     
+    % given that control is right dimension and is numeric, 
+    % check that it is a valid vector
+    function valid = isvalidcontrol(obj,u) 
+        valid = and([obj.wMin; obj.aMin] <= u,u <= [obj.wMax; obj.aMax]);
+    end
+    
     %%
     function collided = isCollided(obj, others, radius)
       % function collided = isCollided(obj, others,radius)
