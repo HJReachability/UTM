@@ -19,7 +19,7 @@ function [g, data] = pl4_rel_target_4D(accuracy)
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 3;                    % End time.
+tMax = 5;                    % End time.
 plotSteps = 1;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
@@ -55,12 +55,12 @@ useSubplots = 0;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 31;
+Nx = 45;
 
 % Create the grid.
 g.dim = 4;
-g.min = [  -10; -10; -pi; -5];
-g.max = [ 10; 10; pi; 5];
+g.min = [  -30; -30; -pi; -5];
+g.max = [ 30; 30; pi; 5];
 g.bdry = { @addGhostExtrapolate; @addGhostExtrapolate; @addGhostPeriodic; @addGhostExtrapolate};
 % Roughly equal dx in x and y (so different N).
 g.N = [ Nx; ceil(Nx * (g.max(2) - g.min(2)) / (g.max(1) - g.min(1))); ...
@@ -70,7 +70,7 @@ g.max(3) = g.max(3) * (1 - 1 / g.N(3));
 g = processGrid(g);
 
 % ----------------- Target -----------------
-data = shapeSphere(g, [ 0; 0; 0; 0], 1.5*max(g.dx));
+data = shapeSphere(g, [ 0; 0; 0; 0], 1.1*max(g.dx));
 data0 = data;
 
 

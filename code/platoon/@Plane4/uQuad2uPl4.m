@@ -4,7 +4,7 @@ function uPl4 = uQuad2uPl4(obj, uQuad)
 % Converts controls (acceleration in x and y directions) in a Quadrotor to 
 % controls in a Plane4 (acceleration and turn rate)
 %
-% Mo Chen, 2016-02-21
+% Mo Chen, 2016-02-01
 
 if numel(uQuad) ~= 2
   error('Quadrotor control must be 2D!')

@@ -50,7 +50,7 @@ leader_init_vel = rotate2D([tfm.hw_speed 0], vel_theta);
 leader = Plane4([leader_init_pos(1); leader_init_pos(2); ...
                  atan2(leader_init_vel(2),leader_init_vel(1));
                  norm([leader_init_vel(1),leader_init_vel(2)])]);
-follower = Plane4([rand() rand() 2*pi*rand() 5+(rand()-.5)]);
+follower = Plane4([rand() rand() 2*pi*rand() 7+4*(rand()-.5)]);
 
 % Add vehicles to tfm
 tfm.aas = {};
@@ -66,7 +66,7 @@ for j = 1:length(tfm.aas)
 end
 
 % Plot path of leader
-tMax = 30;
+tMax = 50;
 x0 = leader_init_pos(1);
 x1 = leader_init_pos(1) + tMax*leader_init_vel(1);
 y0 = leader_init_pos(2);
