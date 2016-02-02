@@ -49,18 +49,20 @@ if LQR
   quad_x = [pos(1); vel(1); pos(2); vel(2)];
   u1 = -K* (quad_x - [rref(1); vref(1); rref(2); vref(2)]);
   
-  uMax = 3 / sqrt(2);
-  uMin = -3 / sqrt(2);
-  if any(u1 > uMax)
-    u1 = u1 / max(u1) * uMax;
-  end
-  
-  if any(u1 < uMin)
-    u1 = u1 / min(u1) * uMin;
-  end
-  
-  u1 = obj.uQuad2uPl4(u1);
-  
+      uMax = 3 / sqrt(2);
+      uMin = -3 / sqrt(2);
+      if any(u1 > uMax)
+        u1 = u1 / max(u1) * uMax;
+      end
+
+      if any(u1 < uMin)
+        u1 = u1 / min(u1) * uMin;
+      end
+      xi3 = obj.x(3);
+      xi4 = obj.x(4);
+      M = [cos(xi3) sin(xi3); -sin(xi3) / xi4 cos(xi3) / xi4];
+      u1 = M  * u1;
+
   return
 end
 % ----- END LQR -----
