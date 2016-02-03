@@ -7,7 +7,7 @@ Consider a UAV whose dynamics are given by
 \dot{x} = f(x,u)
 \end{equation}
 
-\noindent where $x$ represents the state, and $u$ represents the control action. In this paper, we will assume that each vehicle has the following simple model of a quadrotor:
+\noindent where $x$ represents the state, and $u$ represents the control action. The techniques we present in this paper do not depend on the dynamics of the vehicles. However, for concreteness, we consider assume that the UAVs are quadrotors that fly at a constant altitude under non-faulty circumstances. For the quadrotor, we use a simple model in which the $x$ and $y$ dynamics are double integrators:
 
 \begin{equation} \label{eq:dyn}
 \begin{aligned}
@@ -72,23 +72,21 @@ The available maneuvers and associated mode transitions are summarized in Figure
 Suppose that there are $N$ vehicles in total. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $Q_{P_1}, \ldots, Q_{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation. We will assume that the vehicles in a platoon travel along an air highway. The vehicles maintain a separation distance of $b$ with its neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a vehicle will be able to exit the altitude range of the highway within a duration of $t_\text{internal}=1.5$. Such a requirement may be implemented practically as an emergency landing procedure to which the vehicles revert when a malfunction is detected.
 
 \subsubsection{Objectives}
-Given the above modeling assumptions, our goal is to provide control strategies to guarantee the success and safety of all the mode transitions. The theoretical tool used to provide the liveness and safety guarantees is reachability. The reachable sets we compute will allow each vehicle to perform actions such as 
+Given the above modeling assumptions, our goal is to provide control strategies to guarantee the success and safety of all the mode transitions. The theoretical tool used to provide the liveness and safety guarantees is reachability. The reachable sets we compute will allow each vehicle to perform complex actions such as 
 
-OK SHOULD EVASION BE A MODE?
+SHOULD EVASION BE A MODE?
 
 \begin{itemize}
+\item merge onto a highway to form a platoon,
+\item join a new or different platoon,
+\item leave a platoon to create a new one,
+\item reacting to a malfunctioning or intruder vehicles.
+\end{itemize}
 
-\item reacting to a malfunctioning vehicle in the platoon,
-\item reacting to an intruder vehicle,
-\item following the highway, a curve defined in space at constant altitude, at a specified speed, and
+We also propose more basic controllers to perform other simpler actions such as
+\begin{itemize}
+\item following the highway at constant altitude at a specified speed,
 \item maintaining a constant relative position and velocity with the leader of a platoon.
 \end{itemize}
 
-
-\begin{enumerate}
-\item How do vehicles form platoons?
-\item How can the safety of the vehicles be ensured during normal operation and when there is a malfunctioning vehicle within the platoon?
-\item How can the platoon respond to intruders such as unresponsive UAVs, birds, or other aerial objects?
-\end{enumerate}
-
-The answers to these questions can be broken down into the maneuvers listed in Section \ref{subsec:platoon_def}. In general, the control strategies of each vehicle have a liveness component, which specifies a set of states towards which the vehicle aims to reach, and a safety component, which specifies a set of states that it must avoid. Together, the liveness and safety controllers guarantee the success and safety of a vehicle in the airspace making any desired mode transition. In this paper, these guarantees are provided using reachability analysis.
+In general, the control strategies of each vehicle have a liveness component, which specifies a set of states towards which the vehicle aims to reach, and a safety component, which specifies a set of states that it must avoid. Together, the liveness and safety controllers guarantee the success and safety of a vehicle in the airspace making any desired mode transition. In this paper, these guarantees are provided using reachability analysis, and allow the multi-UAV system to perform joint maneuvers essential to maintaining structure in the airspace.

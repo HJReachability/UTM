@@ -1,12 +1,12 @@
-function u = RSControl(obj, RS)
-% u = RSControl(obj, reach, g, tau)
+function u = RSControl(obj, BRS)
+% u = RSControl(obj, BRS)
 
 u = [];
-for i = 1:length(RS.tau)
-  if eval_u(RS.g, RS.data(:,:,:,i), obj.x) <= 0
-    P = extractCostates(RS.g, RS.data(:,:,:,i));
-    p = calculateCostate(RS.g, P, obj.x);
-    u = (p(3) >= 0) * obj.wMin + (p(3) < 0) * obj.wMax;
+for i = 1:length(BRS.tau)
+  if eval_u(BRS.g, BRS.data(:,:,:,i), obj.x) <= 0
+    P = extractCostates(BRS.g, BRS.data(:,:,:,i));
+    p = calculateCostate(BRS.g, P, obj.x);
+    u = (p(3) >= 0) * (-BRS.uMax) + (p(3) < 0) * BRS.uMax;
     return
   end
 end

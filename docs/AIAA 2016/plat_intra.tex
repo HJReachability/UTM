@@ -1,38 +1,75 @@
 % !TEX root = main.tex
-\subsection{Intra-Platoon Controllers}
-\subsubsection{Merging onto a Highway \label{subsec:highway_merge}}
-We model the merging of a vehicle onto an air highway as a path planning problem, where we specify a target position and velocity whose magnitude (the speed) is given by the highway specification, and whose direction is along the highway. Thus, for a quadrotor, the objective would be to drive the system in \eqref{eq:dyn} to a specific state $\bar{x}_H=(\bar{p}_x, \bar{v}_x, \bar{p}_y, \bar{v}_y)$, or a small range of states defined by the set
+\subsection{Reachability-Based Controllers}
+Reachability analysis is useful for constructing controllers in a large variety of situations. In order to construct different controllers, an appropriate target set needs to be defined depending on the goal of the controller. If one defines the target set to be a set of desired states, the reachable set, once computed, would represent the states from which a system needs to first arrive at in order to reach the desired states. On the other hand, if the target set represents a set of undesirable states, then the reachable set would indicate the region of the state space that the system needs to avoid. In addition, the system dynamics with which the reachable set is computed provides additional flexibility when using reachability to construct controllers.
+
+Using a number of different target sets and dynamics, we now propose different reachability-based controllers used for vehicle mode transitions in our platooning concept.
+
+\subsubsection{Getting to a Target State}
+The controller used by a vehicle to a target state is important in a couple of situations in the platooning context. First, a vehicle in the ``Free'' mode can use the controller to merge onto a highway, forming a platoon and changing modes to a ``Leader'' vehicle. Second, a vehicle in either the ``Leader'' mode or the ``Follower'' mode can use this controller to change to a different highway, changing modes to a ``Leader'' vehicle. 
+
+In both of the above cases, we use the dynamics of a single vehicle specified in \ref{eq:dyn}. The target state would be a position $(\Pos_x, \Pos_y)$ representing the desired merging point on the highway, along with a velocity $(\Vel_x, \Vel_y)$ that corresponds to the speed and direction of travel specified by the highway. For the reachability computation, we define the target set to be a small range of states around the target state $x_H = (\Pos_x, \Pos_y, \Vel_x, \Vel_y)$:
 
 \begin{equation}
 \begin{aligned}
-\mathcal{L}_H = \{x: |p_x-\bar{p}_x|\le r_{p_x}, |v_x-\bar{v}_x|\le r_{v_x}, \\
-|p_y - \bar{p}_y| \le r_{p_y}, |v_y - \bar{v}_y|\le r_{v_y} \}.
+\mathcal{L}_H = \{x: |\pos_x-\Pos_x|\le r_{\pos_x}, |v_x-\Vel_x|\le r_{\vel_x}, \\
+|\pos_y - \Pos_y| \le r_{\pos_y}, |v_y - \Vel_y|\le r_{v\vel_y} \}.
 \end{aligned}
 \end{equation}
 
-In this reachability problem, $\mathcal{L}_H$ is the target set, represented by the zero sublevel set of the function $l_H(x)$, which specifies the terminal condition of the HJB PDE that we need to solve. The solution we obtain, $V_H(t,x)$, is the implicit surface function representing the reachable set $\mathcal V_H(t)$; $V_H(-T,x)\le 0$, then, specifies the reachable set $\mathcal{V}_H(T)$, the set of states from which the system can be driven to the target $\mathcal{L}_H$ within a duration of $T$. This gives the algorithm for merging onto the highway:
+Here, we represent the target set $\mathcal{L}_H$ as the zero sublevel set of the function $l_H(x)$, which specifies the terminal condition of the HJB PDE that we need to solve. Once the HJB PDE is solved, we obtain the reachable set from the subzero level set of the solution $V_H(t,x)$: $\mathcal V_H(t)$. More concretely, $\mathcal{V}_H(T) = \{x: V_H(-T,x)\le 0\}$ is the set of states from which the system can be driven to the target $\mathcal{L}_H$ within a duration of $T$. 
+
+Depending on the time horizon $T$, the size of the reachable set $\mathcal V_H(T)$ varies. In general, a vehicle may not initially be inside the reachable set $\mathcal V_H(T)$, yet it needs to be in order to get to its desired target state. Determining a control strategy to reach $\mathcal V_H(T)$ is itself a reachability problem (with $\mathcal V_H(T)$ as the target set), and it would seem like this reachability problem needs to be solved in order for us to use the results from our first reachability problem. However, practically, one could choose $T$ to be large enough to cover a sufficiently large area to include any practically conceivable initial state. From our simulations, a suitable algorithm for getting to a desired target state is as follows:
 
 \begin{enumerate}
-\item Move towards $\bar{x}_H$ in a straight line, with some velocity, until $V_H(-T,x)\le 0$.
+\item Move towards $\bar{x}_H$ in a straight line, with some velocity, until $V_H(-T,x)\le 0$. In practice, this step consistently drives the system into the reachable set.
 \item Apply the optimal control extracted from $V_H(-T,x)$ according to \eqref{eq:HJB_ctrl_syn} until $\mathcal{L}_H$ is reached.
 \end{enumerate}
 
-\subsubsection{Merging into a Platoon \label{subsec:platoon_merge}}
-We again pose the merging of a quadrotor into a platoon on an air highway as a reachability problem. Here, we would like quadrotor $Q_i$ to merge onto the highway and follow another quadrotor $Q_j$ in a platoon. Thus, we would like to drive the system given by \eqref{eq:rel_dyn_aug} to a specific $\bar{x}_P = (\bar{p}_{x,r}, \bar{v}_{x,r}, \bar{p}_{y,r}, \bar{v}_{y,r})$, or a small range of relative states defined by the set
+\subsubsection{Getting to a State Relative to Another Vehicle}
+In the platooning context, being able to go to a state relative to another moving vehicle is important for the purpose of forming and joining platoons. For example, a ``Free'' vehicle may join an existing platoon that is on a highway and change modes to become a ``Follower''. Also, a ``Leader'' or ``Follower'' may join another platoon and afterwards go into the ``Follower'' mode.
+
+To construct a controller for getting to a state relative to another vehicle, we use the relative dynamics of two vehicles, given in \ref{eq:rel_dyn}. In general, the target state is specified to be some position $(\Pos_{x,r}, \Pos_{y,r}$ and velocity $(\Vel_{x,r}, \Vel_{y,r})$ relative to a reference vehicle. In the case of a vehicle joining a platoon that maintains a single file, the reference vehicle would be the platoon leader, the desired relative position would be a certain distance behind the leader, depending on how many other vehicles are already in the platoon, and the desired relative velocity would be $(0,0)$ so that the formation can be kept.
+
+For the reachability problem, we define the target set to be a small range of states around the target state $x_P = (\Pos_{x,r}, \Pos_{y,r}, \Vel_{x,r}, \Vel_{y,r}$:
 
 \begin{equation}
 \begin{aligned}
-\mathcal{L}_P = \{x: |p_{x,r}-\bar{p}_{x,r}|\le r_{p_x}, |v_{x,r}-\bar{v}_{x,r}|\le r_{v_x}, \\
-|p_{y,r} - \bar{p}_{y,r}| \le r_{p_y}, |v_{y,r} - \bar{v}_{y,r}|\le r_{v_y} \}
+\mathcal{L}_P = \{x: |\pos_{x,r}-\Pos_{x,r}|\le r_{\pos_x}, |\vel_{x,r}-\Vel_{x,r}|\le r_{\vel_x}, \\
+|\pos_{y,r} - \Pos_{y,r}| \le r_{\pos_y}, |\vel_{y,r} - \Vel_{y,r}|\le r_{\vel_y} \}
 \end{aligned}
 \end{equation}
 
-The target set $\mathcal{L}_P$ is represented by the implicit surface function $l_P(x)$, which specifies the terminal condition of the HJI PDE \eqref{eq:HJIPDE}. The zero sublevel set of the solution to \eqref{eq:HJIPDE}, $V_P(-T,x)$, gives us the set of relative states from which $Q_i$ can reach the target and join the platoon following $Q_j$ within a duration of $T$. We assume that $Q_j$ moves along the highway at constant speed, so that $u_j(t)$ = 0. The following is a suitable algorithm for a quadrotor merging onto a highway and joining a platoon to follow $Q_j$:
+The target set $\mathcal{L}_P$ is represented by the zero sublevel set of the implicit surface function $l_P(x)$, which specifies the terminal condition of the HJI PDE \eqref{eq:HJIPDE}. The zero sublevel set of the solution to \eqref{eq:HJIPDE}, $V_P(-T,x)$, gives us the set of relative states from which a quadrotor can reach the target in the relative coordinates within a duration of $T$. In the reachable set computation, we assume that the reference vehicle moves along the highway at constant speed, so that $u_j(t)$ = 0. The following is a suitable algorithm for a vehicle joining a platoon to follow the platoon leader:
 
 \begin{enumerate}
 \item Move towards $\bar{x}_P$ in a straight line, with some velocity, until $V_P(-T,x)\le 0$.
 \item Apply the optimal control extracted from $V_P(-T,x)$ according to \eqref{eq:HJI_ctrl_syn} until $\mathcal{L}_P$ is reached.
 \end{enumerate}
+
+\subsubsection{Avoiding Collision}
+A vehicle can use a liveness controller described in the previous sections when it is not in any danger of collision with other vehicles. If the vehicle could potentially be involved in a collision within the next short period of time, it must switch to a safety controller. The safety controller is available in every mode, and executing the safety controller to perform an avoidance maneuver does not change a vehicle's mode. 
+
+In the context of our platooning concept, we define an unsafe configuration as follows: a vehicle is either within a minimum separation distance $d$ to a reference vehicle in both the $x$ and $y$ directions, or is traveling with a speed above the speed limit $\vel_\text{max}$ in either of the $x$ and $y$ directions. To take this specification into account, we use the augmented relative dynamics given by \eqref{eq:rel_dyn_aug} for the reachability problem, and define the target set as follows:
+
+\begin{equation}
+\begin{aligned}
+\mathcal{L}_S = \{x: &|\pos_{x,r}|, |\pos_{y,r}|\le d \vee |\vel_{x,i}| \ge \vel_\text{max} \vee |\vel_{y,i}| \ge \vel_\text{max} \}
+\end{aligned}
+\end{equation}
+
+We can now define the implicit surface function $l_S(x)$ corresponding to $\mathcal{L}_S$, and solve the HJI PDE \eqref{eq:HJIPDE} using $l_S(x)$ as the terminal condition. As before, the zero sublevel set of the solution $V_S(t,x)$ specifies the reachable set $\mathcal{V}_S(t)$, which characterizes the states in the augmented relative coordinates, as defined in \eqref{eq:rel_dyn_aug}, from which $Q_i$ \textit{cannot} avoid $\mathcal{L}_S$ for a time period of $t$, if $Q_j$ uses the worst case control. To avoid collisions, $Q_i$ must apply the safety controller according to \eqref{eq:HJI_ctrl_syn} on the boundary of the reachable set in order to avoid going into the reachable set. The following algorithm wraps our safety controller around liveness controllers:
+
+\begin{enumerate}
+\item For a specified time horizon $t$, evaluate$V_S(-t,x_i-x_j)$ for all $j\in \mathcal{Q}(i)$.
+
+$\mathcal{Q}(i)$ is the set of quadrotors with which quadrotor $i$ checks safety against. We discuss $\mathcal{Q}(i)$ in Section \ref{subsec:safety_guarantees}.
+
+\item Use the safety or liveness controller depending on the values $V_S(-t,x_i-x_j),j\in \mathcal{Q}(i)$: 
+
+If $\exists j\in \mathcal{Q}(i),V_S(-t,x_i-x_j)\le 0$, then $Q_i,Q_j$ are in potential conflict, and $Q_i$ must use a safety controller; otherwise $Q_i$ uses a liveness controller.
+\end{enumerate}
+
+THE FOLLOWING SHOULD BE IN ANOTHER SECTION
 
 \subsubsection{Other Quadrotor Maneuvers}
 Reachability was used in Sections \ref{subsec:highway_merge} and \ref{subsec:platoon_merge} for the relatively complex maneuvers. For the simpler maneuvers of traveling along a highway and following a platoon, we resort to simpler controllers described below.
@@ -64,29 +101,3 @@ for some $k_p,k_v>0$. The leader can modify the nominal position of vehicles in 
 r^i(t) = - (i-1) b \frac{v_{P_1}}{\|v_{P_1}\|_2}
 \end{equation}
 where $b$ is the spacing between vehicles along the platoon. and $\frac{v_{P_1}}{\|v_{P_1}\|_2}$ is the platoon leader's direction of travel.
-
-\subsection{Safety Controllers \label{sec:safety}}
-\subsubsection{Wrapping Reachability Around Existing Controllers}
-A quadrotor can use a liveness controller when it is not in any danger of collision with other quadrotors or obstacles. If the quadrotor could potentially be involved in a collision within the next short period of time, it must switch to a safety controller. In this section, we will demonstrate how HJ reachability can be used to both detect imminent danger and synthesize a controller that guarantees safety within a specified time horizon. For our safety analysis, we will use the model in Equation \eqref{eq:rel_dyn_aug}.
-
-We begin by defining the target set $\mathcal{L}_S$, which characterizes configurations in relative coordinates for which quadrotors $Q_i,Q_j$ are considered to be in collision:
-
-\begin{equation}
-\begin{aligned}
-\mathcal{L}_S = \{x: &|p_{x,r}|, |p_{y,r}|\le d \vee |v_{x,i}| \ge v_\text{max} \vee |v_{y,i}| \ge v_\text{max} \}
-\end{aligned}
-\end{equation}
-
-With this definition, $Q_i$ is considered to be unsafe if $Q_i$ and $Q_j$ are within a distance $d$ in both $x$- and $y$-directions simultaneously, or if $Q_i$ has exceeded some maximum speed $v_\text{max}$ in either $x$- or $y$-direction. For illustration purposes, we choose $d=2$ meters, and $v_\text{max}= 5$ m/s.
-
-We can now define the implicit surface function $l_S(x)$ corresponding to $\mathcal{L}_S$, and solve the HJI PDE \eqref{eq:HJIPDE} using $l_S(x)$ as the terminal condition. As before, the zero sublevel set of the solution $V_S(t,x)$ specifies the reachable set $\mathcal{V}_S(t)$, which characterizes the states in the augmented relative coordinates, as defined in \eqref{eq:rel_dyn_aug}, from which $Q_i$ \textit{cannot} avoid $\mathcal{L}_S$ for a time period of $t$, if $Q_j$ uses the worst case control. To avoid collisions, $Q_i$ must apply the safety controller according to \eqref{eq:HJI_ctrl_syn} on the boundary of the reachable set in order to avoid going into the reachable set. The following algorithm wraps our safety controller around liveness controllers:
-
-\begin{enumerate}
-\item For a specified time horizon $t$, evaluate$V_S(-t,x_i-x_j)$ for all $j\in \mathcal{Q}(i)$.
-
-$\mathcal{Q}(i)$ is the set of quadrotors with which quadrotor $i$ checks safety against. We discuss $\mathcal{Q}(i)$ in Section \ref{subsec:safety_guarantees}.
-
-\item Use the safety or liveness controller depending on the values $V_S(-t,x_i-x_j),j\in \mathcal{Q}(i)$: 
-
-If $\exists j\in \mathcal{Q}(i),V_S(-t,x_i-x_j)\le 0$, then $Q_i,Q_j$ are in potential conflict, and $Q_i$ must use a safety controller; otherwise $Q_i$ uses a liveness controller.
-\end{enumerate}
