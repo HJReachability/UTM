@@ -1,5 +1,5 @@
-function [g, data] = pl4_rel_target_4D(accuracy)
-% [ data, g, data0 ] = pl4_rel_target_4D(accuracy)
+function [g, data, TTR] = pl4_rel_target_4D(accuracy)
+% [ g, data, TTR ] = pl4_rel_target_4D(accuracy)
 %
 % Input Parameters:
 %
@@ -15,11 +15,11 @@ function [g, data] = pl4_rel_target_4D(accuracy)
 %
 %   g: Grid structure on which data was computed.
 %
-%   data0: Implicit surface function at t_0.
+%   TTR: time to reach structure based on level sets
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 5;                    % End time.
+tMax = 10;                    % End time.
 plotSteps = 1;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
@@ -59,8 +59,8 @@ Nx = 45;
 
 % Create the grid.
 g.dim = 4;
-g.min = [  -30; -30; -pi; -5];
-g.max = [ 30; 30; pi; 5];
+g.min = [  -52; -52; -pi; -5];
+g.max = [ 52; 52; pi; 5];
 g.bdry = { @addGhostExtrapolate; @addGhostExtrapolate; @addGhostPeriodic; @addGhostExtrapolate};
 % Roughly equal dx in x and y (so different N).
 g.N = [ Nx; ceil(Nx * (g.max(2) - g.min(2)) / (g.max(1) - g.min(1))); ...
@@ -72,7 +72,8 @@ g = processGrid(g);
 % ----------------- Target -----------------
 data = shapeSphere(g, [ 0; 0; 0; 0], 1.1*max(g.dx));
 data0 = data;
-
+TTR = 1e6*ones(size(data));
+TTR(data0<0) = 0;
 
 %---------------------------------------------------------------------------
 % Set up spatial approximation scheme.
@@ -152,8 +153,6 @@ schemeData.positive = 0;
 f = figure;
 
 
-% [g2D, data2D] = proj2D(g,data,[0 0 1 1],[0 10]);
-% [~, h] = contour(g2D.xs{1}, g2D.xs{2}, data2D, [0 0]);
 [g3D, data3D] = proj3D(g, data, [0 0 0 1], 0);
 h = visualizeLevelSet(g3D, data3D, 'surface', 0);
 camlight right
@@ -180,6 +179,7 @@ while(tMax - tNow > small * tMax)
   
   % Get back the correctly shaped data array
   data = reshape(y, g.shape);
+  TTR(data<0) = min(tNow, TTR(data<0)); 
   
   if(pauseAfterPlot)
     % Wait for last plot to be digested.

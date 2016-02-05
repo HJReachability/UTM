@@ -36,7 +36,8 @@ init_dist = 50; % Initial distance between the two vehicles
 
 
 % Random relative position
-relpos = -10 + 20*rand(2,1);
+relpos = rotate2D(30+5*(rand(2,1)-.5), 2*pi*rand);
+%relpos = -10 + 20*rand(2,1);
 
 % Random leader and follower initial states
 pos_theta = 2*pi*rand;

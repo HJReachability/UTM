@@ -96,7 +96,8 @@ heading = veh_ref.getHeading;
    
 base_pos = veh.getPosition - veh_ref.getPosition - relpos;
 base_vel = veh.getVelocity - veh_ref.getVelocity; 
-base_x = [base_pos(1) base_pos(2) atan2(base_vel(2),base_vel(1)) norm(base_vel)];
+rot_pos = rotate2D(base_pos, -atan2(base_vel(2),base_vel(1)));
+base_x = [rot_pos(1) rot_pos(2) 0  norm(base_vel)];
 valuex = eval_u(obj.pl4_rel_target_V.g, obj.pl4_rel_target_V.data, base_x);
 
 %% At target
@@ -104,7 +105,25 @@ if valuex <= obj.ttt
   if debug
     disp('Arrived')
   end
-  u = [];
+% Gains
+k_p = 1;
+k_v = 1;
+
+u = k_p*(base_pos) + ...
+  k_v*(base_vel);
+u = -u;
+  uMax = 3 / sqrt(2);
+  uMin = -3 / sqrt(2);  
+% Acceleration limit
+if any(u > uMax)
+  u = u / max(u) * uMax;
+end
+
+if any(u < uMin)
+  u = u / min(u) * uMin;  
+end
+  
+  u = veh.uQuad2uPl4(u);
   return;
 end
 
@@ -118,7 +137,7 @@ if valuex <= obj.rtt
   base_p = calculateCostate(obj.pl4_rel_target_V.g, ...
                                         obj.pl4_rel_target_V.grad, base_x);
                                   
-  u1 = (base_p(3)>=0)*veh_ref.wMin + (base_p(2)<0)*veh_ref.wMax;
+  u1 = (base_p(3)>=0)*veh_ref.wMin + (base_p(3)<0)*veh_ref.wMax;
   u2 = (base_p(4)>=0)*veh_ref.aMin + (base_p(4)<0)*veh_ref.aMax;
   %u = rotate2D([u1; u2], heading);
   u = [u1 u2];

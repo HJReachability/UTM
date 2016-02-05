@@ -37,7 +37,7 @@ init_dist = 50; % Initial distance between the two vehicles
 
 
 % Random relative position
-relpos = -10 + 20*rand(2,1);
+relpos = rotate2D(20+10*(rand(2,1)-.5), 2*pi*rand);
 
 % Random leader and follower initial states
 pos_theta = 2*pi*rand;
@@ -50,7 +50,7 @@ leader_init_vel = rotate2D([tfm.hw_speed 0], vel_theta);
 leader = Plane4([leader_init_pos(1); leader_init_pos(2); ...
                  atan2(leader_init_vel(2),leader_init_vel(1));
                  norm([leader_init_vel(1),leader_init_vel(2)])]);
-follower = Plane4([rand() rand() 2*pi*rand() 7+4*(rand()-.5)]);
+follower = Plane4([leader_init_pos(1) + 20*(rand()-.5) leader_init_pos(2) + 20*(rand()-.5) 2*pi*rand() 7+4*(rand()-.5)]);
 
 % Add vehicles to tfm
 tfm.aas = {};
@@ -110,4 +110,9 @@ for i = 1:length(t)
   ha.YData = abs_pos(2);  
   drawnow;
 end
+base_pos = follower.getPosition - leader.getPosition - relpos;
+base_vel =follower.getVelocity - leader.getVelocity; 
+base_x = [base_pos(1) base_pos(2) atan2(base_vel(2),base_vel(1)) norm(base_vel)];
+valuex = eval_u(tfm.pl4_rel_target_V.g, tfm.pl4_rel_target_V.data, base_x);
+
 end
