@@ -64,7 +64,7 @@ end
 
 level = tfm.rtt;
 follower.plot_rel_target_V(tfm.qr_rel_target_V, ...
-  leader.getPosition, leader.getHeading, level)
+  leader, level)
 
 % Plot path of leader
 tMax = 30;
@@ -108,7 +108,7 @@ for i = 1:length(t)
   
 
   follower.plot_rel_target_V(tfm.qr_rel_target_V, ...
-  leader.getPosition, leader.getHeading, level)
+    leader, level)
 
   abs_pos = leader.getPosition + relpos;
   ha.XData = abs_pos(1);
