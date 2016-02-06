@@ -27,6 +27,13 @@ if isempty(u)
   return;
 end
 
+% Do nothing if control is not a number
+if isnan(u)
+  warning('u = NaN')
+  x1 = x0;
+  return;
+end
+
 % Make sure control input is valid
 if ~isnumeric(u)
   error('Control must be numeric!')
