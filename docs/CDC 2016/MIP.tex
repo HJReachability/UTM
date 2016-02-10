@@ -1,0 +1,80 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%2345678901234567890123456789012345678901234567890123456789012345678901234567890
+%        1         2         3         4         5         6         7         8
+
+%\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out
+                                                          % if you need a4paper
+\documentclass[letterpaper, 10pt, conference]{ieeeconf}      % Use this line for a4
+                                                          % paper
+
+ 
+\IEEEoverridecommandlockouts                              % This command is only
+                                                          % needed if you want to
+                                                          % use the \thanks command
+\overrideIEEEmargins
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+\usepackage{amsmath}    % need for sub equations
+\usepackage{amsfonts}
+\usepackage{graphicx}   % need for figures
+\usepackage{subcaption}
+\usepackage{epsfig} 
+\usepackage{color}
+\usepackage[normalem]{ulem}
+\usepackage{cancel}
+\usepackage{amssymb}
+\usepackage{color}
+%\usepackage{my_macros}
+\usepackage[ruled,vlined,titlenotnumbered]{algorithm2e} 
+
+\title{\LARGE \bf
+Multi-Vehicle Collision Avoidance via Reachability and Mixed Integer Programming}
+
+\author{Mo Chen*, Jennifer Shih*, and Claire J. Tomlin
+\thanks{This work has been supported in part by NSF under CPS:ActionWebs (CNS-931843), by ONR under the HUNT (N0014-08-0696) and SMARTS (N00014-09-1-1051) MURIs and by grant N00014-12-1-0609, by AFOSR under the CHASE MURI (FA9550-10-1-0567). The research of M. Chen has received funding from the ``NSERC PGS-D'' Program.}
+\thanks{* Both authors contributed equally to this work. All authors are with the Department of Electrical Engineering and Computer Sciences, University of California, Berkeley. \{mochen72,cshih,tomlin\}@berkeley.edu}
+}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+%%%
+\begin{abstract}
+\end{abstract}
+
+\input{introduction.tex}
+% Introduction (1p)
+%% Motivation
+%% Related work
+%% Summary of results
+
+\input{formulation.tex}
+% Problem formulation (1.5p)
+%% A number of vehicles all wish to get to some target while avoiding others
+
+\input{solution.tex}
+% Solution methodology (1.5-2p)
+%% HJ Reachability
+%% Mixed integer program
+
+\input{results.tex}
+% Numerical Simuations (1-1.5p)
+
+
+\input{conclusion.tex}
+% Conclusion (0.5p)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\addtolength{\textheight}{1cm}   % This command serves to balance the column lengths
+                                  % on the last page of the document manually. It shortens
+                                  % the textheight of the last page by a suitable amount.
+                                  % This command does not take effect until the next page
+                                  % so it should come on the page before the last. Make
+                                  % sure that you do not shorten the textheight too much.
+
+ \bibliographystyle{IEEEtran}
+ \bibliography{references}
+\end{document}
