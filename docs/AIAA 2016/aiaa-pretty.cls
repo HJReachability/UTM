@@ -253,7 +253,8 @@
 \RequirePackage{verbatim}   % New verbatim format
 \RequirePackage{textcomp}   % proper single quotes in verbatim
 \RequirePackage{ifthen}     % logical structure
-\RequirePackage{subcaption}     % subfigures
+%\RequirePackage[BF,bf]{subfigure}     % subfigures
+\RequirePackage{subcaption}
 \RequirePackage{amsmath}    % AMS packages
 \RequirePackage{amsfonts}
 \RequirePackage{amssymb}
@@ -344,13 +345,13 @@
 
 %% ----- FLOATS ----------------------------------------------------------------
 % This eliminates the parentheses around the sublabel in references.
-\renewcommand{\thesubfigure}{\alph{subfigure}}
+% \renewcommand{\thesubfigure}{\alph{subfigure}}
 % This formats the actual label area for each subfigure.
-\renewcommand{\@thesubfigure}{\alph{subfigure})\hskip\subfiglabelskip}
+% \renewcommand{\@thesubfigure}{\alph{subfigure})\hskip\subfiglabelskip}
 % This eliminates the parentheses around the sublabel in references.
-\renewcommand{\thesubtable}{\alph{subtable}}
+% \renewcommand{\thesubtable}{\alph{subtable}}
 % This formats the actual label area for each subtable.
-\renewcommand{\@thesubtable}{\alph{subtable})\hskip\subfiglabelskip}
+% \renewcommand{\@thesubtable}{\alph{subtable})\hskip\subfiglabelskip}
 
 % This sets the distance between a float and the paragraph.
 \setlength{\intextsep}{0.7\baselineskip \@plus 2\p@ \@minus 1\p@}
