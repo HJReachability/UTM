@@ -57,7 +57,7 @@ A Follower vehicle is a vehicle that is following a platoon leader. The Availabl
 
 \item Faulty: 
 
-If a vehicle from any of the other modes malfunction, it transitions into the Faulty mode and descends after a duration of $t_\text{internal}$.
+If a vehicle from any of the other modes malfunction, it transitions into the Faulty mode and descends after some pre-specified duration $t_\text{faulty}$.
 \end{itemize}
 
 The available maneuvers and associated mode transitions are summarized in Figure \ref{fig:vehicleModes}.
@@ -69,7 +69,7 @@ The available maneuvers and associated mode transitions are summarized in Figure
 	\label{fig:vehicleModes}
 \end{figure}
 
-Suppose that there are $N$ vehicles in total. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $Q_{P_1}, \ldots, Q_{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation. We will assume that the vehicles in a platoon travel along an air highway. The vehicles maintain a separation distance of $b$ with its neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a vehicle will be able to exit the altitude range of the highway within a duration of $t_\text{internal}=1.5$. Such a requirement may be implemented practically as an emergency landing procedure to which the vehicles revert when a malfunction is detected.
+Suppose that there are $N$ vehicles in total. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $Q_{P_1}, \ldots, Q_{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation. We will assume that the vehicles in a platoon travel along an air highway. The vehicles maintain a separation distance of $b$ with its neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a vehicle will be able to exit the altitude range of the highway within a duration of $t_\text{faulty}=1.5$. Such a requirement may be implemented practically as an emergency landing procedure to which the vehicles revert when a malfunction is detected.
 
 \subsubsection{Objectives}
 Given the above modeling assumptions, our goal is to provide control strategies to guarantee the success and safety of all the mode transitions. The theoretical tool used to provide the liveness and safety guarantees is reachability. The reachable sets we compute will allow each vehicle to perform complex actions such as 

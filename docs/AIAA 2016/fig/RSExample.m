@@ -23,7 +23,7 @@ plot(R*cos(t), R*sin(t), 'r-', 'linewidth', 4)
 
 %%
 surf(x, y, zeros(size(x)), 'facecolor', [0 0.25 0], ...
-  'facealpha', 0.3, 'edgecolor', 'none')
+  'facealpha', 0.5, 'edgecolor', 'none')
 
 if onlyTarget
   xlabel('x')

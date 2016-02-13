@@ -1,10 +1,10 @@
 % !TEX root = main.tex
-\subsection{Reachability-Based Controllers}
+\subsection{Reachability-Based Controllers \label{sec:reach_ctrl}}
 Reachability analysis is useful for constructing controllers in a large variety of situations. In order to construct different controllers, an appropriate target set needs to be defined depending on the goal of the controller. If one defines the target set to be a set of desired states, the reachable set, once computed, would represent the states from which a system needs to first arrive at in order to reach the desired states. On the other hand, if the target set represents a set of undesirable states, then the reachable set would indicate the region of the state space that the system needs to avoid. In addition, the system dynamics with which the reachable set is computed provides additional flexibility when using reachability to construct controllers.
 
 Using a number of different target sets and dynamics, we now propose different reachability-based controllers used for vehicle mode transitions in our platooning concept.
 
-\subsubsection{Getting to a Target State}
+\subsubsection{Getting to a Target State \label{sec:abs_target_ctrl}}
 The controller used by a vehicle to a target state is important in a couple of situations in the platooning context. First, a vehicle in the ``Free'' mode can use the controller to merge onto a highway, forming a platoon and changing modes to a ``Leader'' vehicle. Second, a vehicle in either the ``Leader'' mode or the ``Follower'' mode can use this controller to change to a different highway, changing modes to a ``Leader'' vehicle. 
 
 In both of the above cases, we use the dynamics of a single vehicle specified in \ref{eq:dyn}. The target state would be a position $(\Pos_x, \Pos_y)$ representing the desired merging point on the highway, along with a velocity $(\Vel_x, \Vel_y)$ that corresponds to the speed and direction of travel specified by the highway. For the reachability computation, we define the target set to be a small range of states around the target state $x_H = (\Pos_x, \Pos_y, \Vel_x, \Vel_y)$:
@@ -25,7 +25,7 @@ Depending on the time horizon $T$, the size of the reachable set $\mathcal V_H(T
 \item Apply the optimal control extracted from $V_H(-T,x)$ according to \eqref{eq:HJB_ctrl_syn} until $\mathcal{L}_H$ is reached.
 \end{enumerate}
 
-\subsubsection{Getting to a State Relative to Another Vehicle}
+\subsubsection{Getting to a State Relative to Another Vehicle \label{sec:rel_target_ctrl}}
 In the platooning context, being able to go to a state relative to another moving vehicle is important for the purpose of forming and joining platoons. For example, a ``Free'' vehicle may join an existing platoon that is on a highway and change modes to become a ``Follower''. Also, a ``Leader'' or ``Follower'' may join another platoon and afterwards go into the ``Follower'' mode.
 
 To construct a controller for getting to a state relative to another vehicle, we use the relative dynamics of two vehicles, given in \ref{eq:rel_dyn}. In general, the target state is specified to be some position $(\Pos_{x,r}, \Pos_{y,r}$ and velocity $(\Vel_{x,r}, \Vel_{y,r})$ relative to a reference vehicle. In the case of a vehicle joining a platoon that maintains a single file, the reference vehicle would be the platoon leader, the desired relative position would be a certain distance behind the leader, depending on how many other vehicles are already in the platoon, and the desired relative velocity would be $(0,0)$ so that the formation can be kept.
@@ -46,7 +46,7 @@ The target set $\mathcal{L}_P$ is represented by the zero sublevel set of the im
 \item Apply the optimal control extracted from $V_P(-T,x)$ according to \eqref{eq:HJI_ctrl_syn} until $\mathcal{L}_P$ is reached.
 \end{enumerate}
 
-\subsubsection{Avoiding Collision}
+\subsubsection{Avoiding Collisions \label{sec:collision_ctrl}}
 A vehicle can use a liveness controller described in the previous sections when it is not in any danger of collision with other vehicles. If the vehicle could potentially be involved in a collision within the next short period of time, it must switch to a safety controller. The safety controller is available in every mode, and executing the safety controller to perform an avoidance maneuver does not change a vehicle's mode. 
 
 In the context of our platooning concept, we define an unsafe configuration as follows: a vehicle is either within a minimum separation distance $d$ to a reference vehicle in both the $x$ and $y$ directions, or is traveling with a speed above the speed limit $\vel_\text{max}$ in either of the $x$ and $y$ directions. To take this specification into account, we use the augmented relative dynamics given by \eqref{eq:rel_dyn_aug} for the reachability problem, and define the target set as follows:
@@ -69,10 +69,8 @@ $\mathcal{Q}(i)$ is the set of quadrotors with which quadrotor $i$ checks safety
 If $\exists j\in \mathcal{Q}(i),V_S(-t,x_i-x_j)\le 0$, then $Q_i,Q_j$ are in potential conflict, and $Q_i$ must use a safety controller; otherwise $Q_i$ uses a liveness controller.
 \end{enumerate}
 
-THE FOLLOWING SHOULD BE IN ANOTHER SECTION
-
-\subsubsection{Other Quadrotor Maneuvers}
-Reachability was used in Sections \ref{subsec:highway_merge} and \ref{subsec:platoon_merge} for the relatively complex maneuvers. For the simpler maneuvers of traveling along a highway and following a platoon, we resort to simpler controllers described below.
+\subsection{Other Quadrotor Maneuvers \label{sec:other_ctrl}}
+Reachability was used in Section \ref{sec:reach_ctrl} for the relatively complex maneuvers that require safety and liveness guarantees. For the simpler maneuvers of traveling along a highway and following a platoon, many well-known classical controllers suffice. For illustration, we use the simple controllers described below.
 
 \subsubsection{Traveling along a highway} \label{sec:travel_hwy}
 We use a model-predictive controller (MPC) for traveling along a highway; this controller allows the leader to travel along a highway at a pre-specified speed. Here, the goal is for a leader quadrotor to track a constant-altitude path, defined as a curve $\bar{p}(s)$ parametrized by $s\in[0,1]$ in $p=(p_x, p_y)$ space (position space), while maintaining a velocity $\bar{v}(s)$ that corresponds to constant speed in the direction of the highway. Assuming that the initial position on the highway, $s_0=s(t_0)$ is specified, such a controller can be obtained from the following optimization problem over the time horizon $[t_0, t_1]$:
