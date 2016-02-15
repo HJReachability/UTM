@@ -3,7 +3,7 @@ function simulateChangeHighway(save_figures, fig_formats)
 %
 % Simulates 5 quadrotors forming a single platoon on a highway
 
-addpath('..')
+addpath(genpath('..'))
 
 if nargin < 1
   save_figures = false;
@@ -42,6 +42,8 @@ tfm.addHighway(hw2);
 f = figure;
 hw1.lpPlot;
 f.Children.FontSize = 16;
+f.Position(1:2) = [200 200];
+f.Position(3:4) = [800 600];
 hold on
 hw2.lpPlot;
 hold on
@@ -90,9 +92,9 @@ drawnow
 
 % Save initial figure
 if save_figures
-  fig_dir = [fileparts(mfilename('fullpath')) '/' mfilename '_figs'];
+  fig_dir = [fileparts(mfilename('fullpath')) '\' mfilename '_figs'];
   if ~exist(fig_dir, 'dir')
-    cmd = ['mkdir -p ' fig_dir];
+    cmd = ['mkdir ' fig_dir];
     system(cmd)
   end
   

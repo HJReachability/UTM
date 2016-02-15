@@ -34,6 +34,8 @@ f = figure;
 hw.lpPlot;
 hold on
 f.Children.FontSize = 16;
+f.Position(1:2) = [200 200];
+f.Position(3:4) = [800 600];
 
 %% Quadrotors
 xs = 100:-25:0;
@@ -51,9 +53,9 @@ drawnow
 
 % Save initial figure
 if save_figures
-  fig_dir = [fileparts(mfilename('fullpath')) '/' mfilename '_figs'];
+  fig_dir = [fileparts(mfilename('fullpath')) '\' mfilename '_figs'];
   if ~exist(fig_dir, 'dir')
-    cmd = ['mkdir -p ' fig_dir];
+    cmd = ['mkdir ' fig_dir];
     system(cmd)
   end
   

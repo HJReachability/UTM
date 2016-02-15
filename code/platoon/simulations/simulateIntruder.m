@@ -32,9 +32,13 @@ hw = Highway(z0, z1, tfm.hw_speed);
 tfm.addHighway(hw);
 
 % plot
-figure;
+f = figure;
 hw.lpPlot;
 hold on
+
+f.Children.FontSize = 16;
+f.Position(1:2) = [200 200];
+f.Position(3:4) = [1000 750];
 
 %% Quadrotors
 % Platoon 1 (4 vehicles)
@@ -68,14 +72,16 @@ tfm.regVehicle(intruder);
 for j = 1:length(tfm.aas)
   tfm.aas{j}.plotPosition;
 end
+
+
 title('t=0')
 axis equal
 drawnow
 
 if save_figures
-  fig_dir = [fileparts(mfilename('fullpath')) '/' mfilename '_figs'];
+  fig_dir = [fileparts(mfilename('fullpath')) '\' mfilename '_figs'];
   if ~exist(fig_dir, 'dir')
-    cmd = ['mkdir -p ' fig_dir];
+    cmd = ['mkdir ' fig_dir];
     system(cmd)
   end
   
