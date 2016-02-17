@@ -26,6 +26,7 @@ for i = 1:length(lgd_text)
   lgd_text{i} = ['frac. of veh. in platoons: ' lgd_text{i}];
 end
 legend(hs, lgd_text, 'location', 'northwest','fontsize', 14)
+
 xlabel('Total number of vehicles','fontsize', 14)
 ylabel('Number of safety checks', 'fontsize', 14)
 
@@ -47,12 +48,19 @@ num_free = Ns - num_in_p;
 
 if p > 0
   % number of checks for each group
-  chks_in_full_p = (p-1) * (k-1);
-  chks_in_last_p = mod(p, k) - 1;
-  chks_in_free = num_free .* (num_free - 1)/2;
+  chks_in_full_p = (p-1) * numSafetyChecksInPlatoon(k);
+  chks_in_last_p = numSafetyChecksInPlatoon(num_in_p - (p-1)*k);
+  chks_in_free = (num_free+p) .* (num_free+p - 1)/2;
   
   checks = chks_in_full_p + chks_in_last_p + chks_in_free;
 else
   checks = num_free .* (num_free - 1) /2;
 end
+
+end
+
+function checks = numSafetyChecksInPlatoon(Np)
+% Np - number of vehicles in platoon
+
+checks = max(0, 2*(Np - 1));
 end
