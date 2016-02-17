@@ -1,6 +1,6 @@
 % !TEX root = main.tex
 \section{Unmanned Aerial Vehicle Platooning \label{sec:platooning}}
-\subsection{Problem Formulation}
+\subsection{UAVs in Platoons}
 \subsubsection{Vehicle Dynamics}
 Consider a UAV whose dynamics are given by
 \begin{equation}
@@ -19,7 +19,7 @@ Consider a UAV whose dynamics are given by
 \end{aligned}
 \end{equation}
 
-\noindent where the state $x=(\pos_x, \vel_x, \pos_y, \vel_y)\in\mathbb{R}^4$ represents the quadrotor's position in the $x$-direction, its velocity in the $x$-direction, and its position and velocity in the $y$-direction, respectively. The control input $u = (u_x, u_y)\in\mathbb{R}^2$ consists of the acceleration in the $x$- and $y$- directions. For convenience, we will denote the position and velocity $\pos=(\pos_x, \pos_y),\vel=(\vel_x,\vel_y)$, respectively. We will consider a group of $N$ quadrotors $Q_i, i=1\ldots,N$.
+\noindent where the state $x=(\pos_x, \vel_x, \pos_y, \vel_y)\in\mathbb{R}^4$ represents the quadrotor's position in the $x$-direction, its velocity in the $x$-direction, and its position and velocity in the $y$-direction, respectively. The control input $u = (u_x, u_y)\in\mathbb{R}^2$ consists of the acceleration in the $x$- and $y$- directions. For convenience, we will denote the position and velocity $\pos=(\pos_x, \pos_y),\vel=(\vel_x,\vel_y)$, respectively. 
 
 In general, the problem of collision avoidance among $N$ vehicles cannot be tractably solved using traditional dynamic programming approaches because the computation complexity of these approaches scales exponentially with the number of vehicles. Thus, in our present work, we will consider the situation where UAVs travel on air highways in platoons, defined in the following sections. The structure imposed by air highways and the platoon enables us to analyze the liveness and safety of the vehicles in a tractable manner.
 
@@ -69,12 +69,23 @@ The available maneuvers and associated mode transitions are summarized in Figure
 	\label{fig:vehicleModes}
 \end{figure}
 
-Suppose that there are $N$ vehicles in total. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $Q_{P_1}, \ldots, Q_{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation. We will assume that the vehicles in a platoon travel along an air highway. The vehicles maintain a separation distance of $b$ with its neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a vehicle will be able to exit the altitude range of the highway within a duration of $t_\text{faulty}=1.5$. Such a requirement may be implemented practically as an emergency landing procedure to which the vehicles revert when a malfunction is detected.
+Suppose that there are $N$ vehicles in total. We will denote the $N$ vehicles as $\veh{i}, i=1\ldots,N$. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $\veh{P_1}, \ldots, \veh{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation; for convenience, we also denote $P_0 = P_{M+1} = \emptyset$. When necessary, we will use superscripts to denote vehicles of different platoons: $\veh{P_i^j}$ represents the $i$th vehicle in the $j$th platoon. 
+
+For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with respect to which $Q_i$ checks safety against. If vehicle $\veh{i}$ is in a free vehicle, then it must check for safety with respect to all other vehicles, $\vehSCS{i} = \{j: j\neq i\}$. If the vehicle is part of a platoon, then it checks safety with respect to the platoon member in front and behind, $\vehSCS{i} = \{P_{j+1}, P_{j-1}\}$. Figure \ref{fig:vehicleNotation} summarizes the the indexing system of the vehicles.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{"fig/vehicleNotation"}
+	\caption{Notation for vehicles in platoons.}
+	\label{fig:vehicleNotation}
+\end{figure}
+
+We will assume that the vehicles in a platoon travel along an air highway. The vehicles maintain a separation distance of $b$ with its neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a vehicle will be able to exit the altitude range of the highway within a duration of $t_\text{faulty}=1.5$. Such a requirement may be implemented practically as an emergency landing procedure to which the vehicles revert when a malfunction is detected.
 
 \subsubsection{Objectives}
 Given the above modeling assumptions, our goal is to provide control strategies to guarantee the success and safety of all the mode transitions. The theoretical tool used to provide the liveness and safety guarantees is reachability. The reachable sets we compute will allow each vehicle to perform complex actions such as 
 
-SHOULD EVASION BE A MODE?
+%SHOULD EVASION BE A MODE?
 
 \begin{itemize}
 \item merge onto a highway to form a platoon,
