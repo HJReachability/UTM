@@ -1,2 +1,21 @@
 % !TEX root = MIP.tex
 \section{Problem Formulation \label{sec:formulation}}
+Each vehicle
+\begin{equation}
+\begin{aligned}
+\dot{x}_i = g_i(x_i, u_i) \\
+i = 1,\ldots, N
+\end{aligned}
+\end{equation}
+
+Relative dynamics between $i$ and $j$:
+\begin{equation}
+\begin{aligned}
+\dot{x}_{ij} = f_{ij}(x_{ij}, u_i, d_i) \\
+i, j = 1, \ldots, N, i\neq j
+\end{aligned}
+\end{equation}
+
+- Existence of solution
+
+Target sets for each vehicle: $\mathcal{T}_i$. Each vehicle avoids $\mathcal{D}_{ij}$
