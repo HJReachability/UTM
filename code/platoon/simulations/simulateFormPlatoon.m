@@ -3,7 +3,7 @@ function simulateFormPlatoon(save_figures, fig_formats)
 %
 % Simulates 5 quadrotors forming a single platoon on a highway
 
-addpath('..')
+addpath(genpath('..'))
 
 if nargin < 1
   save_figures = false;
