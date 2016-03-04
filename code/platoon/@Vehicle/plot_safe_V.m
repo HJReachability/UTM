@@ -9,6 +9,7 @@ function plot_safe_V(obj, other, safe_V, level)
 %         level      - the level of the safety value function to visualize
 %
 % Mo Chen, 2015-11-14
+% Modified: 2016-03-03, Mo Chen
 
 if nargin < 4
   level = 0:0.5:5;
@@ -22,11 +23,33 @@ shift = other.getPosition;
 theta = obj.getHeading;
 
 % Project reachable set to 2D
-[g2D, data2D] = proj2D(safe_V.g, safe_V.data, [0 1 0 1], ...
-  rotate2D(obj.getVelocity - other.getVelocity, -theta));
+switch safe_V.g.dim
+  case 3
+    rel_heading = other.getHeading - obj.getHeading;
+    while rel_heading >= 2*pi
+      rel_heading = rel_heading - 2*pi;
+    end
 
-% translation and rotation
-gRot = rotateGrid(g2D, theta);
+    while rel_heading < 0
+      rel_heading = rel_heading + 2*pi;
+    end
+    
+    [g2D, data2D] = proj2D(safe_V.g, safe_V.data, [0 0 1], rel_heading);
+    
+    gRot = rotateGrid(g2D, other.getHeading);
+  case 4
+    [g2D, data2D] = proj2D(safe_V.g, safe_V.data, [0 1 0 1], ...
+      rotate2D(obj.getVelocity - other.getVelocity, -theta));
+    
+    % rotation
+    gRot = rotateGrid(g2D, theta);
+    
+  otherwise
+    error([mfilename ' has not been implemented for ' num2str(g.dim) ...
+      ' dimensional systems!'])
+end
+
+% Translation
 gFinal = shiftGrid(gRot, shift);
 
 % Plot result

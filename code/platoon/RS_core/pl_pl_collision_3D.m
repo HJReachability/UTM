@@ -123,7 +123,7 @@ Nx = 51;
 % Create the grid.
 g.dim = 3;
 g.min = [  -6; -20;     0 ];
-g.max = [ +45; +20; +2*pi ];
+g.max = [ 2*speed*tMax + targetRadius+5; +20; +2*pi ];
 g.bdry = { @addGhostExtrapolate; @addGhostExtrapolate; @addGhostPeriodic };
 % Roughly equal dx in x and y (so different N).
 g.N = [ Nx; ceil(Nx * (g.max(2) - g.min(2)) / (g.max(1) - g.min(1))); Nx-1 ];
