@@ -62,7 +62,7 @@ for i = 1:length(t)
   pl1.plotPosition();
   pl2.plotPosition();
   pl1.plot_safe_V(pl2, safe_V, level);
-  pl2.plot_safe_V(pl1, safe_V, level);
+  pl2.plot_safe_V(pl1, safe_V, t(i));
   drawnow
 
 end

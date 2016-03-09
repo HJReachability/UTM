@@ -66,6 +66,7 @@ else
   obj.h_safe_V.XData = gFinal.xs{1};
   obj.h_safe_V.YData = gFinal.xs{2};
   obj.h_safe_V.ZData = data2D;
+  obj.h_safe_V.LevelList = level;
   obj.h_safe_V.Visible = 'on';
 end
 
