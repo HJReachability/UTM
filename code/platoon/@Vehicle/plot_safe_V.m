@@ -17,6 +17,9 @@ end
 
 if numel(level) == 1
   level = [level level];
+  linewidth = 2;
+else
+  linewidth = 1;
 end
 
 shift = other.getPosition;
@@ -61,12 +64,13 @@ data2D(:,end) = max(data2D(:));
 % Plot result
 if isempty(obj.h_safe_V)
   [~, obj.h_safe_V] = contour(gFinal.xs{1}, gFinal.xs{2}, data2D, ...
-    level, 'linestyle', '--', 'linewidth', 2, 'color', obj.hpxpy.Color);
+    level, 'linestyle', '--', 'linewidth', linewidth, 'color', obj.hpxpy.Color);
 else
   obj.h_safe_V.XData = gFinal.xs{1};
   obj.h_safe_V.YData = gFinal.xs{2};
   obj.h_safe_V.ZData = data2D;
   obj.h_safe_V.LevelList = level;
+  obj.h_safe_V.LineWidth = linewidth;
   obj.h_safe_V.Visible = 'on';
 end
 
