@@ -52,6 +52,12 @@ end
 % Translation
 gFinal = shiftGrid(gRot, shift);
 
+% Close off boundary
+data2D(1,:) = max(data2D(:));
+data2D(end,:) = max(data2D(:));
+data2D(:,1) = max(data2D(:));
+data2D(:,end) = max(data2D(:));
+
 % Plot result
 if isempty(obj.h_safe_V)
   [~, obj.h_safe_V] = contour(gFinal.xs{1}, gFinal.xs{2}, data2D, ...

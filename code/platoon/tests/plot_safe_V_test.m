@@ -4,7 +4,7 @@ addpath(genpath('..'));
 
 speed = 5;
 cr = 2; % collision radius
-level = 0:1:4;
+level = 4;
 
 filename = ['saved/' mfilename '_' num2str(speed) '_' num2str(cr) '.mat'];
 if exist(filename, 'file')
@@ -57,12 +57,12 @@ for i = 1:length(t)
   end
   
   % Evaluate safety value function
-  valuex = eval_u(safe_V.g, safe_V.data, xr)
+%   valuex = eval_u(safe_V.g, safe_V.data, xr)
 
   pl1.plotPosition();
   pl2.plotPosition();
   pl1.plot_safe_V(pl2, safe_V, level);
   pl2.plot_safe_V(pl1, safe_V, level);
   drawnow
-  pause
+
 end
