@@ -36,7 +36,7 @@ switch safe_V.g.dim
     
     [g2D, data2D] = proj2D(safe_V.g, safe_V.data, [0 0 1], rel_heading);
     
-    gRot = rotateGrid(g2D, other.getHeading);
+    gRot = rotateGrid(g2D, theta + pi);
   case 4
     [g2D, data2D] = proj2D(safe_V.g, safe_V.data, [0 1 0 1], ...
       rotate2D(obj.getVelocity - other.getVelocity, -theta));
