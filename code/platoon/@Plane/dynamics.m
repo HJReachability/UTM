@@ -8,8 +8,24 @@ function dx = dynamics(obj, t, x, u)
 
 dx = zeros(obj.nx, 1);
 
-dx(1) = obj.speed * cos(x(3));
-dx(2) = obj.speed * sin(x(3));
-dx(3) = u;
+if numel(u) ~= obj.nu
+  error('Incorrect number of control dimensions!')
+end
+
+if numel(obj.speed) == 1
+  dx(1) = obj.speed * cos(x(3));
+  dx(2) = obj.speed * sin(x(3));
+  dx(3) = u;
+  return
+end
+
+if isempty(obj.speed)
+  dx(1) = u(1) * cos(x(3));
+  dx(2) = u(1) * sin(x(3));
+  dx(3) = u(2);
+  return
+end
+
+error('Incorrect number of elements in obj.speed!')
 
 end

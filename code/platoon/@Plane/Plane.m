@@ -15,21 +15,14 @@ classdef Plane < Vehicle
     
     % state dimension is set to 3 and number of controls is set to 1 if 
     % Plane is initialized with a 3D state
-    nx = 4;
+    nx = 3;
     nu = 2;
-    
-    % speed (if 3D)
-    speed = 10
-  end
   
-  properties(Constant)
-    % distance from max/min x or y to edge of plot
-    WIND = 5
-    DEFAULT_V = 10;
+    speed % (if it's not a control)
   end
   
   methods
-    function obj = Plane(x)
+    function obj = Plane(x, v)
       % obj = plane(x)
       %
       % Constructor. Creates a plane object with a unique ID,
@@ -57,8 +50,14 @@ classdef Plane < Vehicle
       end
 
       obj.nx = 3;
-      obj.nu = 1;
-
+      
+      if nargin < 2
+        obj.nu = 2;
+      else
+        obj.nu = 1;
+        obj.speed = v;
+      end
+      
       obj.x = x;
       obj.xhist = obj.x;
     end
