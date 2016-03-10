@@ -1,11 +1,12 @@
-function x1 = updateState(obj, u, T, x0)
-% function x1 = updateState(obj, u, x0, T)
+function x1 = updateState(obj, u, T, x0, d)
+% function x1 = updateState(obj, u, T, x0, d)
 % Updates state based on control
 %
 % Inputs:   obj - current quardotor object
 %           u   - control (defaults to previous control)
 %           T   - duration to hold control
-%           x0  - initial state (defaults to current state)
+%           x0  - initial state (defaults to current state if set to [])
+%           d   - disturbance (defaults to [])
 %
 % Outputs:  x1  - final state
 %
@@ -17,8 +18,13 @@ if nargin < 2
 end
 
 % If no state is specified, use current state
-if nargin < 4
+if nargin < 4 || isempty(x0)
   x0 = obj.x;
+end
+
+% Default disturbance
+if nargin < 5
+  d = [];
 end
 
 % Do nothing if control is empty
@@ -39,11 +45,6 @@ if ~isnumeric(u)
   error('Control must be numeric!')
 end
 
-
-if ~obj.isvalidcontrol(u)  
-  error('Invalid control for Plane4: %s', u);
-end
-
 if numel(u) ~= obj.nu
   error(['Control input must have ' num2str(obj.nu) ' dimensions!'])
 end
@@ -53,7 +54,13 @@ if ~iscolumn(u)
   u = u';
 end
 
-[~, x] = ode113(@(t,x) obj.dynamics(t, x, u), [0 T], x0);
+% Check whether there's disturbance (this is needed since not all vehicle
+% classes have dynamics that can handle disturbance)
+if isempty(d)
+  [~, x] = ode113(@(t,x) obj.dynamics(t, x, u), [0 T], x0);
+else
+  [~, x] = ode113(@(t,x) obj.dynamics(t, x, u, d), [0 T], x0);
+end
 
 % Update the state, state history, control, and control history
 x1 = x(end, :)';
