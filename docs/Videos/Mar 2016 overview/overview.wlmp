@@ -13,13 +13,13 @@
     <MediaItem id="10" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\bay_area_value_function.png" arWidth="535" arHeight="540" duration="0" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="2" />
     <MediaItem id="11" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\bay_area_optimal_paths.png" arWidth="536" arHeight="540" duration="0" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="2" />
     <MediaItem id="12" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\bay_area_highways.png" arWidth="536" arHeight="540" duration="0" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="2" />
-    <MediaItem id="13" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\simulateFormPlatoon.mp4" arWidth="1440" arHeight="1080" duration="28.7906792" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="1" />
-    <MediaItem id="14" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\simulateIntruder.mp4" arWidth="1440" arHeight="1080" duration="27.0840125" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="1" />
-    <MediaItem id="15" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\simulateChangehighway.mp4" arWidth="1440" arHeight="1080" duration="26.977345799999998" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="1" />
+    <MediaItem id="13" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\simulateFormPlatoon.mp4" arWidth="1440" arHeight="1080" duration="28.757312500000001" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="1" />
+    <MediaItem id="14" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\simulateIntruder.mp4" arWidth="1440" arHeight="1080" duration="27.050645800000002" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="1" />
+    <MediaItem id="15" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\simulateChangehighway.mp4" arWidth="1440" arHeight="1080" duration="26.9439791" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="1" />
     <MediaItem id="16" filePath="C:\Users\Mo\Documents\UTM\docs\Videos\Mar 2016 overview\title.png" arWidth="1280" arHeight="720" duration="0" songTitle="" songArtist="" songAlbum="" songCopyrightUrl="" songArtistUrl="" songAudioFileUrl="" stabilizationMode="0" mediaItemType="2" />
   </MediaItems>
   <Extents>
-    <TitleClip extentID="34" gapBefore="0" duration="3">
+    <TitleClip extentID="5" gapBefore="0" duration="4">
       <Effects />
       <Transitions />
       <BoundProperties>
@@ -31,14 +31,7 @@
         <BoundPropertyFloat Name="transparency" Value="0" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="17" gapBefore="0" mediaItemID="11" duration="3">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
-    <TitleClip extentID="35" gapBefore="0" duration="3">
+    <TitleClip extentID="6" gapBefore="5" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectFadeTemplate" TextScriptId="1">
           <BoundProperties>
@@ -65,14 +58,13 @@
             </BoundPropertyFloatSet>
             <BoundPropertyInt Name="outlineSizeIndex" Value="0" />
             <BoundPropertyFloatSet Name="position">
-              <BoundPropertyFloatElement Value="-0.093158721923828125" />
-              <BoundPropertyFloatElement Value="1.0697674751281738" />
+              <BoundPropertyFloatElement Value="0.18631696701049805" />
+              <BoundPropertyFloatElement Value="0.7441861629486084" />
               <BoundPropertyFloatElement Value="0.02500000037252903" />
             </BoundPropertyFloatSet>
             <BoundPropertyFloat Name="size" Value="0.80000001192092896" />
             <BoundPropertyStringSet Name="string">
-              <BoundPropertyStringElement Value="Simulations of " />
-              <BoundPropertyStringElement Value="Vehicle Behavior" />
+              <BoundPropertyStringElement Value="Air Highway Placement" />
             </BoundPropertyStringSet>
             <BoundPropertyString Name="style" Value="Plain" />
             <BoundPropertyFloat Name="transparency" Value="0" />
@@ -89,20 +81,86 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="18" gapBefore="0" mediaItemID="12" duration="4">
+    <ImageClip extentID="7" gapBefore="0" mediaItemID="1" duration="4">
       <Effects />
       <Transitions />
       <BoundProperties>
         <BoundPropertyInt Name="rotateStepNinety" Value="0" />
       </BoundProperties>
     </ImageClip>
-    <ImageClip extentID="36" gapBefore="0" mediaItemID="16" duration="4">
+    <ImageClip extentID="8" gapBefore="0" mediaItemID="2" duration="4">
       <Effects />
-      <Transitions>
-        <ShapeEffect effectTemplateID="BlurThroughBlackTransitionTemplate" duration="1">
-          <BoundProperties />
-        </ShapeEffect>
-      </Transitions>
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="9" gapBefore="0" mediaItemID="3" duration="4">
+      <Effects />
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="10" gapBefore="0" mediaItemID="4" duration="4">
+      <Effects />
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="11" gapBefore="0" mediaItemID="5" duration="4">
+      <Effects />
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="12" gapBefore="0" mediaItemID="6" duration="4">
+      <Effects />
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="13" gapBefore="0" mediaItemID="7" duration="4">
+      <Effects />
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="14" gapBefore="0" mediaItemID="8" duration="3">
+      <Effects />
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="15" gapBefore="0" mediaItemID="9" duration="4">
+      <Effects />
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="16" gapBefore="0" mediaItemID="10" duration="4">
+      <Effects />
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="17" gapBefore="0" mediaItemID="11" duration="3">
+      <Effects />
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
+      </BoundProperties>
+    </ImageClip>
+    <ImageClip extentID="18" gapBefore="0" mediaItemID="12" duration="4">
+      <Effects />
+      <Transitions />
       <BoundProperties>
         <BoundPropertyInt Name="rotateStepNinety" Value="0" />
       </BoundProperties>
@@ -188,18 +246,6 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <TitleClip extentID="5" gapBefore="0" duration="3">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyFloatSet Name="diffuseColor">
-          <BoundPropertyFloatElement Value="0" />
-          <BoundPropertyFloatElement Value="0" />
-          <BoundPropertyFloatElement Value="0" />
-        </BoundPropertyFloatSet>
-        <BoundPropertyFloat Name="transparency" Value="0" />
-      </BoundProperties>
-    </TitleClip>
     <TitleClip extentID="23" gapBefore="0" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectTemplate" TextScriptId="0">
@@ -238,56 +284,6 @@
             <BoundPropertyStringSet Name="string">
               <BoundPropertyStringElement Value="Example cost map:" />
               <BoundPropertyStringElement Value="Airports > dark blue > light blue > yellow" />
-            </BoundPropertyStringSet>
-            <BoundPropertyString Name="style" Value="Plain" />
-            <BoundPropertyFloat Name="transparency" Value="0" />
-          </BoundProperties>
-        </TextEffect>
-      </Effects>
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyFloatSet Name="diffuseColor">
-          <BoundPropertyFloatElement Value="0.75" />
-          <BoundPropertyFloatElement Value="1" />
-          <BoundPropertyFloatElement Value="0" />
-        </BoundPropertyFloatSet>
-        <BoundPropertyFloat Name="transparency" Value="1" />
-      </BoundProperties>
-    </TitleClip>
-    <TitleClip extentID="6" gapBefore="4" duration="3">
-      <Effects>
-        <TextEffect effectTemplateID="TextEffectFadeTemplate" TextScriptId="1">
-          <BoundProperties>
-            <BoundPropertyBool Name="automatic" Value="false" />
-            <BoundPropertyFloatSet Name="color">
-              <BoundPropertyFloatElement Value="1" />
-              <BoundPropertyFloatElement Value="1" />
-              <BoundPropertyFloatElement Value="1" />
-            </BoundPropertyFloatSet>
-            <BoundPropertyStringSet Name="family">
-              <BoundPropertyStringElement Value="Segoe UI" />
-            </BoundPropertyStringSet>
-            <BoundPropertyBool Name="horizontal" Value="true" />
-            <BoundPropertyStringSet Name="justify">
-              <BoundPropertyStringElement Value="MIDDLE" />
-            </BoundPropertyStringSet>
-            <BoundPropertyBool Name="leftToRight" Value="true" />
-            <BoundPropertyFloatSet Name="length" />
-            <BoundPropertyFloat Name="maxExtent" Value="0" />
-            <BoundPropertyFloatSet Name="outlineColor">
-              <BoundPropertyFloatElement Value="0.64705884456634521" />
-              <BoundPropertyFloatElement Value="0.64705884456634521" />
-              <BoundPropertyFloatElement Value="0.64705884456634521" />
-            </BoundPropertyFloatSet>
-            <BoundPropertyInt Name="outlineSizeIndex" Value="0" />
-            <BoundPropertyFloatSet Name="position">
-              <BoundPropertyFloatElement Value="0.18631696701049805" />
-              <BoundPropertyFloatElement Value="0.7441861629486084" />
-              <BoundPropertyFloatElement Value="0.02500000037252903" />
-            </BoundPropertyFloatSet>
-            <BoundPropertyFloat Name="size" Value="0.80000001192092896" />
-            <BoundPropertyStringSet Name="string">
-              <BoundPropertyStringElement Value="Air Highway Placement" />
             </BoundPropertyStringSet>
             <BoundPropertyString Name="style" Value="Plain" />
             <BoundPropertyFloat Name="transparency" Value="0" />
@@ -357,14 +353,7 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="7" gapBefore="0" mediaItemID="1" duration="4">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
-    <TitleClip extentID="25" gapBefore="0" duration="3">
+    <TitleClip extentID="25" gapBefore="0" duration="4">
       <Effects />
       <Transitions />
       <BoundProperties>
@@ -376,14 +365,7 @@
         <BoundPropertyFloat Name="transparency" Value="0" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="8" gapBefore="0" mediaItemID="2" duration="4">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
-    <TitleClip extentID="26" gapBefore="0" duration="3">
+    <TitleClip extentID="26" gapBefore="0" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectFadeTemplate" TextScriptId="1">
           <BoundProperties>
@@ -433,13 +415,6 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="9" gapBefore="0" mediaItemID="3" duration="4">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
     <TitleClip extentID="27" gapBefore="0" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectTemplate" TextScriptId="0">
@@ -493,13 +468,6 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="10" gapBefore="0" mediaItemID="4" duration="4">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
     <TitleClip extentID="28" gapBefore="0" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectTemplate" TextScriptId="0">
@@ -554,13 +522,6 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="11" gapBefore="0" mediaItemID="5" duration="4">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
     <TitleClip extentID="29" gapBefore="0" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectTemplate" TextScriptId="0">
@@ -615,13 +576,6 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="12" gapBefore="0" mediaItemID="6" duration="4">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
     <TitleClip extentID="30" gapBefore="0" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectTemplate" TextScriptId="0">
@@ -676,13 +630,6 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="13" gapBefore="0" mediaItemID="7" duration="4">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
     <TitleClip extentID="31" gapBefore="0" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectTemplate" TextScriptId="0">
@@ -737,13 +684,6 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="14" gapBefore="0" mediaItemID="8" duration="3">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
     <TitleClip extentID="32" gapBefore="0" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectTemplate" TextScriptId="0">
@@ -798,13 +738,6 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="15" gapBefore="0" mediaItemID="9" duration="4">
-      <Effects />
-      <Transitions />
-      <BoundProperties>
-        <BoundPropertyInt Name="rotateStepNinety" Value="0" />
-      </BoundProperties>
-    </ImageClip>
     <TitleClip extentID="33" gapBefore="0" duration="4">
       <Effects>
         <TextEffect effectTemplateID="TextEffectTemplate" TextScriptId="0">
@@ -859,9 +792,76 @@
         <BoundPropertyFloat Name="transparency" Value="1" />
       </BoundProperties>
     </TitleClip>
-    <ImageClip extentID="16" gapBefore="0" mediaItemID="10" duration="4">
+    <TitleClip extentID="34" gapBefore="0" duration="4">
       <Effects />
       <Transitions />
+      <BoundProperties>
+        <BoundPropertyFloatSet Name="diffuseColor">
+          <BoundPropertyFloatElement Value="0" />
+          <BoundPropertyFloatElement Value="0" />
+          <BoundPropertyFloatElement Value="0" />
+        </BoundPropertyFloatSet>
+        <BoundPropertyFloat Name="transparency" Value="0" />
+      </BoundProperties>
+    </TitleClip>
+    <TitleClip extentID="35" gapBefore="0" duration="4">
+      <Effects>
+        <TextEffect effectTemplateID="TextEffectFadeTemplate" TextScriptId="1">
+          <BoundProperties>
+            <BoundPropertyBool Name="automatic" Value="false" />
+            <BoundPropertyFloatSet Name="color">
+              <BoundPropertyFloatElement Value="1" />
+              <BoundPropertyFloatElement Value="1" />
+              <BoundPropertyFloatElement Value="1" />
+            </BoundPropertyFloatSet>
+            <BoundPropertyStringSet Name="family">
+              <BoundPropertyStringElement Value="Segoe UI" />
+            </BoundPropertyStringSet>
+            <BoundPropertyBool Name="horizontal" Value="true" />
+            <BoundPropertyStringSet Name="justify">
+              <BoundPropertyStringElement Value="MIDDLE" />
+            </BoundPropertyStringSet>
+            <BoundPropertyBool Name="leftToRight" Value="true" />
+            <BoundPropertyFloatSet Name="length" />
+            <BoundPropertyFloat Name="maxExtent" Value="0" />
+            <BoundPropertyFloatSet Name="outlineColor">
+              <BoundPropertyFloatElement Value="0.64705884456634521" />
+              <BoundPropertyFloatElement Value="0.64705884456634521" />
+              <BoundPropertyFloatElement Value="0.64705884456634521" />
+            </BoundPropertyFloatSet>
+            <BoundPropertyInt Name="outlineSizeIndex" Value="0" />
+            <BoundPropertyFloatSet Name="position">
+              <BoundPropertyFloatElement Value="-0.093158721923828125" />
+              <BoundPropertyFloatElement Value="1.0697674751281738" />
+              <BoundPropertyFloatElement Value="0.02500000037252903" />
+            </BoundPropertyFloatSet>
+            <BoundPropertyFloat Name="size" Value="0.80000001192092896" />
+            <BoundPropertyStringSet Name="string">
+              <BoundPropertyStringElement Value="Simulations of " />
+              <BoundPropertyStringElement Value="Vehicle Behavior" />
+            </BoundPropertyStringSet>
+            <BoundPropertyString Name="style" Value="Plain" />
+            <BoundPropertyFloat Name="transparency" Value="0" />
+          </BoundProperties>
+        </TextEffect>
+      </Effects>
+      <Transitions />
+      <BoundProperties>
+        <BoundPropertyFloatSet Name="diffuseColor">
+          <BoundPropertyFloatElement Value="0.75" />
+          <BoundPropertyFloatElement Value="1" />
+          <BoundPropertyFloatElement Value="0" />
+        </BoundPropertyFloatSet>
+        <BoundPropertyFloat Name="transparency" Value="1" />
+      </BoundProperties>
+    </TitleClip>
+    <ImageClip extentID="37" gapBefore="0" mediaItemID="16" duration="5">
+      <Effects />
+      <Transitions>
+        <ShapeEffect effectTemplateID="CrossfadeTransitionTemplate" duration="1.5">
+          <BoundProperties />
+        </ShapeEffect>
+      </Transitions>
       <BoundProperties>
         <BoundPropertyInt Name="rotateStepNinety" Value="0" />
       </BoundProperties>
@@ -871,7 +871,7 @@
       <Transitions />
       <BoundProperties />
       <ExtentRefs>
-        <ExtentRef id="36" />
+        <ExtentRef id="37" />
         <ExtentRef id="5" />
         <ExtentRef id="14" />
         <ExtentRef id="15" />
@@ -929,8 +929,8 @@
     <BoundPlaceholder placeholderID="SingleExtentView" extentID="0" />
     <BoundPlaceholder placeholderID="Main" extentID="1" />
     <BoundPlaceholder placeholderID="SoundTrack" extentID="2" />
-    <BoundPlaceholder placeholderID="Text" extentID="4" />
     <BoundPlaceholder placeholderID="Narration" extentID="3" />
+    <BoundPlaceholder placeholderID="Text" extentID="4" />
   </BoundPlaceholders>
   <BoundProperties>
     <BoundPropertyFloatSet Name="AspectRatio">
