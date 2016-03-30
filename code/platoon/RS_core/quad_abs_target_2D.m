@@ -1,4 +1,5 @@
-function [grids, datas, tau] = quad_abs_target_2D(x, visualize)
+function [grids, datas, tau] = quad_abs_target_2D(x, U, grid_min, grid_max, ...
+  visualize)
 % [grids, datas, tau] = quad_abs_target_2D(x, visualize)
 %
 % Computes 2D liveness reachable set for an absolute target set. These
@@ -26,6 +27,18 @@ if nargin<1
 end
 
 if nargin<2
+  U = [-3 3];
+end
+
+if nargin<3
+  grid_min = [x(1) - 35; x(2) - 15; x(3) - 35; x(4) - 15];
+end
+
+if nargin<4
+  grid_max = [x(1) + 35; x(2) + 15; x(3) + 35; x(4) + 15];
+end
+
+if nargin<5
   visualize = 1;
 end
 
@@ -41,28 +54,22 @@ small = 100 * eps;
 dissType = 'global';
 
 %---------------------------------------------------------------------------
-% Problem Parameters.
-uMax = 3;
-
-%---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %  (Slightly different grid cell counts will be chosen for each dimension.)
-Np = 41;
+Np = 41; % Try not to go over 61
 Nv = 31;
 
 % Create the x grid.
-g1.min = [ x(1)-35 ; -1.5*x(2) ];     % Bounds on computational domain
-g1.max = [ x(1)+35 ; 1.5*x(2) ];  
-
+g1.min = grid_min(1:2);
+g1.max = grid_max(1:2);
 g1.dim = 2;                              % Number of dimensions
-
 g1.bdry = @addGhostExtrapolate;
 g1.N = [ Np; Nv];
 g1 = processGrid(g1);
 
 % Create the y grid.
-g2.min = [ x(3)-35 ; x(4)-1.5*x(2) ];     % Bounds on computational domain
-g2.max = [ x(3)+35 ; x(4)+1.5*x(2)]; 
+g2.min = grid_min(3:4);
+g2.max = grid_max(3:4);
 
 g2.dim = 2;                             % Number of dimensions
 g2.bdry = @addGhostExtrapolate;
@@ -83,7 +90,7 @@ schemeData.hamFunc = @HamFunc;
 schemeData.partialFunc = @PartialFunc;
 
 % The Hamiltonian and partial functions need problem parameters.
-schemeData.uMax = uMax;
+schemeData.U = U;
 
 %---------------------------------------------------------------------------
 % Choose degree of dissipation.
@@ -211,19 +218,19 @@ function hamValue = HamFunc(t, data, deriv, schemeData)
 % schemeData is a structure containing data specific to this Hamiltonian
 %   For this function it contains the field(s):
 
-checkStructureFields(schemeData, 'uMax', 'grid');
+checkStructureFields(schemeData, 'U', 'grid');
 
-grid = schemeData.grid;
-uMax = schemeData.uMax;
+g = schemeData.grid;
+U = schemeData.U;
 
 % Dynamics:
 % \dot{x}_1 = v_1
 % \dot{v}_1 = u_1
 
 % quadrotor 1 minimizes value, quadrotor 2 maximizes value
-hamValue = deriv{1} .* grid.xs{2} + ...
-  (deriv{2}>=0) .* (deriv{2}) * (-uMax) + ...
-  (deriv{2}<0) .* (deriv{2}) * uMax;
+hamValue = deriv{1} .* g.xs{2} + ...
+  (deriv{2}>=0) .* (deriv{2}) * U(1) + ...
+  (deriv{2}<0) .* (deriv{2}) * U(2);
 
 % backwards reachable set
 hamValue = -hamValue;
@@ -253,17 +260,17 @@ function alpha = PartialFunc(t, data, derivMin, derivMax, schemeData, dim)
 %		   at each node of the grid.
 
 
-checkStructureFields(schemeData, 'uMax', 'grid');
+checkStructureFields(schemeData, 'U', 'grid');
 
-grid = schemeData.grid;
-uMax = schemeData.uMax;
+g = schemeData.grid;
+U = schemeData.U;
 
 switch dim
   case 1
-    alpha = abs(grid.xs{2});
+    alpha = abs(g.xs{2});
     
   case 2
-    alpha = uMax;
+    alpha = max(abs(U));
     
   otherwise
     error([ 'Partials only exist in dimensions 1-2' ]);
