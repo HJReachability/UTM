@@ -12,14 +12,15 @@ function x1 = updateState(obj, u, T, x0, d)
 %
 % Mo Chen, 2015-05-24
 
-% If no control is specified, use previous control
-if nargin < 2
-  u = obj.u;
-end
-
 % If no state is specified, use current state
 if nargin < 4 || isempty(x0)
   x0 = obj.x;
+end
+
+% If time horizon is 0, return initial state
+if T == 0
+  x1 = x0;
+  return
 end
 
 % Default disturbance
