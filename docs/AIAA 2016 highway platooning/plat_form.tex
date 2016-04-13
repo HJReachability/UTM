@@ -21,7 +21,7 @@ Consider a UAV whose dynamics are given by
 
 \noindent where the state $x=(\pos_x, \vel_x, \pos_y, \vel_y)\in\mathbb{R}^4$ represents the quadrotor's position in the $x$-direction, its velocity in the $x$-direction, and its position and velocity in the $y$-direction, respectively. The control input $u = (u_x, u_y)\in\mathbb{R}^2$ consists of the acceleration in the $x$- and $y$- directions. For convenience, we will denote the position and velocity $\pos=(\pos_x, \pos_y),\vel=(\vel_x,\vel_y)$, respectively. 
 
-In general, the problem of collision avoidance among $N$ vehicles cannot be tractably solved using traditional dynamic programming approaches because the computation complexity of these approaches scales exponentially with the number of vehicles. Thus, in our present work, we will consider the situation where UAVs travel on air highways in platoons, defined in the following sections. The structure imposed by air highways and the platoon enables us to analyze the liveness and safety of the vehicles in a tractable manner.
+In general, the problem of collision avoidance among $N$ vehicles cannot be tractably solved using traditional dynamic programming approaches because the computation complexity of these approaches scales exponentially with the number of vehicles. Thus, in our present work, we will consider the situation where UAVs travel on air highways in platoons, defined in the following sections. The structure imposed by air highways and platooning enables us to analyze the liveness and safety of the vehicles in a tractable manner.
 
 \subsubsection{Vehicles as Hybrid Systems}
 We model each vehicle as a hybrid system \cite{Lygeros98,Lygeros12} consisting of the modes ``Free", ``Leader", ``Follower", and ``Faulty". Within each mode, a set of maneuvers is available to allow the vehicle to change modes if desired. The modes and maneuvers are as follows:
@@ -31,18 +31,18 @@ We model each vehicle as a hybrid system \cite{Lygeros98,Lygeros12} consisting o
 
 A Free vehicle is not in a platoon or on a highway, and its possible maneuvers or mode transitions are
 \begin{itemize}
-\item remain a Free vehicle by staying away from highways,
-\item become a Leader by entering a highway to create a new platoon, and
-\item become a Follower by joining a platoon that is currently on a highway.
+\item remain a Free vehicle by staying away from highways
+\item become a Leader by entering a highway to create a new platoon
+\item become a Follower by joining a platoon that is currently on a highway
 \end{itemize} 
 
 \item Leader: 
 A Leader vehicle is the vehicle at the front of a platoon (which could consist of only the vehicle itself). The available maneuvers and mode transitions are
 
 \begin{itemize}
-\item remain a Leader by traveling along the highway at a pre-specified speed,
-\item become a Follower by merging the current platoon with a platoon in front, and
-\item become a Free vehicle by leaving the highway.
+\item remain a Leader by traveling along the highway at a pre-specified speed
+\item become a Follower by merging the current platoon with a platoon in front
+\item become a Free vehicle by leaving the highway
 \end{itemize}
 
 \item Follower: 
@@ -50,9 +50,9 @@ A Leader vehicle is the vehicle at the front of a platoon (which could consist o
 A Follower vehicle is a vehicle that is following a platoon leader. The available maneuvers and mode transitions are 
 
 \begin{itemize}
-\item remain a Follower by staying a distance of $d_\text{sep}$ behind the vehicle in front in the current platoon,
-\item become a Leader by splitting from the current platoon, and
-\item become a Free vehicle by leaving the highway.
+\item remain a Follower by staying a distance of $d_\text{sep}$ behind the vehicle in front in the current platoon
+\item become a Leader by splitting from the current platoon
+\item become a Free vehicle by leaving the highway
 \end{itemize}
 
 \item Faulty: 
@@ -71,7 +71,7 @@ The available maneuvers and associated mode transitions are summarized in Figure
 
 Suppose that there are $N$ vehicles in total. We will denote the $N$ vehicles as $\veh{i}, i=1\ldots,N$. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $\veh{P_1}, \ldots, \veh{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation; for convenience, we also denote $P_0 = P_{M+1} = \emptyset$. When necessary, we will use superscripts to denote vehicles of different platoons: $\veh{P_i^j}$ represents the $i$th vehicle in the $j$th platoon. 
 
-For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with respect to which $Q_i$ checks safety against. If vehicle $\veh{i}$ is a free vehicle, then it must check for safety with respect to all other vehicles, $\vehSCS{i} = \{j: j\neq i\}$. If the vehicle is part of a platoon, then it checks safety with respect to the platoon member in front and behind, $\vehSCS{i} = \{P_{j+1}, P_{j-1}\}$. Figure \ref{fig:vehicleNotation} summarizes the the indexing system of the vehicles.
+For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with respect to which $Q_i$ checks safety against. If vehicle $\veh{i}$ is a free vehicle, then it must check for safety with respect to all other vehicles, $\vehSCS{i} = \{j: j\neq i\}$. If the vehicle is part of a platoon, then it checks safety with respect to the platoon member in front and behind, $\vehSCS{i} = \{P_{j+1}, P_{j-1}\}$. Figure \ref{fig:vehicleNotation} summarizes the indexing system of the vehicles.
 
 \begin{figure}
 	\centering
@@ -88,16 +88,16 @@ Given the above modeling assumptions, our goal is to provide control strategies 
 %SHOULD EVASION BE A MODE?
 
 \begin{itemize}
-\item merge onto a highway to form a platoon,
-\item join a new or different platoon,
-\item leave a platoon to create a new one,
-\item reacting to malfunctioning or intruder vehicles.
+\item merge onto a highway to form a platoon
+\item join a new or different platoon
+\item leave a platoon to create a new one
+\item reacting to malfunctioning or intruder vehicles
 \end{itemize}
 
 We also propose more basic controllers to perform other simpler actions such as
 \begin{itemize}
-\item following the highway at constant altitude at a specified speed,
-\item maintaining a constant relative position and velocity with the leader of a platoon.
+\item following the highway at constant altitude at a specified speed
+\item maintaining a constant relative position and velocity with the leader of a platoon
 \end{itemize}
 
 In general, the control strategies of each vehicle have a liveness component, which specifies a set of states towards which the vehicle aims to reach, and a safety component, which specifies a set of states that it must avoid. Together, the liveness and safety controllers guarantee the success and safety of a vehicle in the airspace making any desired mode transition. In this paper, these guarantees are provided using reachability analysis, and allow the multi-UAV system to perform joint maneuvers essential to maintaining structure in the airspace.

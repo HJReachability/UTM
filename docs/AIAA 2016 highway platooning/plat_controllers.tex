@@ -5,7 +5,7 @@ Reachability analysis is useful for constructing controllers in a large variety 
 Using a number of different target sets and dynamics, we now propose different reachability-based controllers used for vehicle mode transitions in our platooning concept.
 
 \subsubsection{Getting to a Target State \label{sec:abs_target_ctrl}}
-The controller used by a vehicle to a target state is important in a couple of situations in the platooning context. First, a vehicle in the ``Free'' mode can use the controller to merge onto a highway, forming a platoon and changing modes to a ``Leader'' vehicle. Second, a vehicle in either the ``Leader'' mode or the ``Follower'' mode can use this controller to change to a different highway, changing modes to a ``Leader'' vehicle. 
+The controller used by a vehicle to reach a target state is important in a couple of situations in the platooning context. First, a vehicle in the ``Free'' mode can use the controller to merge onto a highway, forming a platoon and changing modes to a ``Leader'' vehicle. Second, a vehicle in either the ``Leader'' mode or the ``Follower'' mode can use this controller to change to a different highway, changing modes to a ``Leader'' vehicle. 
 
 In both of the above cases, we use the dynamics of a single vehicle specified in \eqref{eq:dyn}. The target state would be a position $(\Pos_x, \Pos_y)$ representing the desired merging point on the highway, along with a velocity $(\Vel_x, \Vel_y)$ that corresponds to the speed and direction of travel specified by the highway. For the reachability computation, we define the target set to be a small range of states around the target state $x_H = (\Pos_x, \Pos_y, \Vel_x, \Vel_y)$:
 
@@ -28,7 +28,7 @@ Depending on the time horizon $T$, the size of the reachable set $\mathcal V_H(T
 \subsubsection{Getting to a State Relative to Another Vehicle \label{sec:rel_target_ctrl}}
 In the platooning context, being able to go to a state relative to another moving vehicle is important for the purpose of forming and joining platoons. For example, a ``Free'' vehicle may join an existing platoon that is on a highway and change modes to become a ``Follower''. Also, a ``Leader'' or ``Follower'' may join another platoon and afterwards go into the ``Follower'' mode.
 
-To construct a controller for getting to a state relative to another vehicle, we use the relative dynamics of two vehicles, given in \eqref{eq:rel_dyn}. In general, the target state is specified to be some position $(\Pos_{x,r}, \Pos_{y,r})$ and velocity $(\Vel_{x,r}, \Vel_{y,r})$ relative to a reference vehicle. In the case of a vehicle joining a platoon that maintains a single file, the reference vehicle would be the platoon leader, the desired relative position would be a certain distance behind the leader, depending on how many other vehicles are already in the platoon, and the desired relative velocity would be $(0,0)$ so that the formation can be kept.
+To construct a controller for getting to a state relative to another vehicle, we use the relative dynamics of two vehicles, given in \eqref{eq:rel_dyn}. In general, the target state is specified to be some position $(\Pos_{x,r}, \Pos_{y,r})$ and velocity $(\Vel_{x,r}, \Vel_{y,r})$ relative to a reference vehicle. In the case of a vehicle joining a platoon that maintains a single file, the reference vehicle would be the platoon leader, the desired relative position would be a certain distance behind the leader, depending on how many other vehicles are already in the platoon; the desired relative velocity would be $(0,0)$ so that the formation can be kept.
 
 For the reachability problem, we define the target set to be a small range of states around the target state $x_P = (\Pos_{x,r}, \Pos_{y,r}, \Vel_{x,r}, \Vel_{y,r})$:
 
@@ -93,8 +93,8 @@ The $i$-th member of the platoon, $Q_{P_i}$, is expected to track a relative pos
 \begin{equation}\label{eq:follow}
 u^i(t) = k_p \big[p_{P_1}(t) + r^i(t) - p^i(t) \big] + k_v\big[v_{P_1}(t) - v^i(t)\big] + u_{P_1}(t)
 \end{equation}
-for some $k_p,k_v>0$. The leader can modify the nominal position of vehicles in the platoon, for example to command the formation to turn. In particular, a simple rule for determining $r^i(t)$ in a single-file platoon is given for $Q_{P_i}$ as:
+for some $k_p,k_v>0$. In particular, a simple rule for determining $r^i(t)$ in a single-file platoon is given for $Q_{P_i}$ as:
 \begin{equation}\label{eq:nominal_pos}
 r^i(t) = - (i-1) b \frac{v_{P_1}}{\|v_{P_1}\|_2}
 \end{equation}
-where $b$ is the spacing between vehicles along the platoon. and $\frac{v_{P_1}}{\|v_{P_1}\|_2}$ is the platoon leader's direction of travel.
+where $b$ is the spacing between vehicles along the platoon and $\frac{v_{P_1}}{\|v_{P_1}\|_2}$ is the platoon leader's direction of travel.

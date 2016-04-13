@@ -10,7 +10,7 @@ For the simulation example, shown in Figure \ref{fig:fp}, the highway is specifi
 
 The first two plots in Figure \ref{fig:fp} illustrate the use of liveness and safety reachable sets for the first two vehicles. Since the liveness reachable sets are in 4D and the safety reachable sets are in 6D, we compute and plot their 2D slices based on the vehicles' velocities and relative velocities.  All vehicles begin as Free vehicles, so they each need to take into account five different reachable sets: four safety reachable sets and one liveness reachable set. For clarity, we only show the liveness reachable set and one safety reachable set. 
 
-For $\veh{1}$ (red), an arbitrary point of entry on the highway is chosen as the target absolute position, and the velocity corresponding to a speed of $10$ in the direction of the highway is chosen as the target absolute velocity. This forms the target state $\bar{x}_H=(\bar{p}_x, \bar{v}_x, \bar{p}_y, \bar{v}_y)$, from which we define the target set $\mathcal{L}_H$ as in Section \ref{sec:platooning}-\ref{sec:reach_ctrl}-\ref{sec:abs_target_ctrl}.
+For $\veh{1}$ (red), an arbitrary point of entry on the highway is chosen as the target absolute position, and the velocity corresponding to a speed of $10$ m/s in the direction of the highway is chosen as the target absolute velocity. This forms the target state $\bar{x}_H=(\bar{p}_x, \bar{v}_x, \bar{p}_y, \bar{v}_y)$, from which we define the target set $\mathcal{L}_H$ as in Section \ref{sec:platooning}-\ref{sec:reach_ctrl}-\ref{sec:abs_target_ctrl}.
 
 At $t=3.9$, $\veh{1}$ (red) is inside the liveness reachable set for getting to an absolute state shown as the dotted red boundary. Therefore, it is ``locked-in" to the target state $\bar{x}_H$, and follows the optimal control in \eqref{eq:HJB_ctrl_syn} to $\bar{x}_H$. During the entire time, $\veh{1}$ checks whether it may collide with all of the other vehicles within a time horizon of $\td$. To do this, it simply checks whether its state relative to each of the other vehicles is within the corresponding safety reachable set. As an example, the safety reachable set boundary with respect to $\veh{2}$ (purple) is shown as the red dashed boundary; $\veh{1}$ (red) is safe with respect to $\veh{2}$ (purple) since $\veh{1}$ (red) is outside of the boundary.
 
@@ -23,20 +23,20 @@ In the bottom plots of Figure \ref{fig:fp}, $\veh{1}$ (red) and $\veh{2}$ have a
 % 40 60 110 210
 \begin{figure} 
     \centering
-    \begin{subfigure}{0.23\textwidth} \label{subfig:fp_40}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:fp_40}
         \includegraphics[width=\textwidth]{fig/fp_40}
         \caption{The red vehicle follows the reachability-based liveness controller for getting to an absolute target state to merge onto the highway, while avoiding collisions using the reachability-based safety controller. The liveness reachable set and one safety reachable set are shown as the dotted and dashed boundaries, respectively.}
     \end{subfigure}
-    \begin{subfigure}{0.23\textwidth} \label{subfig:fp_60}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:fp_60}
         \includegraphics[width=\textwidth]{fig/fp_60}
         \caption{After the red vehicle successfully merges onto the highway and becomes the platoon leader, the purple vehicle uses the reachability-based liveness controller for getting to a relative target state to join the platoon, while avoiding collisions using the reachability-based safety controller. The liveness and safety reachable sets are shown as the dotted and dashed boundaries, respectively.}
     \end{subfigure}
 
-    \begin{subfigure}{0.23\textwidth} \label{subfig:fp_110}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:fp_110}
         \includegraphics[width=\textwidth]{fig/fp_110}
         \caption{After the first two vehicles successfully form a two-vehicle platoon, the rest of the vehicles follow the same process to join the platoon.}
     \end{subfigure}
-    \begin{subfigure}{0.23\textwidth} \label{subfig:fp_210}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:fp_210}
         \includegraphics[width=\textwidth]{fig/fp_210}
         \caption{All five vehicles have successfully joined the platoon and now travel on the highway together.}
     \end{subfigure}   
@@ -50,27 +50,27 @@ Figure \ref{fig:in} shows the simulation result. At $t=9.9$, a platoon of four v
 
 Note that although in this particular simulation, the intruder travels in a straight line, a straight line motion of the intruder was \textit{not} assumed. Rather, the safety reachable sets are computed assuming the worst case control of the intruder, according to \eqref{eq:HJI_ctrl_syn}.
 
-As the intruder $\veh{5}$ (yellow) continue to disregard other vehicles, the followers of the platoon also get near the respective boundaries of the safety reachable set with respect to the intruder. This occurs at $t=13.9$, where the platoon ``makes room'' for the intruder to pass by to avoid collisions; all vehicles deviate from their intended path, which is to follow the platoon leader or the highway.
+As the intruder $\veh{5}$ (yellow) continues to disregard other vehicles, the followers of the platoon also get near the respective boundaries of the safety reachable set with respect to the intruder. This occurs at $t=13.9$, where the platoon ``makes room'' for the intruder to pass by to avoid collisions; all vehicles deviate from their intended path, which is to follow the platoon leader or the highway.
 
 After the intruder has passed, eventually all vehicles become far away from any safety reachable sets. When this occurs, the leader resumes following the highway, and the followers resume following the leader. At $t=19.9$, the platoon successfully gets back onto the highway.
 
 % 100 120 140 200
 \begin{figure}
     \centering
-    \begin{subfigure}{0.23\textwidth} \label{subfig:in_100}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:in_100}
         \includegraphics[width=\textwidth]{fig/in_100}
         \caption{Four vehicles in a platoon are traveling along the highway. The yellow intruder disregards other vehicles.}
     \end{subfigure}
-    \begin{subfigure}{0.23\textwidth} \label{subfig:in_120}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:in_120}
         \includegraphics[width=\textwidth]{fig/in_120}
         \caption{Platoon members begin avoidance maneuvers as they get near the safety reachable set boundaries with respect to the intruder.}
     \end{subfigure}
 
-    \begin{subfigure}{0.23\textwidth} \label{subfig:in_140}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:in_140}
         \includegraphics[width=\textwidth]{fig/in_140}
         \caption{As the intruder (yellow) crosses the highway, the safety controller causes platoon members spread out to ``make room'' for the intruder to pass.}
     \end{subfigure}
-    \begin{subfigure}{0.23\textwidth} \label{subfig:in_200}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:in_200}
         \includegraphics[width=\textwidth]{fig/in_200}
         \caption{After danger has passed, the platoon resumes normal operation.}
     \end{subfigure}   
@@ -78,28 +78,28 @@ After the intruder has passed, eventually all vehicles become far away from any 
 \end{figure}
 
 \subsubsection{Changing highways}
-In order to travel from origin to destination, a vehicle may need to change highways several times before exiting an air highway system. In this simulation, shown in Figure \ref{fig:ch}, two platoons are traveling on two different highways that intersect. When the platoons are near the highway intersection, two of the vehicles in the four-vehicle platoon changes highways and joins the other platoon.
+In order to travel from origin to destination, a vehicle may need to change highways several times before exiting an air highway system. In this simulation, shown in Figure \ref{fig:ch}, two platoons are traveling on two different highways that intersect. When the platoons are near the highway intersection, two of the vehicles in the four-vehicle platoon change highways and join the other platoon.
 
 The $t=8.2$ plot shows the two platoons of vehicles traveling on the two air highways. One platoon has three vehicles, and the other has four vehicles. At $t=12.3$, the yellow vehicle begins steering off its original highway in order to join the other platoon. In terms of the hybrid systems modes, the yellow vehicle transitions from the Leader mode to the Follower mode. At the same time, the green vehicle transitions from the Follower mode to the Leader mode, since the previous platoon leader, the yellow vehicle, has left the platoon. By $t=16.9$, the yellow vehicle successfully changes highways and is now a follower in its new platoon.
 
-At $t=16.9$, the dark red vehicle is in the process of changing highways. In this case, it remains in the Follower mode, since it is a follower in both its old and new platoons. While the dark red vehicle changes highways, the orange vehicle moves forward to catch up to its new platoon leader, the green vehicle. By $t=23$, all the vehicles have finishes performing their desired maneuvers, resulting in a two-vehicle platoon and a five-vehicle platoon traveling on their respective highways.
+At $t=16.9$, the dark red vehicle is in the process of changing highways. In this case, it remains in the Follower mode, since it is a follower in both its old and new platoons. While the dark red vehicle changes highways, the orange vehicle moves forward to catch up to its new platoon leader, the green vehicle. By $t=23$, all the vehicles have finished performing their desired maneuvers, resulting in a two-vehicle platoon and a five-vehicle platoon traveling on their respective highways.
 
 \begin{figure}
     \centering
-    \begin{subfigure}{0.23\textwidth} \label{subfig:ch_83}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:ch_83}
         \includegraphics[width=\textwidth]{fig/ch_83}
         \caption{A three-vehicle platoon and a four-vehicle platoon are traveling on their respective air highways.}
     \end{subfigure}
-    \begin{subfigure}{0.23\textwidth} \label{subfig:ch_124}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:ch_124}
         \includegraphics[width=\textwidth]{fig/ch_124}
         \caption{As the four-vehicle platoon nears the intersection, the yellow vehicle steers off its old highway to join the new platoon. The green vehicle becomes the old platoon's new leader.}
     \end{subfigure}
 
-    \begin{subfigure}{0.23\textwidth} \label{subfig:ch_170}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:ch_170}
         \includegraphics[width=\textwidth]{fig/ch_170}
         \caption{The dark red vehicle also changes highways to join a new platoon, while the orange vehicle catches up to the new platoon leader to maintain a proper formation.}
     \end{subfigure}
-    \begin{subfigure}{0.23\textwidth} \label{subfig:ch_231}
+    \begin{subfigure}[t]{0.23\textwidth} \label{subfig:ch_231}
         \includegraphics[width=\textwidth]{fig/ch_231}
         \caption{New platoons now travel on their respective air highways.}
     \end{subfigure}   
