@@ -109,7 +109,7 @@ u = cell(size(tfm.aas));
 for i = 1:length(t)
   [safe, uSafe] = tfm.checkAASafety;
 
-  safe(5) = 1;
+  safe(length(tfm.aas)) = 1;
   for j = 1:length(tfm.aas)
     if safe(j)
       u{j} = controlLogic(tfm, tfm.aas{j});
