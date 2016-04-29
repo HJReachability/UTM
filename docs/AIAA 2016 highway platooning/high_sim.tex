@@ -13,11 +13,11 @@ This assumption assigns costs in descending order to the categories ``regions ar
 
 Figure \ref{fig:airHighway_results} shows the San Francisco Bay Area (geographic) map, cost map, cost-minimizing paths, and contours of the value function. The region enclosed by the black boundary represent ``region around airports'', which have the highest cost. The dark blue, yellow, and light blue regions represent the ``cities'', the ``water'', and the ``other''' categories, respectively. We assumed that the origin corresponds to the city ``Concord'', and chose a number of other major cities as destinations.
 
-A couple of important observations can be made here. First, the cost-minimizing paths to the various destinations in general overlap, and only split up when they are very close to entering their destination cities. This is intuitively desirable because the number of air highways is kept low. In addition, the cost of flying in the airspace according to the cost map is minimized. Secondly, the spacing of the contours, which correspond to level curves of the value function, have a spacing corresponding to the cost map. This provides insight into the placement of air highways to destinations that were not shown in this example.
+A couple of important observations can be made here. First, the cost-minimizing paths to the various destinations in general overlap, and only split up when they are very close to entering their destination cities. This is intuitively desirable because the number of air highways is kept low. In addition, the cost of flying in the airspace according to the cost map is minimized. Secondly, the contours, which correspond to level curves of the value function, have a spacing corresponding to the cost map. This provides insight into the placement of air highways to destinations that were not shown in this example.
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.5\textwidth]{"fig/airHighway_results"}
+	\includegraphics[width=0.95\textwidth]{"fig/airHighway_results"}
 	\caption{Cost-minimizing paths computed by the Fast Marching Method based on the assumed cost map of the San Francisco Bay Area}
 	\label{fig:airHighway_results}
 \end{figure}
@@ -26,7 +26,7 @@ Fig. \ref{fig:airHighway_sparse} shows the result of converting the cost-minimiz
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.5\textwidth]{"fig/airHighway_sparse"}
+	\includegraphics[width=0.95\textwidth]{"fig/airHighway_sparse"}
 	\caption{Results of conversion from cost-minimizing paths to highway way points.}
 	\label{fig:airHighway_sparse}
 \end{figure}

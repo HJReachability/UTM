@@ -60,7 +60,7 @@ In the context of our platooning concept, we define an unsafe configuration as f
 We can now define the implicit surface function $l_S(x)$ corresponding to $\mathcal{L}_S$, and solve the HJI PDE \eqref{eq:HJIPDE} using $l_S(x)$ as the terminal condition. As before, the zero sublevel set of the solution $V_S(t,x)$ specifies the reachable set $\mathcal{V}_S(t)$, which characterizes the states in the augmented relative coordinates, as defined in \eqref{eq:rel_dyn_aug}, from which $Q_i$ \textit{cannot} avoid $\mathcal{L}_S$ for a time period of $t$, if $Q_j$ uses the worst case control. To avoid collisions, $Q_i$ must apply the safety controller according to \eqref{eq:HJI_ctrl_syn} on the boundary of the reachable set in order to avoid going into the reachable set. The following algorithm wraps our safety controller around liveness controllers:
 
 \begin{enumerate}
-\item For a specified time horizon $t$, evaluate$V_S(-t,x_i-x_j)$ for all $j\in \mathcal{Q}(i)$.
+\item For a specified time horizon $t$, evaluate $V_S(-t,x_i-x_j)$ for all $j\in \mathcal{Q}(i)$.
 
 $\mathcal{Q}(i)$ is the set of quadrotors with which quadrotor $i$ checks safety against.
 \item Use the safety or liveness controller depending on the values $V_S(-t,x_i-x_j),j\in \mathcal{Q}(i)$: 

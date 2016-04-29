@@ -1,6 +1,6 @@
 % !TEX root = main.tex
 \section{Air Highways}
-We consider air highways to be virtual highways in the airspace on which a number of UAV platoons may be present. UAVs seek to arrive at some desired destination starting from their origin by traveling along a sequence of air highways. Air highways are intended to be the common pathways for many UAV platoons, whose members may have different origins and destinations. By routing platoons of UAVs onto a few common pathways, the air space becomes more tractable to analyze and intuitive to monitor. The concept of platoons will be proposed in Section \ref{sec:platooning}; for now, we focus on air highways in this section.
+We consider air highways to be virtual highways in the airspace on which a number of UAV platoons may be present. UAVs seek to arrive at some desired destination starting from their origin by traveling along a sequence of air highways. Air highways are intended to be the common pathways for many UAV platoons, whose members may have different origins and destinations. By routing platoons of UAVs onto a few common pathways, the air space becomes more tractable to analyze and intuitive to monitor. The concept of platoons will be proposed in Section \ref{sec:platooning}; in this section, we focus on air highways.
 
 Let an air highway be denoted by the function $\hw: [0, 1] \rightarrow \mathbb{R}^2$. Such a highway lies in a horizontal plane of fixed altitude, with start and end points given by $\hw(0)\in\mathbb{R}^2$ and $\hw(1)\in\mathbb{R}^2$ respectively. For simplicity, we assume that the highway segment is a straight line segment, and the parameter $s$ indicates the position in some fixed altitude as follows: $\hw(s) = \hw(0) + s(\hw(1) - \hw(0))$. To each highway, we assign a speed of travel $v_\hw$ and specify the direction of travel to be the direction from $\hw(0)$ to $\hw(1)$, denoted using a unit vector $\hwd = \frac{\hw(1) - \hw(0)}{\lVert\hw(1) - \hw(0)\rVert_2}$.
 
@@ -36,7 +36,7 @@ In other words, we consider air highways to be line segments of constant altitud
 
 \begin{figure}
 	\centering
-	\includegraphics[width=0.5\textwidth]{"fig/highway_illustration"}
+	\includegraphics[width=0.95\textwidth]{"fig/highway_illustration"}
 	\caption{Highway illustration}
 	\label{fig:hw_ill}
 \end{figure}
