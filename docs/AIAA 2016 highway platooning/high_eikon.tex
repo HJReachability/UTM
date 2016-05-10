@@ -30,7 +30,7 @@ It is well known that the solution to the Eikonal equation \eqref{eq:eikonal} pr
 \end{aligned}
 \end{equation}
 
-The Eikonal equation \eqref{eq:eikonal} can be efficiently computed numerically using the fast marching method \cite{Sethian96}.
+The Eikonal equation \eqref{eq:eikonal} can be efficiently computed numerically using the fast marching method \cite{Sethian96}; each computation takes on the order of merely a second.
 
 Note that \eqref{eq:rahpp} can be viewed as a relaxation of the air highway placement problem defined in \eqref{eq:ahpp}. Unlike \eqref{eq:ahpp}, the relaxation \eqref{eq:rahpp} can be quickly solved using currently available numerical tools. Thus, we first solve the approximate air highway placement problem \eqref{eq:rahpp} by solving \eqref{eq:eikonal}, and then post-process the solution to \eqref{eq:rahpp} to obtain an approximation to \eqref{eq:ahpp}.
 

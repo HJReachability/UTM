@@ -27,12 +27,14 @@ Given only the origin point $\pos^o$ and destination point $\pos^d$, there are a
 \begin{equation}
 \label{eq:ahpp} % air highway placement problem
 \begin{aligned}
-& \min_{\hws_N, N} \sum_{i=1}^N \int_0^1 \cmap(\hw_i(s)) ds \\
+& \min_{\hws_N, N} \left\{\left(\sum_{i=1}^N \int_0^1 \cmap(\hw_i(s)) ds\right) + R(N)\right\}\\
 & \text{subject to \eqref{eq:hw_seq}} 
 \end{aligned}
 \end{equation}
 
-In other words, we consider air highways to be line segments of constant altitude over a region, and UAV platoons travel on these air highways to get from some origin to some destination. Any UAV flying on a highway over some position $\pos$ incurs a cost of $\cmap(\pos)$, so that the total cost of flying from the origin to the destination is given by \eqref{eq:ahpp}. The air highway placement problem minimizes the cumulative cost of flying from some origin $p^o$ to some destination $p^d$ along the sequence of highways $\hws_N=\{\hw_1, \hw_2, \ldots, \hw_N\}$.
+\noindent where $R(\cdot)$ is a regularizer such as $R(N) = N^2$.
+
+In other words, we consider air highways to be line segments of constant altitude over a region, and UAV platoons travel on these air highways to get from some origin to some destination. Any UAV flying on a highway over some position $\pos$ incurs a cost of $\cmap(\pos)$, so that the total cost of flying from the origin to the destination is given by \eqref{eq:ahpp}. The air highway placement problem minimizes the cumulative cost of flying from some origin $p^o$ to some destination $p^d$ along the sequence of highways $\hws_N=\{\hw_1, \hw_2, \ldots, \hw_N\}$. The regularization term is used to prevent $N$ from being arbitrarily large.
 
 \begin{figure}
 	\centering

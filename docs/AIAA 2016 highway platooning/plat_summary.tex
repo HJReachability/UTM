@@ -1,6 +1,6 @@
 % !TEX root = main.tex
 \subsection{Summary of Controllers}
-We have introduced several reachability-based controllers, as well as some simple controllers. Pair-wise collision avoidance is guaranteed using the safety controller, described in Section \ref{sec:collision_ctrl}. As long as a vehicle is not in potential danger according to the safety reachable sets, it is free to use any other controller. All of these other controllers and their corresponding mode transitions are shown in Figure \ref{fig:modeControllers}.
+We have introduced several reachability-based controllers, as well as some simple controllers. Pairwise collision avoidance is guaranteed using the safety controller, described in Section \ref{sec:collision_ctrl}. As long as a vehicle is not in potential danger according to the safety reachable sets, it is free to use any other controller. All of these other controllers are \textit{liveness controllers}, and their corresponding mode transitions are shown in Figure \ref{fig:modeControllers}.
 
 The controller for getting to an absolute target state, described in Section \ref{sec:platooning}-\ref{sec:reach_ctrl}-\ref{sec:abs_target_ctrl}, is used whenever a vehicle needs to move onto a highway to become a platoon leader. This controller guarantees the success of the mode transitions shown in blue in Figure \ref{fig:modeControllers}.
 

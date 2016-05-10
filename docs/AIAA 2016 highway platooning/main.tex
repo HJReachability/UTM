@@ -1,5 +1,10 @@
 \documentclass[submit]{aiaa-pretty}
 
+\usepackage{todonotes} \setlength{\marginparwidth}{2.5cm} 
+
+\newcommand{\MCnote}{\todo[size=\small,author=MC,color=cyan]}
+
+
 \newcommand{\pos}{p} % position
 \newcommand{\Pos}{\bar{p}} % a particular position (or desired position}
 \newcommand{\vel}{v} % velocity
@@ -13,6 +18,8 @@
 \newcommand{\ccost}{C}
 \newcommand{\ppath}{\mathbb{P}}
 \newcommand{\ocost}{V}
+
+\newcommand{\sepdist}{d_\text{sep}} % separation distance
 
 \newcommand{\td}{t_\text{faulty}} % time to descend
 \newcommand{\veh}[1]{Q_{#1}}
@@ -58,7 +65,7 @@ $\vehSCS{i}$ &=& Set of vehicles for vehicle $i$ to consider for safety
 \input{conclusions.tex}
 
 
-\section*{Appendix}
+%\section*{Appendix}
 
 \section*{Acknowledgments}
 This work is supported in part by NSF under CPS:ActionWebs (CNS-0931843) and CPS:FORCES (CNS1239166), by NASA under grants NNX12AR18A and UCSCMCA-14-022 (UARC), by ONR under grants N00014-12-1-0609, N000141310341 (Embedded Humans MURI), and MIT\_5710002646 (SMARTS MURI), and by AFOSR under grants UPenn-FA9550-10-1-0567 (CHASE MURI) and the SURE project.

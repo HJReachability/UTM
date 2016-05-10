@@ -1,5 +1,6 @@
 % !TEX root = main.tex
 \section{Unmanned Aerial Vehicle Platooning \label{sec:platooning}}
+\MCnote{Add introduction section}
 \subsection{UAVs in Platoons}
 \subsubsection{Vehicle Dynamics}
 Consider a UAV whose dynamics are given by
@@ -37,6 +38,7 @@ A Free vehicle is not in a platoon or on a highway, and its possible maneuvers o
 \end{itemize} 
 
 \item Leader: 
+
 A Leader vehicle is the vehicle at the front of a platoon (which could consist of only the vehicle itself). The available maneuvers and mode transitions are
 
 \begin{itemize}
@@ -57,7 +59,7 @@ A Follower vehicle is a vehicle that is following a platoon leader. The availabl
 
 \item Faulty: 
 
-If a vehicle from any of the other modes malfunctions, it transitions into the Faulty mode and descends after some pre-specified duration $t_\text{faulty}$.
+If a vehicle from any of the other modes malfunctions, it transitions into the Faulty mode. A Faulty vehicle is assumed to descend via a fail-safe mechanism after some pre-specified duration $t_\text{faulty}$ to a different altitude level where it no longer poses a threat to vehicles on the air highway system.
 \end{itemize}
 
 The available maneuvers and associated mode transitions are summarized in Figure \ref{fig:vehicleModes}.
@@ -69,9 +71,9 @@ The available maneuvers and associated mode transitions are summarized in Figure
 	\label{fig:vehicleModes}
 \end{figure}
 
-Suppose that there are $N$ vehicles in total. We will denote the $N$ vehicles as $\veh{i}, i=1\ldots,N$. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $\veh{P_1}, \ldots, \veh{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation; for convenience, we also denote $P_0 = P_{M+1} = \emptyset$. When necessary, we will use superscripts to denote vehicles of different platoons: $\veh{P_i^j}$ represents the $i$th vehicle in the $j$th platoon. 
+Suppose that there are $N$ vehicles in total in the airspace containing the highway system. We will denote the $N$ vehicles as $\veh{i}, i=1\ldots,N$. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $\veh{P_1}, \ldots, \veh{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation; for convenience, we also denote $P_0 = P_{M+1} = \emptyset$. When necessary, we will use superscripts to denote vehicles of different platoons: $\veh{P_i^j}$ represents the $i$th vehicle in the $j$th platoon. 
 
-For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with respect to which $Q_i$ checks safety against. If vehicle $\veh{i}$ is a free vehicle, then it must check for safety with respect to all other vehicles, $\vehSCS{i} = \{j: j\neq i\}$. If the vehicle is part of a platoon, then it checks safety with respect to the platoon member in front and behind, $\vehSCS{i} = \{P_{j+1}, P_{j-1}\}$. Figure \ref{fig:vehicleNotation} summarizes the indexing system of the vehicles.
+For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with respect to which $Q_i$ checks safety. If vehicle $\veh{i}$ is a free vehicle, then it must check for safety with respect to all other vehicles, $\vehSCS{i} = \{j: j\neq i\}$. If the vehicle is part of a platoon, then it checks safety with respect to the platoon member in front and behind, $\vehSCS{i} = \{P_{j+1}, P_{j-1}\}$. Figure \ref{fig:vehicleNotation} summarizes the indexing system of the vehicles.
 
 \begin{figure}
 	\centering
@@ -80,7 +82,7 @@ For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with res
 	\label{fig:vehicleNotation}
 \end{figure}
 
-We will assume that the vehicles in a platoon travel along an air highway. The vehicles maintain a separation distance of $b$ with its neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a vehicle will be able to exit the altitude range of the highway within a duration of $t_\text{faulty}=1.5$. Such a requirement may be implemented practically as an emergency landing procedure to which the vehicles revert when a malfunction is detected.
+We will organize the vehicles into platoons travel along air highways. The vehicles maintain a separation distance of $\sepdist$ with their neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a vehicle will be able to exit the altitude range of the highway within a duration of $t_\text{faulty}=1.5$. Such a requirement may be implemented practically as an fail-safe mechanism to which the vehicles revert when a malfunction is detected.
 
 \subsubsection{Objectives}
 Given the above modeling assumptions, our goal is to provide control strategies to guarantee the success and safety of all the mode transitions. The theoretical tool used to provide the liveness and safety guarantees is reachability. The reachable sets we compute will allow each vehicle to perform complex actions such as 
@@ -91,13 +93,13 @@ Given the above modeling assumptions, our goal is to provide control strategies 
 \item merge onto a highway to form a platoon
 \item join a new or different platoon
 \item leave a platoon to create a new one
-\item reacting to malfunctioning or intruder vehicles
+\item react to malfunctioning or intruder vehicles
 \end{itemize}
 
 We also propose more basic controllers to perform other simpler actions such as
 \begin{itemize}
-\item following the highway at constant altitude at a specified speed
-\item maintaining a constant relative position and velocity with the leader of a platoon
+\item follow the highway at constant altitude at a specified speed
+\item maintain a constant relative position and velocity with respect to the leader of a platoon
 \end{itemize}
 
-In general, the control strategies of each vehicle have a liveness component, which specifies a set of states towards which the vehicle aims to reach, and a safety component, which specifies a set of states that it must avoid. Together, the liveness and safety controllers guarantee the success and safety of a vehicle in the airspace making any desired mode transition. In this paper, these guarantees are provided using reachability analysis, and allow the multi-UAV system to perform joint maneuvers essential to maintaining structure in the airspace.
+In general, the control strategies of each vehicle have a liveness component, which specifies a set of states that the vehicle aims to reach, and a safety component, which specifies a set of states that it must avoid. Together, the liveness and safety controllers guarantee the success and safety of a vehicle in the airspace making any desired mode transition. In this paper, these guarantees are provided using reachability analysis, and allow the multi-UAV system to perform joint maneuvers essential to maintaining structure in the airspace.
