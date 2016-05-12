@@ -22,7 +22,7 @@ A couple of important observations can be made here. First, the cost-minimizing 
 	\label{fig:airHighway_results}
 \end{figure}
 
-Figure \ref{fig:airHighway_sparse} shows the result of converting the cost-minimizing paths to a small number of waypoints. The left plot shows the waypoints, interpreted as the start and end points of air highways, over a white background for clarity. The right plot shows these air highways over the map of the Bay Area.
+Figure \ref{fig:airHighway_sparse} shows the result of converting the cost-minimizing paths to a small number of waypoints. The left plot shows the waypoints, interpreted as the start and end points of air highways, over a white background for clarity. The right plot shows these air highways over the map of the Bay Area. Note that we could have gone further to merge some of the overlapping highways. However, the purpose of this section is to illustrate the natural occurence of air highways from cost-minimizing paths; post-processing of the cost-minimizing paths is not the focus.
 
 \begin{figure}
 	\centering
@@ -32,4 +32,4 @@ Figure \ref{fig:airHighway_sparse} shows the result of converting the cost-minim
 \end{figure}
 
 \subsection{Real-Time Highway Location Updates}
-Since \eqref{eq:eikonal} can be solved in approximately a second, the air highway placement process can be redone in real-time if the cost map changes. This flexibility can be useful in any situation in which unforeseen circumstances cause a change in the cost of a particular region of the airspace. For example, accidents or disaster response vehicles may result in an area temporarily having a high cost. On the other hand, depending on for instance the time of day, it may be most desirable to fly in different regions of the airspace, resulting in those regions temporarily having a low cost.
+\MCnote{Added section to emphasize that highway locations can be updated in real time}Since \eqref{eq:eikonal} can be solved in approximately a second, the air highway placement process can be redone in real-time if the cost map changes. This flexibility can be useful in any situation in which unforeseen circumstances cause a change in the cost of a particular region of the airspace. For example, accidents or disaster response vehicles may result in an area temporarily having a high cost. On the other hand, depending on for instance the time of day, it may be most desirable to fly in different regions of the airspace, resulting in those regions temporarily having a low cost.

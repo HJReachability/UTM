@@ -7,6 +7,8 @@ function unplot_safe_V(obj)
 % Qie Hu, 2015-07-25
 % Modified: Mo Chen, 2015-12-13
 
-obj.h_safe_V.Visible = 'off';
+for i = 1:length(obj.h_safe_V)
+  obj.h_safe_V(i).Visible = 'off';
+end
 
 end

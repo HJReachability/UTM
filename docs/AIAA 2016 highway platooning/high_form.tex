@@ -31,10 +31,11 @@ Given only the origin point $\pos^o$ and destination point $\pos^d$, there are a
 & \text{subject to \eqref{eq:hw_seq}} 
 \end{aligned}
 \end{equation}
+\MCnote{The number of constraints here change with the decision variable $N$, but I'm ignoring this fact as the point is that this optimization is hard to solve, and therefore we solve the Eikonal equation instead.}
 
-\noindent where $R(\cdot)$ is a regularizer such as $R(N) = N^2$.
+\noindent where $R(\cdot)$ is a regularizer, such as $R(N) = N^2$. \MCnote{Added regularizer to prevent $N\rightarrow\infty$}
 
-In other words, we consider air highways to be line segments of constant altitude over a region, and UAV platoons travel on these air highways to get from some origin to some destination. Any UAV flying on a highway over some position $\pos$ incurs a cost of $\cmap(\pos)$, so that the total cost of flying from the origin to the destination is given by \eqref{eq:ahpp}. The air highway placement problem minimizes the cumulative cost of flying from some origin $p^o$ to some destination $p^d$ along the sequence of highways $\hws_N=\{\hw_1, \hw_2, \ldots, \hw_N\}$. The regularization term is used to prevent $N$ from being arbitrarily large.
+The interpretation of \eqref{eq:ahpp} is that we consider air highways to be line segments of constant altitude over a region, and UAV platoons travel on these air highways to get from some origin to some destination. Any UAV flying on a highway over some position $\pos$ incurs a cost of $\cmap(\pos)$, so that the total cost of flying from the origin to the destination is given by \eqref{eq:ahpp}. The air highway placement problem minimizes the cumulative cost of flying from some origin $p^o$ to some destination $p^d$ along the sequence of highways $\hws_N=\{\hw_1, \hw_2, \ldots, \hw_N\}$. The regularization term is used to prevent $N$ from being arbitrarily large.
 
 \begin{figure}
 	\centering

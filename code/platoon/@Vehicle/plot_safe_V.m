@@ -32,7 +32,7 @@ switch safe_V.g.dim
     while rel_heading >= 2*pi
       rel_heading = rel_heading - 2*pi;
     end
-
+    
     while rel_heading < 0
       rel_heading = rel_heading + 2*pi;
     end
@@ -62,16 +62,33 @@ data2D(:,1) = max(data2D(:));
 data2D(:,end) = max(data2D(:));
 
 % Plot result
-if isempty(obj.h_safe_V)
-  [~, obj.h_safe_V] = contour(gFinal.xs{1}, gFinal.xs{2}, data2D, ...
-    level, 'linestyle', '--', 'linewidth', linewidth, 'color', obj.hpxpy.Color);
+% Find existing plots
+found = false;
+for i = 1:length(obj.h_safe_V_list)
+  if isequal(obj.h_safe_V_list(i), other)
+    found = true;
+    break
+  end
+end
+
+if found
+  obj.h_safe_V(i).XData = gFinal.xs{1};
+  obj.h_safe_V(i).YData = gFinal.xs{2};
+  obj.h_safe_V(i).ZData = data2D;
+  obj.h_safe_V(i).LevelList = level;
+  obj.h_safe_V(i).LineWidth = linewidth;
+  obj.h_safe_V(i).Visible = 'on';
 else
-  obj.h_safe_V.XData = gFinal.xs{1};
-  obj.h_safe_V.YData = gFinal.xs{2};
-  obj.h_safe_V.ZData = data2D;
-  obj.h_safe_V.LevelList = level;
-  obj.h_safe_V.LineWidth = linewidth;
-  obj.h_safe_V.Visible = 'on';
+  if isempty(obj.h_safe_V)
+    [~, obj.h_safe_V] = contour(gFinal.xs{1}, gFinal.xs{2}, data2D, level, ...
+      'linestyle', '--', 'linewidth', linewidth, 'color', obj.hpxpy.Color);
+    obj.h_safe_V_list = other;
+  else
+    [~, obj.h_safe_V(end+1)] = contour(gFinal.xs{1}, gFinal.xs{2}, data2D, ...
+      level, 'linestyle', '--', 'linewidth', linewidth, ...
+        'color', obj.hpxpy.Color);
+    obj.h_safe_V_list(end+1) = other;
+  end
 end
 
 end

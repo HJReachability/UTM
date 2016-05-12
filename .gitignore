@@ -11,3 +11,4 @@ checkpoints
 *.bbl
 *.log
 *.zip
+code/platoon/simulations/simulateFormPlatoon_figs/

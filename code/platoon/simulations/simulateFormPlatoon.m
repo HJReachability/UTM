@@ -129,7 +129,10 @@ if isempty(tfm.hws{1}.ps)
   u = veh.goOnHighway(tfm.hws{1}, tep, tfm);
   tfm.aas{1}.plot_abs_target_V(tfm.qr_abs_target_V, tep, ...
   tfm.hws{1}.getHeading, tfm.rtt);
-  tfm.aas{1}.plot_safe_V(tfm.aas{2}, tfm.qr_qr_safe_V, tfm.safetyTime)
+  for i = 2:length(tfm.aas)
+    tfm.aas{1}.plot_safe_V(tfm.aas{i}, tfm.qr_qr_safe_V, tfm.safetyTime)
+  end
+  
   return
 else
   tfm.aas{1}.unplot_abs_target_V;
@@ -147,7 +150,12 @@ end
 if strcmp(tfm.aas{2}.q, 'Free')
   tfm.aas{2}.plot_rel_target_V(tfm.qr_rel_target_V, ...
     tfm.hws{1}.ps{1}.vehicles{1}, tfm.rtt);
-  tfm.aas{2}.plot_safe_V(tfm.aas{1}, tfm.qr_qr_safe_V, tfm.safetyTime)
+  
+  for i = 1:length(tfm.aas)
+    if i ~= 2
+      tfm.aas{2}.plot_safe_V(tfm.aas{i}, tfm.qr_qr_safe_V, tfm.safetyTime)
+    end
+  end
 else
   tfm.aas{2}.unplot_rel_target_V
   tfm.aas{2}.unplot_safe_V
@@ -157,8 +165,6 @@ if strcmp(veh.q, 'Free')
   u = veh.joinPlatoon(tfm.hws{1}.ps{1}, tfm);
   return
 end
-
-
 
 %% If already in the platoon, simply follow it
 u = veh.followPlatoon(tfm);
