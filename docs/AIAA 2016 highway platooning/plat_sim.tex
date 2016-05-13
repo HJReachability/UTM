@@ -1,7 +1,7 @@
 % !TEX root = main.tex
 % 82 124 170 231
 \subsection{Numerical Simulations}
-In this section, we consider several situations that vehicles in a platoon on an air highway may commonly encounter, and show via simulations the behaviors that emerge from the controllers we defined in Sections \ref{sec:reach_ctrl} and \ref{sec:other_ctrl}.
+In this section, we consider several situations that vehicles in a platoon on an air highway may commonly encounter, and show via simulations the behaviors that emerge from the controllers we defined in Sections \ref{sec:platooning}-\ref{sec:reach_ctrl} and \ref{sec:platooning}-\ref{sec:other_ctrl}.
 
 \subsubsection{Forming a Platoon}
 We first consider the scenario in which Free vehicles merge onto an initially unoccupied highway. In order to do this, each vehicle first checks safety with respect to all other vehicles, and uses the safety controller if necessary, according to Section \ref{sec:platooning}-\ref{sec:reach_ctrl}-\ref{sec:collision_ctrl}. Otherwise, the vehicle uses the liveness controller for getting to an absolute target set described in Section \ref{sec:platooning}-\ref{sec:reach_ctrl}-\ref{sec:abs_target_ctrl} in order to merge onto the highway, create a platoon, and become a Leader vehicle if there are no platoons on the highway. If there is already a platoon on the highway, then the vehicle would use the liveness controller for getting to a target set relative to the platoon leader as described in Section \ref{sec:platooning}-\ref{sec:reach_ctrl}-\ref{sec:rel_target_ctrl} to join the platoon and become a Follower.

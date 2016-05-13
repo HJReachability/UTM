@@ -30,7 +30,7 @@ In the platooning context, being able to go to a state relative to another movin
 
 To construct a controller for getting to a state relative to another vehicle, we use the relative dynamics of two vehicles, given in \eqref{eq:rel_dyn}. In general, the target state is specified to be some position $(\Pos_{x,r}, \Pos_{y,r})$ and velocity $(\Vel_{x,r}, \Vel_{y,r})$ relative to a reference vehicle. In the case of a vehicle joining a platoon that maintains a single file, the reference vehicle would be the platoon leader, the desired relative position would be a certain distance behind the leader, depending on how many other vehicles are already in the platoon; the desired relative velocity would be $(0,0)$ so that the formation can be kept.
 
-For the reachability problem, we define the target set to be a small range of states around the target state $x_P = (\Pos_{x,r}, \Pos_{y,r}, \Vel_{x,r}, \Vel_{y,r})$:
+For the reachability problem, we define the target set to be a small range of states around the target state $\bar x_P = (\Pos_{x,r}, \Pos_{y,r}, \Vel_{x,r}, \Vel_{y,r})$:
 
 \begin{equation}
 \begin{aligned}
@@ -62,7 +62,7 @@ We can now define the implicit surface function $l_S(x)$ corresponding to $\math
 \begin{enumerate}
 \item For a specified time horizon $t$, evaluate $V_S(-t,x_i-x_j)$ for all $j\in \mathcal{Q}(i)$.
 
-$\mathcal{Q}(i)$ is the set of quadrotors with which quadrotor $i$ checks safety.
+$\mathcal{Q}(i)$ is the set of quadrotors with which vehicle $\veh{i}$ checks safety.
 \item Use the safety or liveness controller depending on the values $V_S(-t,x_i-x_j),j\in \mathcal{Q}(i)$: 
 
 If $\exists j\in \mathcal{Q}(i),V_S(-t,x_i-x_j)\le 0$, then $Q_i,Q_j$ are in potential conflict, and $Q_i$ must use a safety controller; otherwise $Q_i$ uses a liveness controller.
@@ -72,19 +72,19 @@ If $\exists j\in \mathcal{Q}(i),V_S(-t,x_i-x_j)\le 0$, then $Q_i,Q_j$ are in pot
 Reachability was used in Section \ref{sec:reach_ctrl} for the relatively complex maneuvers that require safety and liveness guarantees. For the simpler maneuvers of traveling along a highway and following a platoon, many well-known classical controllers suffice. For illustration, we use the simple controllers described below.
 
 \subsubsection{Traveling along a highway} \label{sec:travel_hwy}
-We use a model-predictive controller (MPC) for traveling along a highway; this controller allows the leader to travel along a highway at a pre-specified speed. Here, the goal is for a leader quadrotor to track a constant-altitude path, defined as a curve $\bar{p}(s)$ parametrized by $s\in[0,1]$ in $p=(p_x, p_y)$ space (position space), while maintaining a velocity $\bar{v}(s)$ that corresponds to constant speed in the direction of the highway. Assuming that the initial position on the highway, $s_0=s(t_0)$ is specified, such a controller can be obtained from the following optimization problem over the time horizon $[t_0, t_1]$:
+We use a model-predictive controller (MPC) for traveling along a highway; this controller allows the leader to travel along a highway at a pre-specified speed. Here, the goal is for a leader vehicle to track an air highway $\hw(s), s\in[0,1]$ while maintaining some constant velocity $\vel_\hw$ specified by the highway. The highway and the specified velocity can be written as a desired position and velocity over time, $\bar \pos(t), \bar \vel (t)$. Assuming that the initial position on the highway, $s_0=s(t_0)$ is specified, such a controller can be obtained from the following optimization problem over the time horizon $[t_0, t_1]$:
 
 \begin{equation}
 \begin{aligned}
-\text{minimize } & \int_{t_0}^{t_1} \big\{\| p(t)-\bar{p}(s(t)) \|_2 + \\ 
-&\qquad \| v(t) - \bar{v}(s(t)) \|_2 + 1-s \big\} dt \\
-\text{subject to } & \dot{x} = f(x,u) \text{ where } f \text{ is given in \eqref{eq:dyn}} \\
+\text{minimize } & \int_{t_0}^{t_1} \big\{\| p(t)-\bar\pos(t) \|_2 + \\ 
+&\qquad \| v(t) - \bar\vel(t) \|_2 + 1-s \big\} dt \\
+\text{subject to } & \text{vehicle dynamics } \eqref{eq:veh_dyn} \\
 & |u_x|, |u_y| \le u_\text{max}, |v_x|, |v_y| \le v_\text{max} \\
 & s(t_0) = s_0, \dot{s} \ge 0
 \end{aligned}
 \end{equation}
 
-If we discretize time, and assume that $\bar{p}(\cdot)$ is linear, then the above optimization is convex, and can be quickly solved.
+If we discretize time, the above optimization is becomes convex optimization over a small number of decision variables, and can be quickly solved.
 
 \subsubsection{Following a Platoon} \label{sec:follow_platoon}
 Follower vehicles use a feedback control law tracking a nominal position and velocity in the platoon, with an additional feedforward term given by the leader's acceleration input; here, for simplicity, we assume perfect communication between the leader and the follower vehicles. This following law enables smooth vehicle trajectories in the relative platoon frame, while allowing the platoon as a whole to perform agile maneuvers by transmitting the leader's acceleration command $u_{P_1}(t)$ to all vehicles.
