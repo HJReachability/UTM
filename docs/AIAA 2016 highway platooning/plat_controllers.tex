@@ -7,7 +7,7 @@ Using a number of different target sets and dynamics, we now propose different r
 \subsubsection{Getting to a Target State \label{sec:abs_target_ctrl}}
 The controller used by a vehicle to reach a target state is important in two situations in the platooning context. First, a vehicle in the ``Free'' mode can use the controller to merge onto a highway, forming a platoon and changing modes to a ``Leader'' vehicle. Second, a vehicle in either the ``Leader'' mode or the ``Follower'' mode can use this controller to change to a different highway, becoming a ``Leader'' vehicle. 
 
-In both of the above cases, we use the dynamics of a single vehicle specified in \eqref{eq:dyn}. The target state would be a position $(\Pos_x, \Pos_y)$ representing the desired merging point on the highway, along with a velocity $(\Vel_x, \Vel_y)$ that corresponds to the speed and direction of travel specified by the highway. For the reachability computation, we define the target set to be a small range of states around the target state $\bar x_H = (\Pos_x, \Pos_y, \Vel_x, \Vel_y)$:
+In both of the above cases, we use the dynamics of a single vehicle specified in \eqref{eq:dyn}. The target state would be a position $(\Pos_x, \Pos_y)$ representing the desired merging point on the highway, along with a velocity $(\Vel_x, \Vel_y)=\vel_\hw$ that corresponds to the speed and direction of travel specified by the highway. For the reachability computation, we define the target set to be a small range of states around the target state $\bar x_H = (\Pos_x, \Pos_y, \Vel_x, \Vel_y)$:
 
 \begin{equation}
 \begin{aligned}
@@ -95,6 +95,6 @@ u^i(t) = k_p \big[p_{P_1}(t) + r^i(t) - p^i(t) \big] + k_v\big[v_{P_1}(t) - v^i(
 \end{equation}
 for some $k_p,k_v>0$. In particular, a simple rule for determining $r^i(t)$ in a single-file platoon is given for $Q_{P_i}$ as:
 \begin{equation}\label{eq:nominal_pos}
-r^i(t) = - (i-1) \sepdist \frac{v_{P_1}}{\|v_{P_1}\|_2}
+r^i(t) = - (i-1) \sepdist \hwd
 \end{equation}
-where $b$ is the spacing between vehicles along the platoon and $\frac{v_{P_1}}{\|v_{P_1}\|_2}$ is the platoon leader's direction of travel.
+where $\sepdist$ is the spacing between vehicles along the platoon and $\hwd$ is the highway's direction of travel.

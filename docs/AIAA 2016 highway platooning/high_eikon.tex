@@ -15,8 +15,8 @@ For an origin-destination pair, we would like to find the path such that the abo
 \begin{equation}
 \label{eq:rahpp} % relaxed air highway placement problem
 \begin{aligned}
-\ocost(\pos^d) &= \min_{\ppath(\cdot)} \ccost(\ppath) \\
-&= \min_{\ppath(\cdot)} \int_{s_0}^{s_1} \cmap(\ppath(s)) ds
+\ocost(\pos^d) &= \min_{\ppath(\cdot), \ppath(s_1)=\pos^d} \ccost(\ppath) \\
+&= \min_{\ppath(\cdot), \ppath(s_1)=\pos^d} \int_{s_0}^{s_1} \cmap(\ppath(s)) ds
 \end{aligned}
 \end{equation}
 

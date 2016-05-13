@@ -1,5 +1,6 @@
 % !TEX root = main.tex
 \subsection{From Paths to Waypoints}
+\MCnote{Changed wording in this section to say the sparsification of points on a path is not our focus, but just an illustration.}
 Each of the cost-minimizing paths $\ppath_i$ computed from the solution to the Eikonal equation consists of a closely-spaced set of points. Each path $\ppath_i$ is an approximation to the sequence of highways $\hws_{N_i}^i = \{\hw^i_j\}_{i=1,j=1}^{i=M,j=N_i}$ defined in \eqref{eq:ahpp}, but now indexed by the corresponding path index $i$. 
 
 For each path $\ppath_i$, we would like to sparsify the points on the path to obtain a collection of waypoints, $\wpt_{i,j}, j = 1,\ldots, N_i+1$, which are the end points of the highways:
@@ -12,8 +13,8 @@ j &= 1,\ldots,N_i
 \end{aligned}
 \end{equation}
 
-To sparsify the continuous set of points on each path, we start at the destination point and note the path's heading. We add to the collection of waypoints the first point on the path at which the heading changes by some threshold $\theta_C$, and repeat this process along the entire path.
+There are many different ways to sparsify the close-spaced set of points on each path, and this process will not be our focus. However, for illustrative purposes, we show how this process may be started. We begin by noting the path's heading at the destination point. We add to the collection of waypoints the first point on the path at which the heading changes by some threshold $\theta_C$, and repeat this process along the entire path.
 
-If there is a large change in heading within a small section of the cost-minimizing path, then the collection of points may contain many points which are close together. In addition, there may be multiple paths that are very close to each other (in fact, this behavior is desirable), which may contribute to cluttering the airspace with too many waypoints. We propose to sparsify the waypoints by clustering the points. After clustering, we replace each cluster of points with a single point located at the centroid of the cluster. 
+If there is a large change in heading within a small section of the cost-minimizing path, then the collection of points may contain many points which are close together. In addition, there may be multiple paths that are very close to each other (in fact, this behavior is desirable), which may contribute to cluttering the airspace with too many waypoints. One way to sparsify the waypoints is to cluster the points. Afterwards, each cluster of points can be replaced by a single point located at the centroid of the cluster. 
 
-To the collection of points resulting from the above process, we add the origin and destination points. Repeating the entire process for every path, we obtain waypoints for all the cost-minimizing paths under consideration. Figure \ref{fig:hw_ill} summarizes the entire air highway placement process.
+To the collection of points resulting from the above process, we add the origin and destination points. Repeating the entire process for every path, we obtain waypoints for all the cost-minimizing paths under consideration. Figure \ref{fig:hw_ill} summarizes the entire air highway placement process, including our example of how the closely-space set of points on a path can be sparsified.

@@ -36,8 +36,9 @@
 \section*{Nomenclature}
 \noindent\begin{tabular}{@{}lcl@{}}
 $\cmap$ &=& Cost map \\
+$\ppath$ &=& A path between two points \\
 $\ccost$ &=& Cumulative cost of a path \\
-$\ocost$ &=& Optimal cumulative cost of a path \\
+$\ocost$ &=& Value function of partial differential equations \\
 $\hw$ &=& Air highway \\
 $\hwd$ &=& Direction of travel of air highway \\
 $\hws$ &=& A sequence of air highways \\
@@ -45,9 +46,12 @@ $\wpt$ &=& Waypoint \\
 $x$ &=& System state (of a vehicle) \\
 $\pos=(\pos_x, \pos_y)$ &=& Horizontal position \\
 $\vel=(\vel_x, \vel_y)$ &=& Horizontal velocity \\
+$\Pos$ &=& Target position \\
+$\Vel$ &=& Target velocity \\
+$\sepdist$ &=& Separation distance of vehicles within a platoon \\
 $\td$ &=& Time limit for descent during potential conflict \\
 $\veh{i}$ &=& $i$th vehicle \\
-$\vehSCS{i}$ &=& Set of vehicles for vehicle $i$ to consider for safety 
+$\vehSCS{i}$ &=& Set of vehicles for vehicle $\veh{i}$ to consider for safety 
 \end{tabular} \\
 
 \input{introduction.tex}

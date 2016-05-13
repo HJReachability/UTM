@@ -1,8 +1,8 @@
 % !TEX root = main.tex
 \section{Unmanned Aerial Vehicle Platooning \label{sec:platooning}}
-\MCnote{Added introduction to this section}Air highways exhibiting trunk routes that separate near destinations motivate the use of platoons which fly on these highways. The platooning concept provides a structural solution for monitoring and ensuring the safety of a large number of UAVs. The structure imposed by air highways reduces number of pairwise safety checks, and makes pairwise analysis more indicative of the joint safety of all vehicles.
+\MCnote{Added introduction to this section}Air highways exhibiting trunk routes that separate near destinations motivate the use of platoons which fly on these highways. The platooning concept provides a structural solution for monitoring and ensuring the safety of a large number of UAVs. The structure imposed by air highways reduces the number of pairwise safety checks, and makes pairwise analysis more indicative of the joint safety of all UAVs.
 
-Organizing UAVs into platoons implies that the UAVs cannot fly in an unstructured way, and must have a restricted set of controllers or maneuvers depending on the UAV's role in the airspace. To model UAVs flying in platoons on air highways, we propose a hybrid system whose modes of operations describe the UAV's role in the highway structure. For the hybrid system model, reachability is used to enable successful and safe operation and mode transitions.
+Organizing UAVs into platoons implies that the UAVs cannot fly in an unstructured way, and must have a restricted set of controllers or maneuvers depending on the UAV's role in the airspace. To model UAVs flying in platoons on air highways, we propose a hybrid system whose modes of operations describe a UAV's role in the highway structure. For the hybrid system model, reachability analysis is used to enable successful and safe operation and mode transitions.
 
 \subsection{UAVs in Platoons}
 \subsubsection{Vehicle Dynamics}
@@ -45,7 +45,7 @@ A Free vehicle is not in a platoon or on a highway, and its possible maneuvers o
 A Leader vehicle is the vehicle at the front of a platoon (which could consist of only the vehicle itself). The available maneuvers and mode transitions are
 
 \begin{itemize}
-\item remain a Leader by traveling along the highway at a pre-specified speed
+\item remain a Leader by traveling along the highway at a pre-specified speed $\vel_\hw$
 \item become a Follower by merging the current platoon with a platoon in front
 \item become a Free vehicle by leaving the highway
 \end{itemize}
@@ -56,13 +56,14 @@ A Follower vehicle is a vehicle that is following a platoon leader. The availabl
 
 \begin{itemize}
 \item remain a Follower by staying a distance of $d_\text{sep}$ behind the vehicle in front in the current platoon
+\item remain a Follower by joining a different platoon on another highway
 \item become a Leader by splitting from the current platoon
 \item become a Free vehicle by leaving the highway
 \end{itemize}
 
 \item Faulty: 
 
-If a vehicle from any of the other modes malfunctions, it transitions into the Faulty mode. A Faulty vehicle is assumed to descend via a fail-safe mechanism after some pre-specified duration $t_\text{faulty}$ to a different altitude level where it no longer poses a threat to vehicles on the air highway system.
+If a vehicle from any of the other modes becomes unable to operate within the allowed set of maneuvers, it transitions into the Faulty mode. Reasons for transitioning to the Faulty mode include vehicle malfunctions, performing collision avoidance with respect to another Faulty vehicle, etc. A Faulty vehicle is assumed to descend via a fail-safe mechanism after some pre-specified duration $t_\text{faulty}$ to a different altitude level where it no longer poses a threat to vehicles on the air highway system. \MCnote{Faulty mode now includes vehicles which could cause additional conflicts by avoiding another faulty vehicle}
 \end{itemize}
 
 The available maneuvers and associated mode transitions are summarized in Figure \ref{fig:vehicleModes}.
@@ -85,7 +86,7 @@ For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with res
 	\label{fig:vehicleNotation}
 \end{figure}
 
-We will organize the vehicles into platoons travel along air highways. The vehicles maintain a separation distance of $\sepdist$ with their neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that in the event of a malfunction, a vehicle will be able to exit the altitude range of the highway within a duration of $t_\text{faulty}=1.5$. Such a requirement may be implemented practically as an fail-safe mechanism to which the vehicles revert when a malfunction is detected.
+We will organize the vehicles into platoons travel along air highways. The vehicles maintain a separation distance of $\sepdist$ with their neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that when a vehicle exhibits unpredictable behavior, it will be able to exit the altitude range of the highway within a duration of $t_\text{faulty}=1.5$. Such a requirement may be implemented practically as an fail-safe mechanism to which the vehicles revert when needed.
 
 \subsubsection{Objectives}
 Given the above modeling assumptions, our goal is to provide control strategies to guarantee the success and safety of all the mode transitions. The theoretical tool used to provide the liveness and safety guarantees is reachability. The reachable sets we compute will allow each vehicle to perform complex actions such as 
