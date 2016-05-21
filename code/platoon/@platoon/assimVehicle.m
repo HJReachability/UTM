@@ -24,18 +24,20 @@ function assimVehicle(obj, vehicle)
 % end
 
 % Check if the platoon is already full
-if strcmp(vehicle.q, 'Free')
-    % Vehicle is free
-    if obj.loIdx >= obj.nmax
-        fprintf('Platoon is already full! \n');
-        return;
-    end
-else
-    % Vehicle is a leader
-    % Last occupied index of vehicle's platoon
-    if obj.loIdx + vehicle.p.loIdx > obj.nmax
-        fprintf('Platoon is already full! \n');
-        return
+if isempty(vehicle.idxJoin) %HACK ALERT: there is a problem when a higher indexed uav reaches its target position in the platoon before a lowersimulateNormal2.m indexed uav
+    if strcmp(vehicle.q, 'Free')
+        % Vehicle is free
+        if obj.loIdx >= obj.nmax
+            fprintf('Platoon is already full! \n');
+            return;
+        end
+    else
+        % Vehicle is a leader
+        % Last occupied index of vehicle's platoon
+        if obj.loIdx + vehicle.p.loIdx > obj.nmax
+            fprintf('Platoon is already full! \n');
+            return
+        end
     end
 end
 
@@ -47,7 +49,7 @@ if dist > obj.hw.width
 end
 
 % Find idxJoin 
-if strcmp(vehicle.q, 'Free')
+if strcmp(vehicle.q, 'Free') 
     % vehicle is free
     % join vehicle at first empty slot in obj
     if isempty(vehicle.idxJoin)

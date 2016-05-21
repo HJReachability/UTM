@@ -47,9 +47,9 @@ classdef quadrotor < handle
     hvxvy           % Velocity
     hvxvyhist       % Velocity history
     
-    % Safety sets (with respect to 5 nearest vehicles, or vehicles in the same platoon)
-    hsafeV = cell(5,1);
-    
+    % Safety sets (with respect to 5 nearest vehicles, or vehicles in the same platoon; + intruder/faulty)
+    hsafeV = cell(6,1);
+        
     hmergeHighwayV  % Merging reachable set
     hmergePlatoonV  % Merging reachable set
 

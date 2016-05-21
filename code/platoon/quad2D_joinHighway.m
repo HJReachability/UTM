@@ -35,12 +35,12 @@ if nargin<2
 end
 
 if nargin<1
-    x = [0 3 0 0];
+    x = [0 0 0 0];
 end
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 5;                    % End time.
+tMax = 3.8;                    % End time.
 plotSteps = 1;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
@@ -64,12 +64,12 @@ vMin = -5;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 101;
+Nx = 41;
 
 % Create the grid.
 g.dim = 2;                              % Number of dimensions
-g.min = [ -30 ; 1.1*vMin ];     % Bounds on computational domain
-g.max = [ 30 ; 1.1*vMax ];
+g.min = [ -10 ; 2.1*vMin ];     % Bounds on computational domain
+g.max = [ 10 ; 2.1*vMax ];
 g.bdry = @addGhostExtrapolate;
 g.N = [ Nx; ceil(Nx/(g.max(1)-g.min(1))*(g.max(2)-g.min(2)))];
 g = processGrid(g);
@@ -184,7 +184,7 @@ while(tMax - tNow > small * tMax)
         h2.ZData = datay(:,:,end);
     end
     %
-    %     drawnow;
+         drawnow;
 end
 
 %---------------------------------------------------------------------------

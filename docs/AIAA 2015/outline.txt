@@ -21,3 +21,29 @@ Journal version outline:
 -- platoon-platoon simulation (join, split, faulty platoon)
 
 Conclusions
+
+-------------
+
+Introduction
+
+Air highways
+- formulation
+- Eikonal equation
+- results
+
+UAV platoons
+- formulation
+- HJ reachability
+- intra-platoon controllers
+- inter-platoon controllers
+- safety analysis
+- results
+
+Conclusions
+
+
+
+
+
+
+

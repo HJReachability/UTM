@@ -43,7 +43,7 @@ end
 
 %---------------------------------------------------------------------------
 % Integration parameters.
-tMax = 3.5;                    % End time.
+tMax = 4;                    % End time.
 plotSteps = 1;               % How many intermediate plots to produce?
 t0 = 0;                      % Start time.
 singleStep = 1;              % Plot at each timestep (overrides tPlot).
@@ -68,23 +68,24 @@ v1Max = 5;
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %   (Slightly different grid cell counts will be chosen for each dimension.)
-Nx = 81;
+Nx = 41;
 
 % Create the grid.
 g2D.dim = 2;                           % Number of dimensions
-g2D.min = [-25; -2.1*v1Min ];     % Bounds on computational domain
-g2D.max = [ 25;  2.1*v1Max ];
+g2D.min = [-15; -2.1*v1Min ];     % Bounds on computational domain
+g2D.max = [ 15;  2.1*v1Max ];
 g2D.bdry = @addGhostExtrapolate;
 g2D.N = [ Nx; ceil(1.5*Nx/(g2D.max(1)-g2D.min(1))*(g2D.max(2)-g2D.min(2)))];
 g2D = processGrid(g2D);
 
 % Create the grid.
 gy.dim = 2;                              % Number of dimensions
-gy.min = [-25; -2.1*v1Min ];     % Bounds on computational domain
-gy.max = [ 25;  2.1*v1Max ];
+gy.min = [-15; -2.1*v1Min ];     % Bounds on computational domain
+gy.max = [ 15;  2.1*v1Max ];
 gy.bdry = @addGhostExtrapolate;
 gy.N = [ Nx; ceil(1.5*Nx/(gy.max(1)-gy.min(1))*(gy.max(2)-gy.min(2)))];
 gy = processGrid(gy);
+
 
 % ----------------- Target -----------------
 % Below separation distance for any relative velocity

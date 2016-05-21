@@ -9,9 +9,10 @@ function xPhantom = phantomPosition(obj, idx)
 % Output:  xPhantom - phantom position
 %
 % Mo Chen, Qie Hu, Jaime Fisac, 2015-06-14
+% Modified: Mo Chen, 2015-07-06
 
 % Get leader vehicle and highway heading
-Leader = obj.vehicle(1);
+Leader = obj.vehicles{1};
 
 % Vehicle spacing is 3*2*sqrt(2) between each vehicle
 spacing = 3*(2*sqrt(2));

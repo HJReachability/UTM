@@ -7,8 +7,9 @@ function p = popPlatoon(hw, leaderPos, leaderVel, numVehicles, ID1)
 % ID1 - starting ID
 %
 
-if nargin<3, leaderVel = [0;0]; end
-if nargin<4, numVehicles = 1; end
+if nargin<2, leaderPos = [0 0]; end
+if nargin<3, leaderVel = [0 0]; end
+if nargin<4, numVehicles = 5; end
 if nargin<5,         ID1 = 1; end
 
 % % Hard code time discretization for now

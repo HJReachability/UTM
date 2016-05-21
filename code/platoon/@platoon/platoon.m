@@ -39,10 +39,13 @@ classdef platoon < handle
     
     % Footprint of platoon
     safeV
+    
+    %Liveness reachable set for tracking platoon positions
+    liveV
   end
   
   methods
-    function obj = platoon(leader, hw, nmax, followTime)
+    function obj = platoon(leader, hw, nmax, followTime,FourD)
       % function obj = platoon(leader, hw, nmax, followTime)
       % Constructor for platoon object
       %
@@ -111,6 +114,24 @@ classdef platoon < handle
       
       % Remove merge highway value function
       obj.vehicles{1}.mergeHighwayV = [];
+      
+      if nargin < 5
+         FourD=1;
+      end
+      
+      if FourD
+         filename = '../../data/quad_liveness_4D.mat';
+      else 
+         filename = '../../data/quad_liveness_2x2D.mat';
+      end
+      
+      load(filename)
+      
+      obj.liveV=liveV;
+      
+      
+      
+      
     end
   end
 end
