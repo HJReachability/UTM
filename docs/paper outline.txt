@@ -1,0 +1,42 @@
+Introduction ( 1 page)
+
+Problem formulation (1 page)
+- platooning in single file
+- safety is guaranteed between a vehicle and the one in front
+- resulting footprint should be smaller than not platoons
+
+HJI background (1 page)
+- reachability and safety guarantees between two vehicles
+- path planning / reach-avoid problem
+
+Hybrid models of vehicles (1 page)
+
+Functions of platoons (3 pages)
+- following
+- joining
+- splitting
+- information pattern/string stability
+- vehicle becomes rogue/safety
+
+Simulations (2 pages)
+- quadrotors joining, following, then splitting
+- rogue quadrotor
+- fixed wing aircrafts
+
+Simulations v2 (2 pages)
+1 vehicles already in platoon, one of them goes rogue
+2 vehicles in platoon, intruder vehicle
+3 vehicles in platoon, another vehicle joining, one vehicle in platoon goes rogue
+
+Simulations v3 (2 pages)
+1: normal operation: form platoon by joining --> just follow --> 1 quadrotor leaves
+- Mo
+2: vehicles already in platoon, one of them goes rogue
+- Casey
+3: vehicles in platoon, intruder vehicle
+- Qie
+4: vehicles in platoon, another vehicle joining, one vehicle in platoon goes rogue
+
+followPlatoon - Jaime
+
+Conclusion (0.5 pages)

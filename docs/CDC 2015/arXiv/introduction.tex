@@ -1,0 +1,32 @@
+% !TEX root = platooning.tex
+\section{Introduction}
+Unmanned aerial vehicle (UAV) systems have in the past been mainly used for military operations \cite{Tice91}. Recently, however, there has been an immense surge of interest in using UAVs for civil applications. Through projects such as Amazon Prime Air and Google Project Wing, companies are looking to send UAVs into the airspace to deliver packages \cite{PrimeAir,ProjectWing}. As a rough estimate, suppose in a city of 2 million people, each person requests a drone delivery every 2 months on average and each delivery requires a 30 minute trip for the drone. This would equate to thousands of vehicles simultaneously in the air. As a result, government agencies such as the Federal Aviation Administration (FAA) and National Aeronautics and Administration (NASA) of the United States are also investigating air traffic control for autonomous vehicles in order to prevent collisions among potentially numerous UAVs \cite{FAA13}. Applications of UAVs extend beyond package delivery; they can also be used, for example, to provide supplies or to firefight in areas that are difficult to reach but require prompt response \cite{Debusk10}.
+
+Optimal control and game theory are powerful tools for providing liveness and safety guarantees to controlled dynamical systems under disturbances, and various formulations \cite{Bokanowski10,Mitchell05,Barron89} have been successfully used to analyze problems involving a small number of vehicles \cite{Fisac15,Chen14,Ding08}. These formulations are based on Hamilton-Jacobi (HJ) reachability, which computes the reachable set, defined as the set of states from which a system is guaranteed to have a control strategy to reach a target set of states. Reachability is a powerful tool because reachable sets can be used for synthesizing both controllers that steer the system towards a set of goal states (liveness controllers), and controllers that steer the system away from a set of unsafe states (safety controllers). Furthermore, the HJ formulations are flexible in terms of system dynamics, enabling the analysis of non-linear systems. The power and success of HJ reachability analysis in previous applications cannot be denied, especially since numerical tools are readily available to solve the associated HJ Partial Differential Equation (PDE) \cite{LSToolbox,Osher02,Sethian96}. However, the computation is done on a grid, making the problem complexity scale exponentially with the number of states, and therefore with the number of vehicles. This makes the computation intractable for large numbers of vehicles. 
+
+A considerable body of work has been done on the platooning of vehicles \cite{Kavathekar11}. For example, \cite{McMahon90} investigated the feasibility of vehicle platooning in terms of tracking errors in the presence of disturbances, taking into account complex nonlinear dynamics of each vehicle.  \cite{Hedrick92} explored several control techniques for performing various platoon maneuvers such as lane changes, merge procedures, and split procedures. In \cite{Lygeros98}, the authors modeled vehicles in platoons as hybrid systems, synthesized safety controllers, and analyzed throughput. Finally, reachability analysis was used in \cite{Alam11} to analyze a platoon of two trucks in order to minimize drag by minimizing the following distance while maintaining collision avoidance safety guarantees.
+
+Previous analysis of a large number of vehicles typically do not provide liveness and safety guarantees to the extent that HJ reachability does; however, HJ reachability typically cannot be used to tractably analyze a large number of vehicles. %In the context of HJ reachability, putting vehicles into platoons is desirable because of the additional structure that platoons impose on its members. With additional structure, pairwise safety guarantees of vehicles can be more easily translated into safety guarantees of all the vehicles in the platoon. 
+In this paper, we attempt to reconciliate this trade-off by assuming a single-file platoon, which provides structure that allows pairwise safety guarantees from HJ reachability to translate to safety guarantees for the whole platoon. We first propose a hybrid systems model of UAVs in platoons to capture this structure. Then, we show how HJ reachability can be used to synthesize \textit{liveness controllers} that enable vehicles to reach a set of desired states, and wrap \textit{safety controllers} around the liveness controllers in order to prevent dangerous configurations such as collisions. Finally, we show simulation results of quadrotors forming a platoon, a platoon responding to a malfunctioning member, and a platoon responding to an outside intruder to illustrate the behavior of vehicles in these scenarios and demonstrate the guarantees provided by HJ reachability.
+
+%Motivation:
+%\begin{itemize}
+%\item Applications of UAVs, potential numbeurs
+%\item Importance of safety guarantees
+%\item Computation complexity
+%\end{itemize}
+%
+%Related work:
+%\begin{itemize}
+%\item Platooning references: lack of (?) safety guarantees
+%\begin{itemize}\item\textcolor{blue}{Mention PATH papers \& Lygeros thesis}\end{itemize}
+%\item HJI, safety guarantees, limited by dimensionality
+%\end{itemize}
+%
+%Summary of results
+%\begin{itemize}
+%\item Hybrid systems model of vehicles
+%\item Reachability guarantees wrapped around existing methods
+%\item Reachability offers flexibility in terms of design
+%\item Illustrative platoon functions
+%\end{itemize}

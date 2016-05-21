@@ -1,0 +1,71 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1343\cocoasubrtf140
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww12760\viewh13200\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural
+
+\f0\fs28 \cf0 ACAS X Notes:\
+===== 10.4 Real-Time Execution (Page 13) ====\
+\'97Primarily consists of estimating the belief sate and computing the associated state-action values by interpolating entries in the lookup table.\
+\
+\'97\'97 10.4.1 Online Costs (Page 13) \'97\'97\
+\'97 Lookup table is a function of only 6 variables. But there are other variables (e.g. altitude above ground) that need to be taken into account during execution, but are not part of offline optimization.\
+\'97 Adding these variables to optimization would increase table size. But constrained by the table size.\
+\'97 Effective solution: add costs to the action values online.\
+\'97 E.g. to inhibit advisories below certain altitudes, by adding infinite cost online to the appropriate actions.\
+\'97 Online costs can be effectively infinite or small.\
+\'97 Rules governing online costs implemented in code, can be arbitrarily complex without impacting memory requirements.\
+\
+\'97\'97 10.4.2 Multiple Threats (Page 14) \'97\'97\
+\'97MDP in Section 10.2 assumes single intruder. Adding additional state variables for each additional intruder is straightforward, but the table size grows exponentially. So not desirable.\
+\'97TCAS determines best advisory for each intruder in isolation, then uses a complex set of rules to combine these individual advisories to produce a single advisory.\
+\'97 ACAS X fuses the state-action costs associated with different intruders [17].\
+\'97 ACAS X can provide different protection modes against different aircraft, useful in e.g. closely spaced parallel operations.\
+\
+\'97\'97 10.4.3 Traffic Alerts (Page 15) \'97\'97\
+\'97 Optimize Traffic Advisories (TAs) to 1) allow ideally 10 to 15 s between a TA and Resolution Advisory (RA), 2) avoid nuisance alerts, 3) prevent multiple TA segments during a single encounter.\
+\'97 TAs generated based on the value of the \'93no alert\'94 action\
+\'97 To prevent chatter, ACAS X requires TAs to stay on for at least 8 s (carried over from TCAS), and uses 3 additional thresholds.\
+\
+===== 10.5 Evaluation (Page 16) ====\
+\'97 Operational goal: provide collision avoidance without unnecessarily disrupting pilots and the ATC system.\
+\'97 Operational constraint: RAs must be acceptable by pilots and operational community.\
+\
+\'97\'97 10.5.1 Safety Analysis (Page 17) \'97\'97\
+\'97 Estimated risk depends strongly on the distribution of encounters represented by the model.\
+\
+\'97 From a large database (recorded surveillance data from US radar data stream) identified 393,077 encounters. \
+\'97 From these encounters, learnt topology of initial and transition Bayesian networks and distribution parameters.\
+\'97 Sample from the encounter model to generate representative encounters of the airspace.\
+\'97 Simulate these encounters both with and without a collision avoidance system to estimate the differential in collision risk.\
+\'97 Aircraft treated as point masses.\
+\'97 Near midair collision (NMAC): when 2 aircrafts come within 500 ft horizontally and 100 ft vertically.\
+\'97 One of the most important metrics in safety analyses is Risk Ratio: probability of NMAC with collision avoidance system divided by the probability of NMAC without the collision avoidance system.\
+\'97 If estimating rate of actual midair collision, one must simulate aircraft wire frames and estimate distributions over aircraft types.\
+\'97 Use importance sampling to reduce number of simulations required in estimating probability of NMAC. Still requires 100,000s of encounters to get a risk ratio estimate with relatively narrow confidence interval.\
+\'97 Current ACAS X prototype has risk ration less than 40% that of TCAS.\
+\
+\'97\'97 10.5.2 Operational Suitability and Acceptability (Page 19) \'97\'97\
+\'97 Operational performance of ACAS X evaluated in simulation using: 1) real TCAS encounters collected under FAA TCAS monitoring program by TRAMS, 2) current and future procedures of interest across a wide range of encounter dynamics.\
+\'97 One key operational suitability metric is Overall Alert Rate.\
+\'97 As estimated from the TRAMS dataset, overall alert rate of ACAS X is 30% lower than that of TCAS.\
+\'97 Pilots prefer fewer reversal and altitude crossing alerts because of their impact on flight crews.\
+\
+\'97\'97 10.5.3 Parameter Tuning (Page 20) \'97\'97\
+\'97 Design parameters can be adjusted to trade performance on different metrics.\
+\'97 Examples: offline cost of alert, online cost of restarting an advisory, white-noise acceleration parameter in the MDP.\
+\'97 Distinguished from System Parameters (parameters that govern behavior of the system).\
+\'97  ACAS X: number of design parameters is small compared to number of system parameters. System parameters include many design parameters and also the millions of values in the lookup table.\
+\'97 Choose design parameters that maximize a scalar utility function.\
+\'97 Utility function is a weighted average of various metrics. Weights are chosen by the consensus of an ad hoc committee of experts.\
+\'97 Parameter screening: vary parameters individually from their nominal value. Those that do not have a significant effect on the metrics are not included in the design search.\
+\'97 Surrogate model optimization: used to search point in design space that maximizes utility.\
+\
+\'97\'97 10.5.4 Flight Test (Page 23) \'97\'97\
+\'97 Required to validate simulation results, expose system to real environment challenges, and collect pilot acceptability feedback.\
+\'97 First flight test of ACAS X in August 2013.\
+\'97 Performed as desired in most test scenarios.\
+\'97 Some undesirable alerts in certain level-off encounters within 500 ft separation, and during non-blunder parallel approaches.\
+\
+\
+}

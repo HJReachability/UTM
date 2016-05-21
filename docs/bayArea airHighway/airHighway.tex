@@ -1,0 +1,104 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%2345678901234567890123456789012345678901234567890123456789012345678901234567890
+%        1         2         3         4         5         6         7         8
+\documentclass[12pt,draftcls,onecolumn]{IEEEtran}
+%\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out
+                                                          % if you need a4paper
+%\documentclass[a4paper, 10pt, conference]{ieeeconf}      % Use this line for a4
+                                                          % paper
+
+\IEEEoverridecommandlockouts                              % This command is only
+                                                          % needed if you want to
+                                                          % use the \thanks command
+%\overrideIEEEmargins
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+\usepackage{graphicx}
+\usepackage{amsmath} % assumes amsmath package installed
+\usepackage{amssymb}  % assumes amsmath package installed
+\usepackage{amsfonts}
+\usepackage{graphicx}
+\usepackage{algorithm, algorithmic}
+\usepackage{subcaption}
+\numberwithin{algorithm}{section}
+
+\newtheorem{defn}{Definition}
+\newtheorem{thm}{Proposition}[section]
+\newtheorem{cor}{Corollary}[section]
+\newtheorem{rem}{Remark}
+\newtheorem{lem}{Lemma}
+%\newtheorem{IEEEproof}{Proof of Lemma}
+%\usepackage{"../../my_macros"}
+
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+
+\title{\LARGE \bf Air Highways in the Bay Area}
+
+\author{}
+
+\begin{document}
+
+\maketitle
+
+\thispagestyle{empty}
+\pagestyle{empty}
+
+\begin{abstract}
+...
+\end{abstract}
+
+\section{Introduction}
+
+\section{Map Processing}
+Cities we are considering are shown in Figure \ref{fig:mapSpeed}.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{"fig/mapSpeed"}
+	\caption{Yellow: $v_{\text{water}} = b^2$. Dark blue: $v_{\text{city}} = b^0$. Light blue: $v_{\text{other}} = b^1$}
+	\label{fig:mapSpeed}
+\end{figure}
+
+The locations on the map are classified into three different regions, each with an associated cost. The cost deflects the desirability of flying an quadrotor over an area; a higher cost is less desirable. Water has the lowest cost, city has the highest cost, and everywhere else has an intermediate cost. Having assigned a cost to every location, we consider the problem of computing the lowest-cost path that connects two locations.
+
+For path planning, we solve the Eikonal equation in which costs can be equivalently expressed as speed. We assign the following speeds to each region:
+
+\begin{equation}
+\begin{aligned}
+v_{\text{water}} &= b^2 \\
+v_{\text{city}} &= b^0 \\
+v_{\text{other}} &= b^1
+\end{aligned}
+\end{equation}
+
+\noindent where $b$ is a tuning parameter that adjusts the relative speeds/costs of each region. The speed profile we obtain is shown in Figure \ref{fig:mapSpeed}.
+
+If we also consider the effect of airports by assigning a speed of $v_{\text{airport}}=b^-1$ to areas within a certain radius around airports, then we would obtain the speed profile in Figure \ref{fig:mapSpeedAirport}, in which region inside the black circles have speed $b^{-1}$:
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{"fig/mapSpeedAirport"}
+	\caption{Yellow: $v_{\text{water}} = b^2$. Dark blue: $v_{\text{city}} = b^0$. Light blue: $v_{\text{other}} = b^1$. Black: $v_{\text{airport}} = b^{-1}$}
+	\label{fig:mapSpeedAirport}
+\end{figure}
+
+\section{Highway Planning}
+Having obtained the speed profiles, we now solve the Eikonal equation to determine the shortest paths from Concord (the assumed warehouse location) to the other 9 cities labeled on the map. These shortest paths give an idea of where air highways may be established, and are shown in red in Figures \ref{fig:pathsValue} and \ref{fig:pathsValueAirport}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{"fig/pathsValue"}
+	\caption{}
+	\label{fig:pathsValue}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{"fig/pathsValueAirport"}
+	\caption{}
+	\label{fig:pathsValueAirport}
+\end{figure}
+
+The plots on the right show a contour plot of the value function overlaid on top of the speed profile and the air highways. Notice that the highways are mostly over water, as expected, and the lengths of portions over cities is minimized. The presence of airports reroute some of the highways in order to minimize lengths of portions near the airport. Another interesting behavior to note that under the specified speeds the highways seem to naturally coincide with each other and split off only when the destination is nearby.
+
+\end{document}

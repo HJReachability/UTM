@@ -1,0 +1,95 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%2345678901234567890123456789012345678901234567890123456789012345678901234567890
+%        1         2         3         4         5         6         7         8
+
+%\documentclass[letterpaper, 10 pt, conference]{ieeeconf}  % Comment this line out
+                                                          % if you need a4paper
+\documentclass[letterpaper, 10pt, conference]{ieeeconf}      % Use this line for a4
+                                                          % paper
+
+ 
+\IEEEoverridecommandlockouts                              % This command is only
+                                                          % needed if you want to
+                                                          % use the \thanks command
+\overrideIEEEmargins
+% See the \addtolength command later in the file to balance the column lengths
+% on the last page of the document
+
+\usepackage{amsmath}    % need for sub equations
+\usepackage{amsfonts}
+\usepackage{graphicx}   % need for figures
+\usepackage{subcaption}
+\usepackage{epsfig} 
+\usepackage{color}
+\usepackage[normalem]{ulem}
+\usepackage{cancel}
+\usepackage{amssymb}
+\usepackage{color}
+%\usepackage{my_macros}
+\usepackage[ruled,vlined,titlenotnumbered]{algorithm2e} 
+
+\title{\LARGE \bf
+Safe Platooning of Unmanned Aerial Vehicles via Reachability}
+
+\author{Mo Chen, Qie Hu, Casey Mackin, Jaime F. Fisac, and Claire J. Tomlin
+\thanks{This work has been supported in part by NSF under CPS:ActionWebs (CNS-931843), by ONR under the HUNT (N0014-08-0696) and SMARTS (N00014-09-1-1051) MURIs and by grant N00014-12-1-0609, by AFOSR under the CHASE MURI (FA9550-10-1-0567). The research of M. Chen has received funding from the ``NSERC PGS-D'' Program. The research of J.F. Fisac has received funding from the ``la Caixa" Foundation.}
+\thanks{All authors are with the Department of Electrical Engineering and Computer Sciences, University of California, Berkeley. \{mochen72,qiehu,cmackin,jfisac,tomlin\}@berkeley.edu}
+}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\pagestyle{empty}
+
+%%%
+\begin{abstract}
+Recently, there has been immense interest in using unmanned aerial vehicles (UAVs) for civilian operations such as package delivery, firefighting, and fast disaster response. As a result, UAV traffic management systems are needed to support potentially thousands of UAVs flying simultaneously in the airspace, in order to ensure their liveness and safety requirements are met. Hamilton-Jacobi (HJ) reachability is a powerful framework for providing conditions under which these requirements can be met, and for synthesizing the optimal controller for meeting them. However, due to the curse of dimensionality, HJ reachability is only tractable for a small number of vehicles if their set of maneuvers is unrestricted. In this paper, we define a platoon to be a group of UAVs in a single-file formation. We model each vehicle as a hybrid system with modes corresponding to its role in the platoon, and specify the set of allowed maneuvers in each mode to make the analysis tractable. We propose several liveness controllers based on HJ reachability, and wrap a safety controller, also based on HJ reachability, around the liveness controllers. For a single altitude range, our approach guarantees safety for one safety breach; in the unlikely event of multiple safety breaches, safety can be guaranteed over multiple altitude ranges. We demonstrate the satisfaction of liveness and safety requirements through simulations of three common scenarios.
+\end{abstract}
+
+\input{introduction.tex}
+% Introduction (1p)
+%% Motivation
+%% Related work
+%% Summary of results
+
+\input{formulation.tex}
+% Problem formulation (1.5p)
+%% A number of quadrotors forming a platoon in a single file
+%% Platoon definition and functions
+
+\input{solution.tex}
+% Solution methodology (1.5-2p)
+%% Hybrid model of vehicles
+%% Reachability
+%% Functions of platoons: following, joining, splitting
+
+% \input{analysis.tex}
+%% Information pattern, stability (0.5p)
+
+\input{results.tex}
+% Numerical Simuations (1-1.5p)
+%% 1: normal operation: form platoon by joining --> just follow --> 1 quadrotor leaves
+%% - Mo
+%% 2: vehicles already in platoon, one of them goes rogue
+%% - Casey
+%% 3: vehicles in platoon, intruder vehicle
+%% - Qie
+%% 4: vehicles in platoon, another vehicle joining, one vehicle in platoon goes rogue
+%%
+%% followPlatoon - Jaime
+
+\input{conclusion.tex}
+
+% Conclusion (0.5p)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\addtolength{\textheight}{1cm}   % This command serves to balance the column lengths
+                                  % on the last page of the document manually. It shortens
+                                  % the textheight of the last page by a suitable amount.
+                                  % This command does not take effect until the next page
+                                  % so it should come on the page before the last. Make
+                                  % sure that you do not shorten the textheight too much.
+
+ \bibliographystyle{IEEEtran}
+ \bibliography{references}
+\end{document}

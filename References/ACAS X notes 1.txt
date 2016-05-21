@@ -1,0 +1,78 @@
+ACAS X Notes:
+===== 10 Optimized Airborne Collision Avoidance =====
+- Collision-avoidance without excessive alerting is challenging due to sensor error and uncertainty in future paths
+- POMDP and DP
+- statistical airspace model represented as dynamic Bayesian network learned from recorded data
+
+=== 10.1 Airborne Collision Avoidance Systems (Page 1) ===
+- 1956 collision prompted establishment of FAA --> redesigned airspace and used ground-based radars
+- 2 more collisions in 1978 and 1986 prompted an additional layer of protection in the form of an onboard system.
+
+--- 10.1.1 Traffic Alert and Collision Avoidance System (Page 2) ---
+- Beacon Collision Avoidance System (BCAS): designed for low desntiy space, used radio channel to estimate distance and share data
+
+- Traffic Alert and Collision Avoidance System (TCAS): enhanced BCAS to use in high-density airspace
+-- conducts airborne surveillance, computes advisories using safety logic, and relays advisories through audio and display
+-- traffic advisory (TA) -> potential threat
+-- resolution advisory (RA) -> necessary avoidance maneuver
+-- ONLY offers vertical guidance
+-- declares "Clear of Conflict" after resolution
+-- uses straight-line extrapolation --> open-loop control; many heuristic rules to compensate sensor noise and error + pilot variability
+
+--- 10.1.2 Limitations of Existing System (Page 3) ---
+- fundamental limitation: deterministic model, does not recognize noncompliance of aircrfats
+- cannot keep up with evolving, denser airspace --> too many alerts
+- only used on large aircrafts due to hardware and power requirements; cannot be adapted to smaller aircrafts
+
+--- 10.1.3 Unmanned Aircraft Sense and Avoid (Page 4) ---
+- currently UAs cannot fly in civil airspace without special authorization
+- TCAS not applicable because of limited climb rates --> better to do horizontal avoidance
+
+--- 10.1.4 Airborn Collision Avoidance System X (Page 5) ---
+- formulated as POMDP using DP to optimize collision avoidance system
+- simulations with radar data confirmed improved safety and performance
+- move from beacon-only surveillance to plug-and-play architecture that supports GPS data and new sensor modalities
+- numerical table replaces logic statements
+
+=== 10.2 Collision Avoidance Problem Formulation (Page 5) ===
+- POMDP
+
+--- 10.2.1 Resolution advisories (Page 5) ---
+- same advisories as TCAS except there's only a single "maintain" action
+- preventive vs. corrective advisories 
+- see table for list of actions
+
+--- 10.2.2 Dynamic Model (Page 6) ---
+- simple 6-state model
+-- relative altitude, verticle rate of own aircraft, verticle rate of intruder, time to potential collision, current advisory, responsiveness of pilot
+-- sampling time is 1 second
+- always responds to COC, continue to respond to the same advisory, response delay of initial advisory is 5s, for reversals is 5s, and for strengthening/weakening is 3.
+- dynamics are in equation 10.2 (page 8)
+
+--- 10.2.3 Reward Function (page 8) --- 
+- event rewards in table 10.2
+
+--- 10.2.4 Dynamic Programming (Page 10) ---
+- assumes full observability
+- uses sigma-point sampling to evaluate integral for expected value
+- local approximation value iteration algorithm computes value
+- 33x25x25x40x16x2 grid
+- single sweep of Gauss-Seidel value iteration is required (wait, how?)
+
+=== 10.3 State Estimation (Page 11) ===
+- system estimates a believe distribution of states in real time
+- Q value function computed offline, accessed online to derive control; interpolation is used for states in between discrete states
+- belief function factored into 3 independent components: relative altitude and climb rates, time to collision, and discrete states
+
+--- 10.3.1 Sensor Error (Page 11) ---
+- altitude measurement is quantized and has error
+- TCAS uses filters to estimate vertical rates
+- ACAS X uses Kalman-based filter to better accommdate quantization error and outputs weighted state samples
+
+--- 10.3.2 Pilot Response (Page 12) ---
+- pdated over time according to Bayes' rule
+
+--- 10.3.3 Time to Potential Collision (Page 12) ---
+- white-noise acceleration vectors used for estimation of time to collision
+- compute P(other aircraft comes within danger zone within k seconds) by backwards propagation from k=0.
+- horizontal position distribution inferred from sensor measurements
