@@ -5,41 +5,46 @@ classdef Plane < Vehicle
   % Also see constructor
   
   properties
-    % Angular control bounds (only applicable if using TFM)
-    wMin = -2*pi/10
-    wMax = 2*pi/10
+    % Angular control bounds
+    wMax
     
-    % speed control bounds (only applicable if using TFM)
-    vMax
-    vMin
+    % Speed control bounds
+    vrange
     
-    % state dimension is set to 3 and number of controls is set to 1 if 
-    % Plane is initialized with a 3D state
+    % Turn rate and speed are both controls; however, if vrange is a
+    % scalar, then the Plane has constant speed
     nx = 3;
     nu = 2;
-  
-    speed % (if it's not a control)
+    
+    % Disturbance
+    dMax
   end
   
   methods
-    function obj = Plane(x, v)
-      % obj = plane(x)
+    function obj = Plane(x, wMax, vrange, dMax)
+      % obj = Plane(x, wMax, vrange, dMax)
       %
       % Constructor. Creates a plane object with a unique ID,
       % state x, and reachable set information reachInfo
       %
       % Dynamics:
-      %    \dot{x}_1 = v * cos(x_3)
-      %    \dot{x}_2 = v * sin(x_3)
-      %    \dot{x}_3 = u
-      %         uMin <= u <= uMax
+      %    \dot{x}_1 = v * cos(x_3) + d1
+      %    \dot{x}_2 = v * sin(x_3) + d2
+      %    \dot{x}_3 = u            + d3
+      %         v \in [vrange(1), vrange(2)]
+      %         u \in [-uMax, uMax]
       %
-      % Inputs:   x         - state: [xpos; ypos; theta; v]
+      % Inputs:
+      %   x      - state: [xpos; ypos; theta]
+      %   wMax   - maximum turn rate
+      %   vrange - speed range
+      %   dMax   - disturbance bounds
       %
-      % Output:   obj       - a Plane object
+      % Output:
+      %   obj       - a Plane object
       %
       % Mahesh Vashishtha, 2015-10-26
-      % Modified, Mo Chen, 2015-11-04
+      % Modified, Mo Chen, 2016-05-22
       
       if numel(x) ~= 3
         error('Initial state does not have right dimension!');
@@ -48,48 +53,26 @@ classdef Plane < Vehicle
       if ~iscolumn(x)
         x = x';
       end
-
-      obj.nx = 3;
       
       if nargin < 2
-        obj.nu = 2;
-      else
-        obj.nu = 1;
-        obj.speed = v;
+        wMax = 1;
+      end
+      
+      if nargin < 3
+        vrange = 5;
+      end
+      
+      if nargin < 4
+        dMax = [0 0];
       end
       
       obj.x = x;
       obj.xhist = obj.x;
+      
+      obj.wMax = wMax;
+      obj.vrange = vrange;
+      obj.dMax = dMax;
     end
     
-    %%
-    function collided = isCollided(obj, others, radius)
-      % function collided = isCollided(obj, others,radius)
-      % Check if any other planes are within distance "radius" of this
-      % plane
-      %
-      % Inputs:   obj - current plane object
-      %           others - other planes whose positions should be checked
-      %                    for collision; this should be a n x 1 or 1 x n
-      %                    cell. All vehicles need to be of the same type
-      %                    so that a single safeV can be used
-      %           radius - positive number. iff distance between planes is
-      %                    <= radius, a collision has occured
-      %
-      %
-      % Outputs:  collided - true iff distance between obj and any plane in
-      %                     others is <= radius
-      %
-      % TODO: see if there is more efficient way to check each collision pair
-      % Mahesh Vashishtha, 2015-10-27
-      others = checkVehiclesList(others, 'plane');
-      relStates = obj.getRelativeStates(others);
-      relPos = relStates(:,1:2);
-      collided = false;
-      for i = 1:length(others)
-        collided = or(all(abs(relPos(i,1:2)) <= [radius radius]), collided);
-      end
-    end
-
   end % end methods
 end % end classdef
