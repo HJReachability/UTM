@@ -1,4 +1,4 @@
-classdef vehicle < handle
+classdef 10Dquadrotor < handle
 % ----------
 % UNUSED 
 % ----------
@@ -6,34 +6,19 @@ classdef vehicle < handle
 
     properties
         ID          % ID number (global, unique)
+ 
+        nx = 10     % Dimension of state
+        nu = 3      % Dimension of control
         
-        tau         % Separation distance (depends on mode)
+        pdim = [1 5 9];
+        vdim = [2 6 10];
         
-        x           % State (10D)
-        u           % Recent control signal
-        
-        xhist       % History of state
-        uhist       % History of control
-        
-        dt          % Sampling time
-        
-        nx          % Dimension of state
-        nu          % Dimension of control
-        
-        umin        % Control bounds
-        umax
+        uMin        % Control bounds
+        uMax
         
         KT          % Thrust coefficient (vertical direction)
         m           % Mass (unused right now)
         
-        vmax        % Maximum speed (needed?)
-        
-        q           % Mode
-                    %   1: Free
-                    %   2: Follower
-                    %   3: Leader
-                    %   4: Faulty
-                    
         A           % Dynamics
         B
         G           % Gravitational term
@@ -44,8 +29,6 @@ classdef vehicle < handle
         
         g           % Acceleration due to gravity (for convenience)
         
-        % Footprint from reachable set
-        safeV       
     end
     
     methods

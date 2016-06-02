@@ -16,6 +16,10 @@ classdef Plane4 < Vehicle
     nx = 4;
     nu = 2;
     
+    pdim = 1:2;
+    hdim = 3;
+    vdim = 4;
+    
   end
   
   properties(Constant)

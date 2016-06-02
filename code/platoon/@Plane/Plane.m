@@ -16,6 +16,9 @@ classdef Plane < Vehicle
     nx = 3;
     nu = 2;
     
+    pdim = 1:2;
+    hdim = 3;
+    
     % Disturbance
     dMax
   end

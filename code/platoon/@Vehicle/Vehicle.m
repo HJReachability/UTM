@@ -11,6 +11,10 @@ classdef Vehicle < Node
     xhist       % History of state
     uhist       % History of control
     
+    pdim        % position dimensions
+    vdim        % velocity dimensions
+    hdim        % heading dimensions
+    
     % Mode
     %   'Free'
     %   'Follower'
