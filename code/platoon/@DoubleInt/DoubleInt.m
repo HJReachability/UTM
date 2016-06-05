@@ -1,9 +1,8 @@
 classdef DoubleInt < Vehicle
   properties
-    uMin = -3    % Control bounds
-    uMax = 3
-    
-    h_state
+    uMin    % Control bounds
+    uMax
+
   end % end properties
   
   properties(Constant)
@@ -14,9 +13,13 @@ classdef DoubleInt < Vehicle
   end % end properties(Constant)
   
   methods
-    function obj = DoubleInt(x)
+    function obj = DoubleInt(x, urange)
+      %% Process input
+      if nargin < 1
+        x = [0; 0];
+      end
       
-      % Make sure initial state is 4D
+      % Make sure initial state is 2D
       if numel(x) ~= 2
         error('DoubleInt state must be 2D.')
       end
@@ -28,6 +31,22 @@ classdef DoubleInt < Vehicle
       
       obj.x = x;
       obj.xhist = x;
+  
+      %% Process control range
+      if nargin < 2
+        urange = [-3 3];
+      end
+      
+      if numel(urange) ~= 2
+        error('Control range must be 2D!')
+      end
+      
+      if urange(2) <= urange(1)
+        error('Control range vector must be strictly ascending!')
+      end
+      
+      obj.uMin = urange(1);
+      obj.uMax = urange(2);
       
     end % end constructor
   end % end methods

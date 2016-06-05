@@ -1,14 +1,20 @@
-function dx = dynamics(obj, t, x, u)
+function dx = dynamics(obj, t, x, u, MIEdims)
 % function dx = dynamics(t, x, u)
-%
-% Dynamics of the quadrotor
-%
-% 2015-11-03
+%     Dynamics of the double integrator
 
-% A and B matrices
-A = [0 1; 0 0];
-B = [0; 1];
+if nargin < 5
+  MIEdims = 0;
+end
 
-% Dynamics
-dx = A * x + B * u;
+if isnumeric(x)
+  dx = [x(2); u];
+end
+
+if iscell(x)
+  if isscalar(u)
+    u = u*ones(size(x{1}));
+  end
+  dx = {x{2-MIEdims}; u};
+end
+
 end
