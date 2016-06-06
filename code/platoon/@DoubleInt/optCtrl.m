@@ -1,4 +1,5 @@
 function uOpt = optCtrl(obj, t, y, deriv, uMode, MIEdims)
+% uOpt = optCtrl(obj, t, y, deriv, uMode, MIEdims)
 
 if nargin < 5
   uMode = 'min';
