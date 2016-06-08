@@ -7,18 +7,21 @@ if ~isempty(obj.vdim)
   vhist = obj.xhist(obj.vdim, :);
 end
 
-% Plane is a special case
+% Plane is a special case, since speed is one of the controls
 if isa(obj, 'Plane')
-  if isscalar(obj.vrange)
-    v = obj.vrange;
-    vhist = v * ones(size(obj.x, 2));
-  elseif isempty(obj.u)
+  if isempty(obj.u)
     v = mean(obj.vrange);
     vhist = mean(obj.vrange);    
   else
     v = obj.u(1);
     vhist = obj.uhist(1,:);    
   end
+end
+
+% DubinsCar is a special case, since speed is a constant, not a state
+if isa(obj, 'DubinsCar')
+  v = obj.speed;
+  vhist = v*ones(1, size(obj.x, 2));
 end
 
 % If the velocity is a scalar, and there's a heading dimension, then we need to

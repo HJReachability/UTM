@@ -4,16 +4,15 @@ classdef DoubleInt < Vehicle
     uMax
 
   end % end properties
-  
-  properties(Constant)
-    % Dimensions of state and control
-    nx = 2;
-    nu = 1;
-    
-  end % end properties(Constant)
-  
+ 
   methods
     function obj = DoubleInt(x, urange)
+      %% Basic properties
+      obj.pdim = 1;
+      obj.vdim = 2;
+      obj.nx = 2;
+      obj.nu = 1;
+    
       %% Process input
       if nargin < 1
         x = [0; 0];

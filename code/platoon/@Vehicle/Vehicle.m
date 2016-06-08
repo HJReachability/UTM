@@ -4,6 +4,9 @@ classdef Vehicle < Node
   
   properties
     ID          % ID number (global, unique)
+
+    nx          % Number of state dimensions
+    nu          % Number of control inputs
     
     x           % State
     u           % Recent control signal

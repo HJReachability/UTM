@@ -1,4 +1,4 @@
-classdef Plane4 < Vehicle
+classdef Plane4D < Vehicle
   % Note: Since Plane4 is a "handle class", we can pass on
   % handles/pointers to other Plane objects
   % e.g. a.platoon.leader = b (passes b by reference, does not create a copy)
@@ -16,9 +16,7 @@ classdef Plane4 < Vehicle
     nx = 4;
     nu = 2;
     
-    pdim = 1:2;
-    hdim = 3;
-    vdim = 4;
+
     
   end
   
@@ -28,7 +26,7 @@ classdef Plane4 < Vehicle
   end
   
   methods
-    function obj = Plane4(x)
+    function obj = Plane4D(x)
       % obj = plane(ID, x, reachInfo)
       %
       % Constructor. Creates a plane object with a unique ID,
@@ -61,6 +59,10 @@ classdef Plane4 < Vehicle
       
       obj.x = x;
       obj.xhist = obj.x;
+      
+      obj.pdim = 1:2;
+      obj.hdim = 3;
+      obj.vdim = 4;
     end
     
     % given that control is right dimension and is numeric, 
