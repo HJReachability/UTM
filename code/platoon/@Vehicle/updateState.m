@@ -46,10 +46,6 @@ if ~isnumeric(u)
   error('Control must be numeric!')
 end
 
-if numel(u) ~= obj.nu
-  error(['Control input must have ' num2str(obj.nu) ' dimensions!'])
-end
-
 % Convert control to column vector if needed
 if ~iscolumn(u)
   u = u';

@@ -16,9 +16,6 @@ classdef Plane < Vehicle
     nx = 3;
     nu = 2;
     
-    pdim = 1:2;
-    hdim = 3;
-    
     % Disturbance
     dMax
   end
@@ -35,7 +32,7 @@ classdef Plane < Vehicle
       %    \dot{x}_2 = v * sin(x_3) + d2
       %    \dot{x}_3 = u            + d3
       %         v \in [vrange(1), vrange(2)]
-      %         u \in [-uMax, uMax]
+      %         u \in [-wMax, wMax]
       %
       % Inputs:
       %   x      - state: [xpos; ypos; theta]
@@ -75,6 +72,9 @@ classdef Plane < Vehicle
       obj.wMax = wMax;
       obj.vrange = vrange;
       obj.dMax = dMax;
+      
+      obj.pdim = 1:2;
+      obj.hdim = 3;      
     end
     
   end % end methods

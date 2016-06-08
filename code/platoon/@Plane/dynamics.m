@@ -11,6 +11,10 @@ if nargin < 5
   d = [0; 0; 0];
 end
 
+if isscalar(u) == 1 && isscalar(obj.vrange)
+  u = [obj.vrange; u];
+end
+
 if numel(u) ~= obj.nu
   error('Incorrect number of control dimensions!')
 end

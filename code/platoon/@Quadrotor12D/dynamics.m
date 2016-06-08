@@ -24,6 +24,7 @@ I = obj.I;
 Ix = I(1);
 Iy = I(2);
 Iz = I(3);
+
 dx = zeros(obj.nx, 1);
 
 % Kinematic plane (speed can be changed instantly)
