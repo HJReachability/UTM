@@ -43,8 +43,6 @@ In the bottom plots of Figure \ref{fig:fp}, $\veh{1}$ (orange) and $\veh{2}$ (pu
     \caption{A simulation showing how five vehicles initially in the Free mode can form a platoon. \label{fig:fp}}
 \end{figure}
 
-\MCnote{Showing all safety reachable sets for the vehicle of interest in first two subplots of Figure \ref{fig:fp}}
-
 \subsubsection{Intruder Vehicle}
 We now consider the scenario in which a platoon of vehicles encounters an intruder vehicle. To avoid collision, each vehicle checks for safety with respect to the intruder and any vehicles in front and behind of it in the platoon. If necessary, the vehicle uses the reachability-based safety controller to avoid collision, otherwise it uses the appropriate controller to travel on the highway if it is a leader, or follow the leader if it is a follower. After danger has passed, the vehicles in the platoon resume normal operation.
 

@@ -14,3 +14,4 @@ checkpoints
 *.zip
 code/platoon/simulations/simulateFormPlatoon_figs/
 docs/AIAA 2016 highway platooning/main.pdf
+*.out

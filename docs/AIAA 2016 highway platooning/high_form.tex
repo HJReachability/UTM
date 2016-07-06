@@ -4,7 +4,7 @@ We consider air highways to be virtual highways in the airspace on which a numbe
 
 Let an air highway be denoted by the continuous function $\hw: [0, 1] \rightarrow \mathbb{R}^2$. Such a highway lies in a horizontal plane of fixed altitude, with start and end points given by $\hw(0)\in\mathbb{R}^2$ and $\hw(1)\in\mathbb{R}^2$ respectively. For simplicity, we assume that the highway segment is a straight line segment, and the parameter $s$ indicates the position in some fixed altitude as follows: $\hw(s) = \hw(0) + s(\hw(1) - \hw(0))$. To each highway, we assign a speed of travel $v_\hw$ and specify the direction of travel to be the direction from $\hw(0)$ to $\hw(1)$, denoted using a unit vector $\hwd = \frac{\hw(1) - \hw(0)}{\lVert\hw(1) - \hw(0)\rVert_2}$.
 
-Air highways must not only provide structure to make the analysis of a large number of vehicles tractable, but also allow vehicles to reach their destinations while minimizing any relevant costs to the vehicles and to the surrounding regions. Thus, given a origin-destination pair (eg. two cities), air highways must connect the two points while potentially satisfying other criteria. With this in mind, we now define the air highway placement problem, and propose a simple and fast way to approximate its solution.
+Air highways must not only provide structure to make the analysis of a large number of vehicles tractable, but also allow vehicles to reach their destinations while minimizing any relevant costs to the vehicles and to the surrounding regions. Thus, given a origin-destination pair (eg. two cities), air highways must connect the two points while potentially satisfying other criteria. In addition, optimal air highway locations should ideally be able to be recomputed in real time when necessary. With this in mind, we now define the air highway placement problem, and propose a simple and fast way to approximate its solution that allows for real time recomputation.
 
 \subsection{The Air Highway Placement Problem}
 Consider a map $\cmap:\mathbb{R}^2 \rightarrow \mathbb{R}$ which defines the cost $\cmap(\pos)$ incurred when a UAV flies over the position $\pos=(\pos_x,\pos_y)\in\mathbb{R}^2$. Given any position $\pos$, a large value of $\cmap(\pos)$ indicates that the position $\pos$ is costly or undesirable for a UAV to fly over. Locations with high cost could, for example, include densely populated areas and areas around airports. In general, the cost map $\cmap(\cdot)$ may be used to model cost of interference with commercial airspaces, cost of accidents, cost of noise pollution, etc., and can be designed by government regulation bodies.
@@ -31,9 +31,8 @@ Given only the origin point $\pos^o$ and destination point $\pos^d$, there are a
 & \text{subject to \eqref{eq:hw_seq}} 
 \end{aligned}
 \end{equation}
-\MCnote{The number of constraints here change with the decision variable $N$, but I'm ignoring this fact as the point is that this optimization is hard to solve, and therefore we solve the Eikonal equation instead.}
 
-\noindent where $R(\cdot)$ is a regularizer, such as $R(N) = N^2$. \MCnote{Added regularizer to prevent $N\rightarrow\infty$}
+\noindent where $R(\cdot)$ is a regularizer, such as $R(N) = N^2$.
 
 The interpretation of \eqref{eq:ahpp} is that we consider air highways to be line segments of constant altitude over a region, and UAV platoons travel on these air highways to get from some origin to some destination. Any UAV flying on a highway over some position $\pos$ incurs a cost of $\cmap(\pos)$, so that the total cost of flying from the origin to the destination is given by the summation in \eqref{eq:ahpp}. The air highway placement problem minimizes the cumulative cost of flying from some origin $p^o$ to some destination $p^d$ along the sequence of highways $\hws_N=\{\hw_1, \hw_2, \ldots, \hw_N\}$. The regularization term is used to prevent $N$ from being arbitrarily large.
 
