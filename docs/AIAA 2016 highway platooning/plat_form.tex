@@ -29,7 +29,7 @@ Consider a UAV whose dynamics are given by
 In general, the problem of collision avoidance among $N$ vehicles cannot be tractably solved using traditional dynamic programming approaches because the computation complexity of these approaches scales exponentially with the number of vehicles. Thus, in our present work, we will consider the situation where UAVs travel on air highways in platoons, defined in the following sections. The structure imposed by air highways and platooning enables us to analyze the liveness and safety of the vehicles in a tractable manner.
 
 \subsubsection{Vehicles as Hybrid Systems}
-We model each vehicle as a hybrid system \cite{Lygeros98,Lygeros12} consisting of the modes ``Free", ``Leader", ``Follower", and ``Faulty". Within each mode, a set of maneuvers is available to allow the vehicle to change modes if desired. The modes and maneuvers are as follows:
+We model each vehicle as a hybrid system \cite{Lygeros98, Lygeros12} consisting of the modes ``Free", ``Leader", ``Follower", and ``Faulty". Within each mode, a vehicle has a set of restricted maneuvers, including one that allows the vehicle to change modes if desired. The modes and maneuvers are as follows:
 
 \begin{itemize}
 \item Free: 
@@ -58,13 +58,13 @@ A Follower vehicle is a vehicle that is following a platoon leader. The availabl
 \begin{itemize}
 \item remain a Follower by staying a distance of $d_\text{sep}$ behind the vehicle in front in the current platoon
 \item remain a Follower by joining a different platoon on another highway
-\item become a Leader by splitting from the current platoon
+\item become a Leader by splitting from the current platoon while remaining on the highway
 \item become a Free vehicle by leaving the highway
 \end{itemize}
 
 \item Faulty: 
 
-If a vehicle from any of the other modes becomes unable to operate within the allowed set of maneuvers, it transitions into the Faulty mode. Reasons for transitioning to the Faulty mode include vehicle malfunctions, performing collision avoidance with respect to another Faulty vehicle, etc. A Faulty vehicle is assumed to descend via a fail-safe mechanism after some pre-specified duration $t_\text{faulty}$ to a different altitude level where it no longer poses a threat to vehicles on the air highway system.
+If a vehicle from any of the other modes becomes unable to operate within the allowed set of maneuvers, it transitions into the Faulty mode. Reasons for transitioning to the Faulty mode include vehicle malfunctions, performing collision avoidance with respect to another Faulty vehicle, etc. A Faulty vehicle is assumed to descend via a fail-safe mechanism after some pre-specified duration $\td$ to a different altitude level where it no longer poses a threat to vehicles on the air highway system.
 \end{itemize}
 
 The available maneuvers and associated mode transitions are summarized in Figure \ref{fig:vehicleModes}.
@@ -87,7 +87,7 @@ For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with res
 	\label{fig:vehicleNotation}
 \end{figure}
 
-We will organize the vehicles into platoons travel along air highways. The vehicles maintain a separation distance of $\sepdist$ with their neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that when a vehicle exhibits unpredictable behavior, it will be able to exit the altitude range of the highway within a duration of $t_\text{faulty}=1.5$. Such a requirement may be implemented practically as an fail-safe mechanism to which the vehicles revert when needed.
+We will organize the vehicles into platoons travel along air highways. The vehicles maintain a separation distance of $\sepdist$ with their neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that when a vehicle exhibits unpredictable behavior, it will be able to exit the altitude range of the highway within a duration of $\td$. Such a requirement may be implemented practically as an fail-safe mechanism to which the vehicles revert when needed.
 
 \subsubsection{Objectives}
 Given the above modeling assumptions, our goal is to provide control strategies to guarantee the success and safety of all the mode transitions. The theoretical tool used to provide the liveness and safety guarantees is reachability. The reachable sets we compute will allow each vehicle to perform complex actions such as 
