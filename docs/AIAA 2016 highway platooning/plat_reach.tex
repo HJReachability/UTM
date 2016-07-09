@@ -19,7 +19,7 @@ A function $f:X\to Y$ between two measurable spaces $(X,\Sigma_X)$ and $(Y,\Sigm
 
 In our differential game, the goal of Player 2 is to drive the system into some target set $\mathcal{L}$, and the goal of Player 1 is to drive the system away from it. The set $\mathcal{L}$ is represented as the zero sublevel set of a bounded, Lipschitz continuous function $l:\mathbb{R}^n\rightarrow\mathbb{R}$. We call $l(\cdot)$ the \textit{implicit surface function} representing the set $\mathcal L: \mathcal{L}=\{x\in\mathbb{R}^n \mid l(x)\le 0\}$.
 
-Given the dynamics \eqref{eq:dyn} and the target set $\mathcal{L}$, we would like to compute the backwards reachable set, $\mathcal{V}(t)$:
+Given the dynamics \eqref{eq:dyn} and the target set $\mathcal{L}$, we would like to compute the reachable set, $\mathcal{V}(t)$:
 
 \begin{equation}
 \begin{aligned}
@@ -35,7 +35,7 @@ where $\xi_f$ is the trajectory of the system satisfying initial conditions $\xi
 \end{aligned}
 \end{equation}
 
-Many methods involving solving HJ PDEs \cite{Mitchell05} and HJ variational inequalities (VI) \cite{Bokanowski10,Barron89,Fisac15} have been developed for computing the reachable set. These HJ PDEs and HJ VIs can be solved using well-established numerical methods. For this paper, we use the formulation in \cite{Mitchell05}, which has shown that the backwards reachable set $\mathcal{V}(t)$ can be obtained as the zero sublevel set of the viscosity solution \cite{Crandall84} $V(t,x)$ of the following terminal value Hamilton-Jacobi-Isaacs (HJI) PDE:
+Many methods involving solving HJ PDEs \cite{Mitchell05} and HJ variational inequalities (VI) \cite{Bokanowski10,Barron89,Fisac15} have been developed for computing the reachable set. These HJ PDEs and HJ VIs can be solved using well-established numerical methods. For this paper, we use the formulation in \cite{Mitchell05}, which has shown that the reachable set $\mathcal{V}(t)$ can be obtained as the zero sublevel set of the viscosity solution \cite{Crandall84} $V(t,x)$ of the following terminal value Hamilton-Jacobi-Isaacs (HJI) PDE:
 
 \begin{equation} \label{eq:HJIPDE}
 \begin{aligned}

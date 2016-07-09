@@ -76,7 +76,7 @@ The available maneuvers and associated mode transitions are summarized in Figure
 	\label{fig:vehicleModes}
 \end{figure}
 
-Suppose that there are $N$ vehicles in total in the airspace containing the highway system. We will denote the $N$ vehicles as $\veh{i}, i=1\ldots,N$. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $\veh{P_1}, \ldots, \veh{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation; for convenience, we also denote $P_0 = P_{M+1} = \emptyset$. When necessary, we will use superscripts to denote vehicles of different platoons: $\veh{P_i^j}$ represents the $i$th vehicle in the $j$th platoon. 
+Suppose that there are $N$ vehicles in total in the airspace containing the highway system. We will denote the $N$ vehicles as $\veh{i}, i=1\ldots,N$. We consider a platoon of vehicles to be a group of $M\le N$ vehicles, denoted $\veh{P_1}, \ldots, \veh{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation. When necessary, we will use superscripts to denote vehicles of different platoons: $\veh{P_i^j}$ represents the $i$th vehicle in the $j$th platoon. 
 
 For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with respect to which $Q_i$ checks safety. If vehicle $\veh{i}$ is a free vehicle, then it must check for safety with respect to all other vehicles, $\vehSCS{i} = \{j: j\neq i\}$. If the vehicle is part of a platoon, then it checks safety with respect to the platoon member in front and behind, $\vehSCS{i} = \{P_{j+1}, P_{j-1}\}$. Figure \ref{fig:vehicleNotation} summarizes the indexing system of the vehicles.
 
