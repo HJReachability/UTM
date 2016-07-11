@@ -11,10 +11,10 @@ classdef Plane < Vehicle
     % Speed control bounds
     vrange
     
-    % Turn rate and speed are both controls; however, if vrange is a
-    % scalar, then the Plane has constant speed
+    % Number of states, controls, and disturbances
     nx = 3;
     nu = 2;
+    nd = 3;
     
     % Disturbance
     dMax

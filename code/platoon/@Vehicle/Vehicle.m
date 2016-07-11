@@ -7,6 +7,7 @@ classdef Vehicle < Node
 
     nx          % Number of state dimensions
     nu          % Number of control inputs
+    nd          % Number of disturbance dimensions
     
     x           % State
     u           % Recent control signal
