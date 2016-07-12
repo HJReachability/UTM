@@ -13,10 +13,6 @@ classdef Plane < Vehicle
     
     % Disturbance
     dMax
-    
-    % Data
-    data
-    
   end
   
   methods
