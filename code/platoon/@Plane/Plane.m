@@ -11,13 +11,12 @@ classdef Plane < Vehicle
     % Speed control bounds
     vrange
     
-    % Number of states, controls, and disturbances
-    nx = 3;
-    nu = 2;
-    nd = 3;
-    
     % Disturbance
     dMax
+    
+    % Data
+    data
+    
   end
   
   methods
@@ -74,7 +73,11 @@ classdef Plane < Vehicle
       obj.dMax = dMax;
       
       obj.pdim = 1:2;
-      obj.hdim = 3;      
+      obj.hdim = 3;
+      
+      obj.nx = 3;
+      obj.nu = 2;
+      obj.nd = 3;
     end
     
   end % end methods
