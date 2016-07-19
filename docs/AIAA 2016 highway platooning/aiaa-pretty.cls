@@ -258,7 +258,6 @@
 \RequirePackage{amsmath}    % AMS packages
 \RequirePackage{amsfonts}
 \RequirePackage{amssymb}
-
 % Need a package to set 1.5-spaced lines for 'submit'
 \if@aiaa@submit\RequirePackage{setspace}\fi
 % Need a package to fix the author footnotes in two-column format
