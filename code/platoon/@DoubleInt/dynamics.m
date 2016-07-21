@@ -1,8 +1,8 @@
-function dx = dynamics(obj, t, x, u, MIEdims)
+function dx = dynamics(obj, t, x, u, ~, MIEdims)
 % function dx = dynamics(t, x, u)
 %     Dynamics of the double integrator
 
-if nargin < 5
+if nargin < 6
   MIEdims = 0;
 end
 
