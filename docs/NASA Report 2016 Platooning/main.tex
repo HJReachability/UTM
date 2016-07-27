@@ -1,0 +1,79 @@
+\documentclass[plain]{aiaa-pretty}
+
+\usepackage{todonotes} \setlength{\marginparwidth}{2.3cm} 
+
+\newcommand{\MCnote}{\todo[size=\footnotesize,author=MC,color=cyan]}
+
+
+\newcommand{\pos}{p} % position
+\newcommand{\Pos}{\bar{p}} % a particular position (or desired position}
+\newcommand{\vel}{v} % velocity
+\newcommand{\Vel}{\bar{v}} % a particular position (or desired position}
+\newcommand{\hw}{\mathbb{H}} % a single highway
+\newcommand{\hws}{\mathbb{S}} % a sequence of highways
+\newcommand{\hwd}{\hat{d}}
+\newcommand{\cost}[1]{c_\text{#1}}
+\newcommand{\wpt}{\mathcal{W}}
+\newcommand{\cmap}{c}
+\newcommand{\ccost}{C}
+\newcommand{\ppath}{\mathbb{P}}
+\newcommand{\ocost}{V}
+
+\newcommand{\sepdist}{d_\text{sep}} % separation distance
+
+\newcommand{\td}{t_\text{faulty}} % time to descend
+\newcommand{\veh}[1]{Q_{#1}}
+\newcommand{\vehSCS}[1]{\mathcal{Q}_{#1}} % vehicle safety check set
+
+\author{Mo Chen, Qie Hu, Jaime Fisac, Kene Akametalu, Casey Mackin, Claire Tomlin}
+\title{\Large Safety and Liveness of Unmanned Aerial Vehicle Platoons on Air Highways \\
+\normalsize Final Report for NASA UARC Grant NAS2-03144 Task TO.030.21.MD.D-3 Aligned Research Program (ARP) \\
+\normalsize Technological Feasibility of an Air Parcel Approach to Low Altitude UTM}
+
+\abstract{Recently, there has been immense interest in using unmanned aerial vehicles (UAVs) for civilian operations such as package delivery, aerial surveillance, videography, and disaster response. As a result, unmanned aerial systems (UAS) traffic management (UTM) has become necessary to support potentially thousands of UAVs flying simultaneously in the airspace, in order to ensure their liveness and safety requirements are met. Currently, the analysis of large multi-agent systems cannot tractably provide these guarantees if the agents' set of maneuvers is unrestricted. In this paper, we propose to have platoons of UAVs flying on air highways in order to impose the airspace structure that allows for tractable analysis and intuitive monitoring. For the air highway placement problem, we use the flexible and efficient fast marching method to solve the Eikonal equation, which produces a sequence of air highways that minimizes the cost of flying from an origin to any destination. Under our proposed method, the placement of air highways can be updated in real-time to accommodate sudden changes in the airspace. Within the platoons that travel on the air highways, we model each vehicle as a hybrid system with modes corresponding to its role in the platoon. Using Hamilton-Jacobi reachability, we propose several liveness controllers and a safety controller that guarantee the success and safety of all mode transitions. For a single altitude range, our approach guarantees safety for one safety breach per vehicle; in the unlikely event of multiple safety breaches, safety can be guaranteed over multiple altitude ranges. We demonstrate the satisfaction of liveness and safety requirements through simulations of three common scenarios.}
+
+\begin{document}
+\maketitle
+\section*{Nomenclature}
+\noindent\begin{tabular}{@{}lcl@{}}
+$\cmap$ &=& Cost map \\
+$\ppath$ &=& A path between two points \\
+$\ccost$ &=& Cumulative cost of a path \\
+$\ocost$ &=& Value function of partial differential equations \\
+$\hw$ &=& Air highway \\
+$\hwd$ &=& Direction of travel of air highway \\
+$\hws$ &=& A sequence of air highways \\
+$\wpt$ &=& Waypoint \\
+$x$ &=& System state (of a vehicle) \\
+$\pos=(\pos_x, \pos_y)$ &=& Horizontal position \\
+$\vel=(\vel_x, \vel_y)$ &=& Horizontal velocity \\
+$\Pos$ &=& Target position \\
+$\Vel$ &=& Target velocity \\
+$\sepdist$ &=& Separation distance of vehicles within a platoon \\
+$\td$ &=& Time limit for descent during potential conflict \\
+$\veh{i}$ &=& $i$th vehicle \\
+$\vehSCS{i}$ &=& Set of vehicles for vehicle $\veh{i}$ to consider for safety 
+\end{tabular} \\
+
+\input{introduction.tex}
+\input{high_form.tex}
+\input{high_eikon.tex}
+\input{high_waypoints.tex}
+\input{high_sim.tex}
+\input{plat_form.tex}
+\input{plat_reach.tex}
+\input{plat_controllers.tex}
+\input{plat_summary.tex}
+\input{plat_safety.tex}
+\input{plat_sim.tex}
+\input{conclusions.tex}
+
+
+%\section*{Appendix}
+
+\section*{Acknowledgments}
+This work is supported in part by NSF under CPS:ActionWebs (CNS-0931843) and CPS:FORCES (CNS1239166), by NASA under grants NNX12AR18A and UCSCMCA-14-022 (UARC), by ONR under grants N00014-12-1-0609, N000141310341 (Embedded Humans MURI), and MIT\_5710002646 (SMARTS MURI), and by AFOSR under grants UPenn-FA9550-10-1-0567 (CHASE MURI) and the SURE project.
+
+\bibliographystyle{aiaa}
+\bibliography{references}
+\end{document}

@@ -1,0 +1,44 @@
+% !TEX root = main.tex
+\section{Air Highways}
+We consider air highways to be virtual highways in the airspace on which a number of UAV platoons may be present. UAVs seek to arrive at some desired destination starting from their origin by traveling along a sequence of air highways. Air highways are intended to be the common pathways for many UAV platoons, whose members may have different origins and destinations. By routing platoons of UAVs onto a few common pathways, the airspace becomes more tractable to analyze and intuitive to monitor. The concept of platoons will be proposed in Section \ref{sec:platooning}; in this section, we focus on air highways.
+
+Let an air highway be denoted by the continuous function $\hw: [0, 1] \rightarrow \mathbb{R}^2$. Such a highway lies in a horizontal plane of fixed altitude, with start and end points given by $\hw(0)\in\mathbb{R}^2$ and $\hw(1)\in\mathbb{R}^2$ respectively. For simplicity, we assume that the highway segment is a straight line segment, and the parameter $s$ indicates the position in some fixed altitude as follows: $\hw(s) = \hw(0) + s(\hw(1) - \hw(0))$. To each highway, we assign a speed of travel $v_\hw$ and specify the direction of travel to be the direction from $\hw(0)$ to $\hw(1)$, denoted using a unit vector $\hwd = \frac{\hw(1) - \hw(0)}{\lVert\hw(1) - \hw(0)\rVert_2}$.
+
+Air highways must not only provide structure to make the analysis of a large number of vehicles tractable, but also allow vehicles to reach their destinations while minimizing any relevant costs to the vehicles and to the surrounding regions. Such costs can for example take into account people, assets on the ground, and manned aviation, entities to which UAVs pose the biggest risks \cite{Kopardekar16}. Thus, given an origin-destination pair (eg. two cities), air highways must connect the two points while potentially satisfying other criteria. In addition, optimal air highway locations should ideally be able to be recomputed in real-time when necessary in order to update airspace constraints on-the-fly, in case, for example, airport configurations change or certain airspaces have to be closed \cite{Kopardekar16}. With this in mind, we now define the air highway placement problem, and propose a simple and fast way to approximate its solution that allows for real-time recomputation.
+
+\subsection{The Air Highway Placement Problem}
+Consider a map $\cmap:\mathbb{R}^2 \rightarrow \mathbb{R}$ which defines the cost $\cmap(\pos)$ incurred when a UAV flies over the position $\pos=(\pos_x,\pos_y)\in\mathbb{R}^2$. Given any position $\pos$, a large value of $\cmap(\pos)$ indicates that the position $\pos$ is costly or undesirable for a UAV to fly over. Locations with high cost could, for example, include densely populated areas and areas around airports. In general, the cost map $\cmap(\cdot)$ may be used to model cost of interference with commercial airspaces, cost of accidents, cost of noise pollution, risks incurred, etc., and can be flexibly specified by government regulation bodies. 
+
+Let $\pos^o$ denote an origin point and $\pos^d$ denote a destination point. Consider a sequence of highways $\hws_N = \{\hw_1, \hw_2, \ldots, \hw_N\}$ that satisfies the following:
+
+\begin{equation}
+\label{eq:hw_seq}
+\begin{aligned}
+\hw_1(0) &= \pos^o \\
+\hw_i(1) &= \hw_{i+1}(0), i = 0, 1, \ldots, N-1 \\
+\hw_N(1) &= \pos^d \\
+\end{aligned}
+\end{equation}
+
+The interpretation of the above conditions is that the start point of first highway is the origin, the end point of a highway is the start point of the next highway, and the end point of last highway is the destination. The highways $\hw_1,\ldots,\hw_N$ form a sequence of waypoints for a UAV starting at the origin $\pos^o$ to reach its destination $\pos^d$.
+
+Given only the origin point $\pos^o$ and destination point $\pos^d$, there are an infinite number of choices for a sequence of highways that satisfy \eqref{eq:hw_seq}. However, if one takes into account the cost of flying over any position $\pos$ using the cost map $\cmap(\cdot)$, we arrive at the air highway placement problem:
+
+\begin{equation}
+\label{eq:ahpp} % air highway placement problem
+\begin{aligned}
+& \min_{\hws_N, N} \left\{\left(\sum_{i=1}^N \int_0^1 \cmap(\hw_i(s)) ds\right) + R(N)\right\}\\
+& \text{subject to \eqref{eq:hw_seq}} 
+\end{aligned}
+\end{equation}
+
+\noindent where $R(\cdot)$ is a regularizer, such as $R(N) = N^2$.
+
+The interpretation of \eqref{eq:ahpp} is that we consider air highways to be line segments of constant altitude over a region, and UAV platoons travel on these air highways to get from some origin to some destination. Any UAV flying on a highway over some position $\pos$ incurs a cost of $\cmap(\pos)$, so that the total cost of flying from the origin to the destination is given by the summation in \eqref{eq:ahpp}. The air highway placement problem minimizes the cumulative cost of flying from some origin $p^o$ to some destination $p^d$ along the sequence of highways $\hws_N=\{\hw_1, \hw_2, \ldots, \hw_N\}$. The regularization term $R(N)$ is used to prevent $N$ from being arbitrarily large.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.95\textwidth]{"fig/highway_illustration"}
+	\caption{Illustration of the air highway placement procedure.}
+	\label{fig:hw_ill}
+\end{figure}

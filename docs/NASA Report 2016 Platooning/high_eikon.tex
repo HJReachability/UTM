@@ -1,0 +1,37 @@
+% !TEX root = main.tex
+\subsection{The Eikonal Equation -- Cost-Minimizing Path}
+Let $s_0, s_1\in \mathbb{R}$, and let $\ppath: [s_0, s_1] \rightarrow \mathbb{R}^2$ be a path starting from an origin point $\pos^o = \ppath(s_0)$ and ending at a destination point $\pos^d = \ppath(s_1)$. Note that the sequence $\hws_N$ in \eqref{eq:ahpp} is a piecewise affine example of a path $\ppath(s), s\in[s_0, s_1]$; however, a path $\ppath$ that is not piecewise affine cannot be written as a sequence of highways $\hws_N$.
+
+More concretely, suppose a UAV flies from an origin point $p^o$ to a destination point $p^d$ along some path $\ppath(s)$ parametrized by $s$. Then, $\ppath(s_0) = p^o$ would denote the origin, and $\ppath(s_1) = p^d$ would denote the destination. All intermediate $s$ values denote the intermediate positions of the path, i.e. $\ppath(s) = \pos(s) = (\pos_x(s), \pos_y(s))$.
+
+Consider the cost map $\cmap(\pos_x, \pos_y)$ which captures the cost incurred for UAVs flying over the position $\pos = (\pos_x, \pos_y)$. Along the entire path $\ppath(s)$, the cumulative cost $\ccost(\ppath)$ is incurred. Define $\ccost$ as follows:
+
+\begin{equation}
+\ccost(\ppath) = \int_{s_0}^{s_1} \cmap(\ppath(s)) ds
+\end{equation}
+
+For an origin-destination pair, we would like to find the path such that the above cost is minimized. More generally, given an origin point $p^o$, we would like to compute the function $\ocost$ representing the optimal cumulative cost for any destination point $\pos^d$:
+
+\begin{equation}
+\label{eq:rahpp} % relaxed air highway placement problem
+\begin{aligned}
+\ocost(\pos^d) &= \min_{\ppath(\cdot), \ppath(s_1)=\pos^d} \ccost(\ppath) \\
+&= \min_{\ppath(\cdot), \ppath(s_1)=\pos^d} \int_{s_0}^{s_1} \cmap(\ppath(s)) ds
+\end{aligned}
+\end{equation}
+
+It is well known that the solution to the Eikonal equation \eqref{eq:eikonal} precisely computes the function $\ocost(\pos^d)$ given the cost map $\cmap$ \cite{Sethian96,Alton06}. Note that a single function characterizes the minimum cost from an origin $\pos^o$ to \textit{any} destination $\pos^d$. Once $\ocost$ is found, the optimal path $\ppath$ between $\pos^o$ and $\pos^d$ can be obtained via gradient descent.
+
+\begin{equation}
+\label{eq:eikonal}
+\begin{aligned}
+\cmap(\pos)|\nabla \ocost(\pos)| &= 1 \\
+\ocost(\pos^o) &= 0
+\end{aligned}
+\end{equation}
+
+The Eikonal equation \eqref{eq:eikonal} can be efficiently computed numerically using the fast marching method \cite{Sethian96}; each computation takes on the order of merely a second.
+
+Note that \eqref{eq:rahpp} can be viewed as a relaxation of the air highway placement problem defined in \eqref{eq:ahpp}. Unlike \eqref{eq:ahpp}, the relaxation \eqref{eq:rahpp} can be quickly solved using currently available numerical tools. Thus, we first solve the approximate air highway placement problem \eqref{eq:rahpp} by solving \eqref{eq:eikonal}, and then post-process the solution to \eqref{eq:rahpp} to obtain an approximation to \eqref{eq:ahpp}.
+
+Given a single origin point $\pos^o$, the optimal cumulative cost function $\ocost(\pos^d)$ can be computed. Suppose $M$ different destination points $\pos^d_i,i=1,\ldots,M$ are chosen. Then, $M$ different optimal paths $\ppath_i,i=1,\ldots,M$ are obtained from $\ocost$.

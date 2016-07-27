@@ -1,0 +1,128 @@
+% !TEX root = main.tex
+\subsection{Hamilton-Jacobi Reachability}
+\subsubsection{General Framework}
+Consider a differential game between two players described by the system
+\begin{equation} \label{eq:dyn}
+\dot{x} = f(x, u_1, u_2), \text{for almost every }t\in [-T,0]
+\end{equation}
+
+\noindent where $x\in\mathbb{R}^n$ is the system state, $u_1\in \mathcal{U}_1$ is the control of Player 1, and $u_2\in\mathcal{U}_2$ is the control of Player 2. We assume $f:\mathbb{R}^n\times \mathcal{U}_1 \times \mathcal{U}_2 \rightarrow \mathbb{R}^n$ is uniformly continuous, bounded, and Lipschitz continuous in $x$ for fixed $u_1,u_2$, and the control functions $u_1(\cdot)\in\mathbb{U}_1,u_2(\cdot)\in\mathbb{U}_2$ are drawn from the set of measurable functions\footnote{
+A function $f:X\to Y$ between two measurable spaces $(X,\Sigma_X)$ and $(Y,\Sigma_Y)$ is said to be measurable if the preimage of a measurable set in $Y$ is a measurable set in $X$, that is: $\forall V\in\Sigma_Y, f^{-1}(V)\in\Sigma_X$, with $\Sigma_X,\Sigma_Y$ $\sigma$-algebras on $X$,$Y$.}. Player 2 is allowed to use nonanticipative strategies \cite{Evans84,Varaiya67} $\gamma$, defined by
+
+\begin{equation}
+\begin{aligned}
+\gamma &\in \Gamma := \{\mathcal{N}: \mathbb{U}_1 \rightarrow \mathbb{U}_2 \mid  u_1(r) = \hat{u}_1(r) \\
+&\text{for almost every } r\in[t,s] \Rightarrow \mathcal{N}[u_1](r) \\
+&= \mathcal{N}[\hat{u}_1](r) \text{ for almost every } r\in[t,s]\}
+\end{aligned}
+\end{equation}
+
+In our differential game, the goal of Player 2 is to drive the system into some target set $\mathcal{L}$, and the goal of Player 1 is to drive the system away from it. The set $\mathcal{L}$ is represented as the zero sublevel set of a bounded, Lipschitz continuous function $l:\mathbb{R}^n\rightarrow\mathbb{R}$. We call $l(\cdot)$ the \textit{implicit surface function} representing the set $\mathcal L: \mathcal{L}=\{x\in\mathbb{R}^n \mid l(x)\le 0\}$.
+
+Given the dynamics \eqref{eq:dyn} and the target set $\mathcal{L}$, we would like to compute the reachable set, $\mathcal{V}(t)$:
+
+\begin{equation}
+\begin{aligned}
+\mathcal{V}(t) &:= \{x\in\mathbb{R}^n \mid \exists \gamma\in\Gamma \text{ such that } \forall u_1(\cdot)\in\mathbb{U}_1, \\
+&\exists s \in [t,0], \xi_f(s; t, x, u_1(\cdot), \gamma[u_1](\cdot)) \in \mathcal{L} \}
+\end{aligned}
+\end{equation}
+where $\xi_f$ is the trajectory of the system satisfying initial conditions $\xi_f(t; x, t, u_1(\cdot), u_2(\cdot))=x$ and the following differential equation almost everywhere on $[-t, 0]$
+\begin{equation}
+\begin{aligned}
+\frac{d}{ds}&\xi_f(s; x, t, u_1(\cdot), u_2(\cdot)) \\
+&= f(\xi_f(s; x, t, u_1(\cdot), u_2(\cdot)), u_1(s), u_2(s))
+\end{aligned}
+\end{equation}
+
+Many methods involving solving HJ PDEs \cite{Mitchell05} and HJ variational inequalities (VI) \cite{Bokanowski10,Barron89,Fisac15} have been developed for computing the reachable set. These HJ PDEs and HJ VIs can be solved using well-established numerical methods. For this paper, we use the formulation in \cite{Mitchell05}, which has shown that the reachable set $\mathcal{V}(t)$ can be obtained as the zero sublevel set of the viscosity solution \cite{Crandall84} $V(t,x)$ of the following terminal value Hamilton-Jacobi-Isaacs (HJI) PDE:
+
+\begin{equation} \label{eq:HJIPDE}
+\begin{aligned}
+D_t &V(t,x) + \\
+&\min \{0, \max_{u_1\in\mathcal{U}_1} \min_{u_2\in\mathcal{U}_2} D_x V(t,x) \cdot f(x,u_1,u_2) \} = 0, \\
+&V(0,x) = l(x)
+\end{aligned}
+\end{equation}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.95\textwidth]{"fig/RSExample"}
+	\caption{Illustration of a target set, reachable set, and their implicit surface functions.}
+	\label{fig:RSExample}
+\end{figure}
+
+\noindent from which we obtain $\mathcal{V}(t) = \{x\in\mathbb{R}^n \mid V(t,x)\le 0\}$. From the solution $V(t,x)$, we can also obtain the optimal controls for both players via the following:
+
+\begin{equation} \label{eq:HJI_ctrl_syn}
+\begin{aligned}
+u_1^*(t,x) &= \arg \max_{u_1\in\mathcal{U}_1} \min_{u_2\in\mathcal U_2} D_x V(t,x) \cdot f(x,u_1,u_2)\\
+u_2^*(t,x) &= \arg \min_{u_2\in\mathcal{U}_2} D_x V(t,x) \cdot f(x,u_1^*,u_2)
+\end{aligned}
+\end{equation}
+
+In the special case where there is only one player, we obtain an optimal control problem for a system with dynamics
+
+\begin{equation} \label{eq:dyn_d}
+\dot{x} = f(x, u), t\in [-T,0], u\in\mathcal U.
+\end{equation}
+
+The reachable set in this case would be given by the Hamilton-Jacobi-Bellman (HJB) PDE
+
+\begin{equation} \label{eq:HJBPDE}
+\begin{aligned}
+D_t V(t,x) + \min \{0, \min_{u\in\mathcal{U}} D_x V(t,x) \cdot f(x,u)\} &= 0 \\
+V(0,x) = l(x)&
+\end{aligned}
+\end{equation}
+
+\noindent where the optimal control is given by
+
+\begin{equation} \label{eq:HJB_ctrl_syn}
+u^*(t,x) = \arg \min_{u\in\mathcal{U}} D_x V(t,x) \cdot f(x,u)
+\end{equation}
+
+For our application, we will use several decoupled system models and utilize the decoupled HJ formulation in \cite{Chen15}, which enables real-time 4D reachable set computations and tractable 6D reachable set computations.
+
+\subsubsection{Relative Dynamics and Augmented Relative Dynamics}
+Besides Equation \eqref{eq:dyn}, we will also consider the relative dynamics between two quadrotors $Q_i,Q_j$. These dynamics can be obtained by defining the relative variables
+
+\begin{equation} \label{eq:rel_var}
+\begin{aligned}
+p_{x,r} &= p_{x,i} - p_{x,j} \\
+p_{y,r} &= p_{y,i} - p_{y,j}\\
+v_{x,r} &= v_{x,i} - v_{x,j}\\
+v_{y,r} &= v_{y,i} - v_{y,j}
+\end{aligned}
+\end{equation}
+
+We treat $Q_i$ as Player 1, the evader who wishes to avoid collision, and we treat $Q_j$ as Player 2, the pursuer, or disturbance, that wishes to cause a collision. In terms of the relative variables given in \eqref{eq:rel_var}, we have 
+
+\begin{equation} \label{eq:rel_dyn}
+\begin{aligned}
+\dot{p}_{x,r} &= v_{x,r} \\
+\dot{p}_{y,r} &= v_{y,r} \\
+\dot{v}_{x,r} &= u_{x,i} - u_{x,j} \\
+\dot{v}_{y,r} &= u_{y,i} - u_{y,j}
+\end{aligned}
+\end{equation}
+
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=0.25\textwidth]{"fig/rel_coords"}
+%	\caption{Relative coordinates}
+%	\label{fig:rel_coords}
+%\end{figure}
+
+We also augment \eqref{eq:rel_var} with the velocity of $Q_i$, given in \eqref{eq:rel_dyn_aug}, to impose a velocity limit on the quadrotor.
+
+\begin{equation} \label{eq:rel_dyn_aug}
+\begin{aligned}
+\dot{p}_{x,r} &= v_{x,r} \\
+\dot{p}_{y,r} &= v_{y,r} \\
+\dot{v}_{x,r} &= u_{x,i} - u_{x,j} \\
+\dot{v}_{y,r} &= u_{y,i} - u_{y,j} \\
+\dot{v}_{x,i} &= u_{x,i} \\
+\dot{v}_{y,i} &= u_{y,i}
+\end{aligned}
+\end{equation}

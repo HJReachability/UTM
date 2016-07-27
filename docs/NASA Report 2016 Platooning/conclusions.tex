@@ -1,0 +1,9 @@
+% !TEX root = main.tex
+\section{Conclusions}
+To address the important and urgent problem of the traffic management of UAVs, we proposed to have platoons of UAVs traveling on air highways. We showed how such an airspace structure leads to much easier safety and liveness analysis. We provided simulations which show that by organizing vehicles into platoons, many complex maneuvers can be performed using just a few different reachable sets.
+
+For the placement of air highways over a region, we utilize the very intuitive and efficient fast marching algorithm for solving the Eikonal equation. Our algorithm allows us to take as input any arbitrary cost map representing the desirability of flying over any position in space, and produce a set of paths from any destination to a particular origin. Simple heuristic clustering methods can then be used to convert the sets of paths into a set of air highways.
+
+On the air highways, we considered platoons of UAVs modeled by hybrid systems. We show how various required platoon functions (merging onto an air highway, changing platoons, etc.) can be implemented using only the Free, Leader, and Follower modes of operation. Using HJ reachability, we proposed liveness controllers that guarantee the success of all mode transitions, and wrapped a safety controller around liveness controllers to ensure no collision between the UAVs can occur. Under the assumption that faulty vehicles can descend after a pre-specified duration, our safety controller guarantees that no collisions will occur in a single altitude level as long as at most one safety breach occurs for each vehicle in the platoon. Additional safety breaches can be handled by multiple altitude ranges in the airspace. 
+
+Immediate future work includes exploring different vehicle models, investigating algorithms for resolving multiple safety breaches within the same altitude, and algorithms for off-highway short-range path planning of multiple UAVs.
