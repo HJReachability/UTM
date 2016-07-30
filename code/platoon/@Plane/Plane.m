@@ -11,11 +11,6 @@ classdef Plane < Vehicle
     % Speed control bounds
     vrange
     
-    % Turn rate and speed are both controls; however, if vrange is a
-    % scalar, then the Plane has constant speed
-    nx = 3;
-    nu = 2;
-    
     % Disturbance
     dMax
   end
@@ -74,7 +69,11 @@ classdef Plane < Vehicle
       obj.dMax = dMax;
       
       obj.pdim = 1:2;
-      obj.hdim = 3;      
+      obj.hdim = 3;
+      
+      obj.nx = 3;
+      obj.nu = 2;
+      obj.nd = 3;
     end
     
   end % end methods
