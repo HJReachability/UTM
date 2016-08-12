@@ -33,9 +33,10 @@ extraArgs.plotData.plotDims = [1 0 1 0];
 extraArgs.plotData.projpt = vslice;
 
 data = HJIPDE_solve(data0, tau, schemeData, 'zero', extraArgs);
-TTR = TD2TTR(data, tau);
-P = computeGradients(schemeData.g, TTR);
 
 save('Quad4DSafety.mat', 'schemeData', 'data', '-v7.3')
+
+TTR = TD2TTR(schemeData.grid, data, tau);
+P = computeGradients(schemeData.grid, TTR);
 save('Quad4DSafety_smaller.mat', 'schemeData', 'TTR', 'P', '-v7.3')
 end
