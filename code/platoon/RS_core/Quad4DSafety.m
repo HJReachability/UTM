@@ -1,5 +1,5 @@
 function Quad4DSafety()
-N = 75;
+N = 71;
 N = N * ones(4,1);
 gMin = [-1; -1; -1; -1];
 gMax = [1; 1; 1; 1];
