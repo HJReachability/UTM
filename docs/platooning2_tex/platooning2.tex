@@ -384,13 +384,40 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 \textcolor{red}{** Similar to the lab's usual UTM intro, but talk about hardware
-**}
+emphasize both the importance of a scalable airspace architecture and the
+importance of hardware implementation **}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Problem Formulation}
+\section{Background}
 
 \textcolor{red}{** Lots of referencing of Platooning I and specifying where this paper expands
 on Platooning I **}
+
+    \subsection{UTM Hybrid System}
+        \textcolor{red}{** Walk through hybrid system and talk about both dynamics and control
+        of hybrid system **}
+
+        \begin{itemize}
+            \item Vehicles listen to either safety or liveness controls
+                broadcasted by the TFM node and liveness node, respectively, where
+                guards are triggered by TFM.
+            \item TFM computes safety within platoons and for platoon to
+                platoon. It sets boolean of isSafe for each.
+            \item Liveness listens to state of vehicle, mode switches, and
+                broadcasts appropriate controls for vehicles to reach their
+                targets through the air highway system.
+            \item Illustrated in Fig~\ref{finite}
+        \end{itemize}
+
+        \begin{figure*}
+        \centering
+        \includegraphics[width=7in]{finite_automaton.pdf}\\
+        Left: Model of hybrid control of the UAVs; Center: Finite automatons
+        managed by the third-party TFM; Right: Hybrid system that computes the liveness
+        controls for the UAVs.
+        \caption{Finite automaton model of the entire platooning hybrid system}
+        \label{finite}
+        \end{figure*}
 
     \subsection{Platooning}
 
@@ -400,7 +427,8 @@ on Platooning I **}
 
         \subsubsection{Lower-Dimensional Vehicle Dynamics}
             \textcolor{red}{** The vehicle dynamics from Platooning I that are used to compute
-            reachable sets for this implementation **}
+            reachable sets for this implementation, reference later section that
+            goes over LQR framework**}
 
         \subsubsection{Platoon Structure}
             \textcolor{red}{** Platoon formulation and structure **}
@@ -413,20 +441,6 @@ on Platooning I **}
             \textcolor{red}{** Talk about what is done by the centralized traffic flow manager
             **}
 
-    \subsection{UTM Hybrid System}
-        \textcolor{red}{** Walk through hybrid system and talk about both dynamics and control
-        of hybrid system **}
-
-        \begin{figure*}
-        \centering
-        \includegraphics[width=7in]{finite_automaton.pdf}\\
-        Left: Model of hybrid control of the UAVs; Center: Finite automatons
-        managed by the third-party TFM; Right: Hybrid system that computes the liveness
-        controls for the UAVs.
-        \caption{Finite automaton model of the entire platooning hybrid system}
-        \label{finite}
-        \end{figure*}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation}
 
@@ -434,11 +448,32 @@ on Platooning I **}
 
         \subsubsection{Hardware Environment}
             \textcolor{red}{** Hardware that is being used and their real world
-            analogs **}
+            analogs. Expand on how the real world would more likely work? **}
+
+            \begin{itemize}
+                \item Vehicle: Crazyflie 2.0.
+                \item Localization: VICON. Acts in place of a sensor fusion
+                    between GPS, accelerometer, vision and lidar. **Expand on
+                    why so many things fused**
+                \item Controller: Liveness ROS node running on laptop connected
+                    to LAN.
+                \item Centralized air traffic control: TFM ROS node running on
+                    laptop connected to LAN.
+            \end{itemize}
 
         \subsubsection{Communications Infrastructure}
             \textcolor{red}{** The ROS communications layer and why it is structured the way it
-            is ** [ref to wolfgang's work and maybe benoit's]}
+            is ** [ref to wolfgang's work]}
+
+            \begin{itemize}
+                \item Crazyflie ROS Node (Subscribes to controls and isSafe,
+                    publishes state estimation)
+                \item Server ROS Node (Hosts all the Crazyflie ROS Nodes)
+                \item Liveness ROS Node (Subscribes to state estimation,
+                    published liveness controls)
+                \item TFM ROS Node (Subscribes to state estimation, publishes
+                    isSafe and safe controls)
+            \end{itemize}
 
             \begin{figure}[t]
             \centering
@@ -450,6 +485,15 @@ on Platooning I **}
     \subsection{Reachability on real systems}
         \textcolor{red}{** Talk about the numerical challenges and solutions of implementing
         reachability on real dynamical systems **}
+        \begin{itemize}
+            \item Work with windows/intervals instead of single real
+                values/floats
+            \item Use minimum real information to mitigate noise (eg. only using
+                y-coordinate and assumption that vehicle being followed is
+                already on highway)
+            \item Convex blending for reach set edges (prevent bang-bang
+                situations)
+        \end{itemize}
 
     \subsection{Controller}
 
@@ -460,6 +504,13 @@ on Platooning I **}
         \subsubsection{Enforcing lower-dimensional reachability}
         \textcolor{red}{** How guarantees on a lower-dimensional system are being enforced
             in the full higher-dimensional state space of quadrotor dynamics **}
+
+            \begin{itemize}
+                \item Roll-pitch-yaw already assumed to be zero for near hover
+                    assumption
+                \item Only control second order behaviour of position and first
+                    order behaviour of velocity in XY-plane.
+            \end{itemize}
 
 
 
@@ -621,6 +672,8 @@ on Platooning I **}
     ref to cfnnet
 \bibitem{cfrepo}
     ref to wolfgang's repo
+\bibitem{ROS}
+    ref to ROS
 
 %\bibitem{IEEEhowto:kopka}
 %H.~Kopka and P.~W. Daly, \emph{A Guide to \LaTeX}, 3rd~ed.\hskip 1em plus
