@@ -44,7 +44,7 @@ xs_ys = rotate2D([xs; ys], theta);
 xs = xs_ys(1,:);
 ys = xs_ys(2,:);
 for j = 1:length(xs)
-  tfm.regVehicle(Quadrotor([xs(j) 0 ys(j) 0]));
+  tfm.regVehicle(UTMQuad4D([xs(j) 0 ys(j) 0]));
   tfm.aas{j}.plotPosition;
 end
 
