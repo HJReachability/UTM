@@ -1,0 +1,224 @@
+\documentclass[submit]{aiaa-pretty}
+
+\title{Response to reviewers}
+
+\begin{document}
+\maketitle
+
+\section{Associate Editor's Comments to Author}
+\begin{itemize}
+\item\textbf{How is convective weather, for example, and winds taken into account when computing an optimal path from the origin to the destination?  As a follow-on, how is uncertainty in the forecast accounted for?}
+
+How each individual vehicle responds to disturbances such as weather is a separate problem from the air highway placement process, which only specifies the location of the highways. Disturbances are accounted for by controllers for following the highway or following the platoon (Fig. 4). 
+
+However, any forecast, however uncertain it may be, can be incorporated into the cost map. Given the cost map, air highways can then be placed. The exact process of converting everything including population density, geography, forecast information, etc. to a cost map is not discussed in the paper. One primary purpose of the paper is to highlight that air highway placement can be done in real-time given the cost map.
+
+\item\textbf{For realtime applications, how would you know to update the cost map?  A runway configuration change is straight forward since presumably there is a clear indication that a change was made, but if such a notification isn’t available how would this happen?}
+
+This is great point. The cost map would be changed based on many factors such as weather forecasts (eg. impending hurricane), commercial air traffic, etc. This could either be done manually or automatically. In terms of communicating this information, all vehicles and users could have an interface showing the current highway map. 
+
+\item\textbf{Section III.A.2: Are there downsides if the majority of operators continue to operate as Free vehicles and not join the highway structure (essentially becoming intruder vehicles)?  From Section III.G.2, the onus of avoiding collisions with the free vehicles appears to be on the vehicles in the platoon.  The required avoidance maneuvers could become extreme if there are many Free vehicles, right?}
+
+Under the assumption that UAVs can only fly when they're guaranteed to be safe, then as the demand for flying increases, vehicles would no longer be guaranteed-safe when they are free. The platooning structure allows safety guarantees to be made, and the multi-UAV system to be easily monitored, thereby allowing more vehicles to fly at once. Whether the vehicles are allowed to be free during their entire flight would be subject to traffic rules to be established by government agencies (or some centralized governing body).
+
+\item\textbf{Section III.A.2: It would seem that there might be potential costs for a Free vehicle to join a platoon.  For example, a vehicle may need to delay its departure time or alter its “optimal trajectory” to rendezvous with the Lead vehicle.  How is this additional cost weighed against the decision to remain “Free”, or to wait for a new platoon to be established, or to lead the formation of a new platoon?}
+
+Definitely, being part of the highway structure has a cost to the individual vehicle. However, remaining free may not be an option depending on traffic rules. When the number of vehicles increases to a point where all vehicles being free is no longer manageable, each vehicle would need to use the highways, and effectively ``pay'' for a structure that guarantees safety.
+
+\item\textbf{What is there a maximum number of UAVs that can be safely accommodated in a platoon before a second platoon should be created?}
+
+Strictly speaking there is no maximum. However, practically speaking it is unclear what the best size for a platoon would be on a single highway. Further research would be needed to understand this.
+
+\item\textit{No future work in Conclusions.  The Conclusions section is only for conclusions that can be drawn directly from the manuscript.}
+\end{itemize}
+
+\textbf{Additional Minor Comments:}
+\begin{enumerate}
+\item \textit{Please ensure that the captions of all figures are not longer than two lines.  Additional text can be included in the main body of the pager.}
+\item \textit{Please re-define all acronyms in the Conclusions.}
+\item \textit{The Conclusions section is reserved for conclusions that can be drawn from the body of the paper.  Please delete the last sentence since it is referring to future work.}
+\item \textit{DOI numbers are required for the references whenever available}
+\item \textit{AIAA conference papers need paper numbers}
+\end{enumerate}
+
+\section{Reviewer 1's comments}
+
+\textit{A well-written paper on a topic of increasing importance.  The issue of traffic flow management as applied to low-altitude, small UAS is undervalued by many in ATM and aviation.  It is encouraging to see solid work being done in this area.}
+
+\textit{Overall the presentation of the paper is clear.  However, as a reader, I was left with several (small) open questions.  Those questions need not be deeply answered by the paper, however, I think addressing them explicitly (even if to state they will not be detailed) will provide a more complete feeling to the paper.}
+
+\begin{enumerate}
+\item\textit{This work is like platooning research from traditional TFM.  The problem with those solutions was typically that through the implementation of platooning, often there was such a loss of efficiency to form the platoon, that it was ultimately not worth while.  The authors should probably look at some of that previous work for citation rather than relying solely on ground vehicle platooning.}
+
+\item\textbf{At what densities do the authors feel that airspace structure (such as the proposed "highways") would begin to show value?  If there is only one vehicle flying in the airspace, platoons are impossible and unnecessary.  If there are 1M vehicles, then we might think structure would be good.  What is that breaking point or how to we find it?}
+
+This point is very important and requires further investigation. As long as multiple conflicts do not occur, pairwise collision avoidance would be sufficient to keep vehicles safe in an unstructured environment. However, it is difficult to predict whether multiple conflicts would occur, and in addition, unstructured flight can be very unintuitive to monitor. 
+
+An initial idea on how to determine a breakpoint would be to implement large-scale simulations to compare different numbers of vehicles flying in structured and unstructured environments.
+
+\item\textbf{What can be said about more realistic vehicle faults?  Many UAS faults would preclude them from cleanly just finding another altitude to operate at.  In that case your safety modeling is very insufficient.  A brief discussion on some practical UAS faults and the potential need for better modeling in your framework is probably warranted.}
+
+There has been some work done on emergency landing of vehicles, which could provide a way for vehicles to exit the current altitude range. These types of analysis usually involve multiple steps, including identifying most likely types of faults, the dynamics of the vehicles during the fault, etc. 
+
+One assumption implicitly made in this paper is that the mechanism for exiting the altitude range can be abstracted or summarized into just a time-to-exit-altitude-range parameter.
+
+\item\textit{A few sentences about the policy implications may help ground the reader in terms of how such a system might find its way in to the airspace in the future.  Is this platooning a requirement of operators?  Optional?  If optional, what is the critical mass that makes it effective?}
+
+\item\textit{Should your state diagram (Figure 4) have a terminal state of some kind?  Like a "Closed" state where they just aren't flying anymore?  Perhaps reachable from "Free" and "Faulty"?  Otherwise it seems like all vehicles are in the air at all times.  If so, you may want to consider an entry point to the state diagram as well.  Where can the vehicles start out?}
+\end{enumerate}
+
+\textit{Again, I don't think all of these questions need to be answered in detail, but addressing them will strengthen the paper.}
+
+\textit{The only style point I have, is in that the introduction sounds a bit too "salesman" like.  In the first paragraph, terms like "important" and "human imagination" feel like they may be a tad overplayed.  Later terms like "cannot be denied" and perhaps a couple others detract from the technical work in some way.  Not required that these be changed, just a style note from one reader.}
+
+\section{Reviewer 2's comments}
+
+\textit{The paper draws inspiration from the Automated Highway Systems (AHS) concept developed at Berkeley in the 90s. The paper proposes the introduction of structure, namely Air Highways and platoons, to airspace control, which is bound to be congested in a near future because of the drone revolution. This seems to be the contribution of the paper.} 
+
+\textit{The problem is that there is no technical justification (or discussion) for this approach. True, that corridors (or Air Highways) make sense, especially in congested areas. But platooning, as proposed, is difficult to justify (in fact there is no justification for platoons in the paper).}
+
+\textbf{Moreover, the proposed approach does not really address the problem of designing corridors (or Air Highways) for a given region. True, that it produces corridors for the problem of going from one “source” to multiple destinations. But it does not address the interesting problem of finding an Air Highway network connecting multiple “sources” and destinations. It is interesting that the proposed approach is not aligned with the idea of “free flight” that has been advocated by some of the authors.}
+
+Free flight may not be scalable in the sense that safety guarantees can no longer be made once the vehicle density reaches some threshold. Having an air highway structure provides a way to guarantee safety and to intuitively monitor the airspace. 
+
+In addition, practically there may be many different levels of abstraction of the airspace, and perhaps free flight may be a good idea on the level of a small neighborhood, while structured flight makes more sense for larger regions like a city.
+
+\textbf{Other than the idea of using AHS concepts for airspace control the paper adds nothing to the state of the art. The path planning and the reachability frameworks used in the paper have been extensively documented in the literature. This may be the reason why the presented material is quite “standard”. This may also be the reason why a few subtle technicalities may have been overlooked (e.g., conditions for the application of the principle of optimality and lack of smoothness of the value function). Moreover, the discussion of related work could have been more extensive.}
+
+The current methods cannot be used to directly analyze a large-scale system of many UAVs, unless a structural assumption is made. By organizing the airspace into air highways, and having UAVs fly in platoons on the air highways, the numerous existing methods can be used a lot more reliably.
+
+\subsection{DETAILED COMMENTS}
+\subsubsection{Abstract}
+\begin{itemize}
+\item \textbf{“Hamilton-Jacobi reachability” – what is special about this HB reachability? Aren’t you just talking about reachability?}
+
+HJ reachability can obtain optimal solutions for nonlinear continuous-time systems involving control and disturbance
+
+\item \textbf{Liveness is not defined. This has a precise meaning in the CS community, but not in the controls community.}
+
+Good point. Here, liveness refers to the system eventually being able to reach a set of goal states. In the context of HJ reachability, the guarantee is actually being able to reach a set of goal states within some time horizon. The text has been modified to reflect this point, and a reference in the introduction has been added.
+\end{itemize}
+\subsubsection{Introduction}
+\begin{itemize}
+\item \textbf{``As a rough estimate...'' – Isn’t this example just too naive?}
+This back-of-the-envelope calculation is meant to motivate the number of vehicles that could be present in the airspace simultaneously
+
+\item \textit{“liveness” – Please cite optimal control work on liveness.}
+
+\item \textbf{``... formulations are based on Hamilton-Jacobi (HJ) reachability, which computes the reachable set, defined as the set of states from which a system is guaranteed to have a control strategy to reach a target set of states'' – isn’t this just backward reachability? What about time? A more precise definition is needed.}
+Added the word ``backward'' for clarity. Precise definitions are found in III.B.1
+
+\item \textbf{``... power and success of HJ reachability analysis in previous applications cannot be denied, especially since numerical tools are readily available to solve the associated HJ partial differential equation'' – the claim is a bit courageous because of the curse of dimensionality. There are limitations on the dimension of the state-space that can be handled by this approach.}
+
+The limitation on system dimension is what this paper tries to address using the structural assumption of a platoon; the language has been changed to address this comment.
+
+\item \textit{''HJ reachability computations are intractable for a large number of vehicles'' – Actually it is not tractable for one single vehicle if we consider dynamics evolving in a high dimension state-space.}
+
+\item \textbf{``A considerable body of work has been done on the platooning of ground vehicles'' – this is true. But it is also true that this is because there is already an infrastructure in place. There are no convincing arguments in the paper leading to the conclusion that the problem of routing and execution control for multiple UAVs is better solved by highways and platoons. In fact, the reader may conclude that the proposed approach has the purpose of finding a problem to a solution that has been proposed for automated highway systems. The proposed approach lacks solids arguments and would be very difficult to implement in practice: information structures; safety; required infra-structure; security; and, UAV diversity.}
+
+This paper is not meant to provide an exhaustive solution. It illustrates that having a highway structure in the airspace allows HJ reachability, a method that normally can only analyze small-scale systems, to be used for large-scale systems. There are definitely those issues mentioned in the comment, as well as many other challenges that need to be overcome. Hopefully this paper can provide a starting point on which future research can be built, and make future research problems more concrete.
+\end{itemize}
+
+\subsubsection{Air highways}
+\begin{itemize}
+\item \textbf{''By routing platoons of UAVs onto a few common pathways'' – actually this problem is not addressed in the paper. There is no solution to the problem of finding common pathways for a given demand profile.}
+
+The paper does not explicitly address the problem of finding common pathways, but the air highway placement method presented here naturally leads to common pathways as seen in figures 2 and 3
+
+\item \textbf{``... air highway be denoted by'' – why is it that an air highway has to be flat?}
+
+Just for simplicity and intuitive monitoring. This is not strictly a requirement.
+
+II.A The air highway placement problem
+\item \textit{``... to each air highway we assign a speed of travel'' – shouldn’t this be a control setting? This varies a lot with the type of UAVs.}
+\item \textit{``...air highway locations should ideally be able to be recomputed in real-time when necessary in order to update airspace constraints on-the fly'' – how practical is this under the limitations discussed above?}
+\item \textbf{ ``... air highway placement problem, and'' – the title can be misleading. The problem is not about finding all highways for a given region. In fact the formulation considers just one “source” and multiple destinations. It is unclear how it would work for the problem of multiple ``sources'' and destinations}
+
+True, but the process can be done for multiple sources, and intersections would need to be managed perhaps by having different highway networks on different altitudes. This is a great direction of future research.
+
+\item \textbf{``... sequence of highways'' – a sequence of highways or the set of all highways joining some initial and final points with N segments?}
+
+A sequence of highways joining a single initial point and a single final point. This should be clear since $p^o$ and $p^d$ are single points.
+
+\item \textit{Cost function – shouldn’t the cost function depend on the type of UAV?}
+\end{itemize}
+
+II.B. The Eikonal equation
+\begin{itemize}
+\item \textit{``sequence of paths'' – same problem as above for highways}
+\item \textbf{``It is well known that the solution to the Eikonal equation (5)'' – this statement is misleading. This is only true if the dynamics of the UAV are of a special form. This is poorly explanined in this paragraph. It neglects to discuss how the Eikonal equation is derived for a special form of dynamics. Moreover, in the tradition of optimal control theory V is called the value function.}
+
+The Eikonal equation is only used for the air highway placement, which is done in a relatively large region of the airspace. Leader vehicles on a highway would track the highway using a controller that takes the vehicle dynamics into account. (figure 4)
+
+\item \textbf{``can be viewed as a relaxation of the air highway placement problem defined in (2). Unlike'' – one wonders if it would have not been better to work on a discretized space space and use Dijkstra’s algorithm. A discussion of related work or related techniques is in order.}
+
+A continuous space is convenient since the cost map is defined on a geographic map, which is a continuous space.
+
+\item \textit{``Given a single origin point po, the optimal cumulative cost function V (pd) can be computed. Suppose M different destination points. Then, M different optimal paths Pi; i = 1; : : : ;M are obtained from V'' – True, but misleading. In fact any number of M will do since the value function is defined for the whole state space.}
+\item \textit{ Equation (3) – Are there any assumptions on the cost function? If not it may happen that V may not be differentiable. What about the interpretation of equation (5) for this case?}
+\end{itemize}
+
+E. Real-Time Highway Location Updates
+\begin{itemize}
+\item \textit{``Since (5) can be solved in approximately 1 second, the air highway placement process can be redone in real-time if the cost'' – True, but the results will no longer satisfy the Principle of Optimality which is at the root of the derivation of the Eikonal equation.}
+\item \textit{On the other hand, depending on for instance the time of day, it may be most desirable to fly in different regions of the airspace'' – Again, if the cost varies with time, then the Eikonal equation no longer solves for the value function V.}
+\item \textbf{``We add to the collection of waypoints the first point on the path at which the heading changes by some threshold C, and repeat this process along the entire path.'' – The paths arising from the Eikonal equation can have kinks and jumps in curvature. How to address that?}
+
+As mentioned, post-processing is not the focus of this paper.
+\end{itemize}
+
+\subsubsection{UAV platooning}
+A. UAVs in platoons
+\begin{itemize}
+\item \textbf{``The techniques we present in this paper do not depend on the dynamics of the vehicles.'' – This is somewhat misleading because reachability analysis depends on the dynamics of the vehicles. Especially when these switch from one highway to the next one.}
+
+Yes, slightly confusing. Changed wording accordingly
+
+\item \textit{``... problem of collision avoidance among N vehicles cannot be tractably solved using traditional dynamic programming approaches because the computation complexity of these approaches scales exponentially with the number ...'' – This needs clarification. What are the information structures for this problem?}
+
+\item \textit{``liveness and safety of the vehicles in a tractable manner'' – liveness and safety are not properly defined.}
+\item \textit{''We consider a platoon of vehicles to be a group of $M \le N$ vehicles, ...'' – This is not clear.}
+\item \textit{''If the vehicle is part of platoon, then it checks safety...” – what it the vehicle is the leader of a platoon? This case is addressed in Figure 5, but not here.}
+\item \textit{``... have a liveness component, which specifies a set of states that the vehicle aims to reach, and a safety component, which specifies a set of states that it must avoid.'' – This is not a definition of liveness.}
+
+B. Hamilton-Jacobi reachability
+\item \textit{Equation (10) – Some of the symbols in the equation were not defined.}
+\item \textit{What is the difference between the HJB and the HJ equations?}
+\item \textit{Figure 6 – What is the zero plane and where is it in the picture?}
+\end{itemize}
+
+C. Reachability based controllers
+\begin{itemize}
+\item \textit{``Reachability analysis is useful for constructing controllers ...'' – This does not say much. Please elaborate on it.}
+\item \textit{``The system dynamics with which the reachable set is computed provide additional flexibility when using reachability to construct controller...'' – Not clear.}
+\item \textbf{Aren’t all calculations made much simple because you are in an air highway? Please elaborate on this.}
+
+Yes. While on the highway, vehicles can use simple controllers to follow the highway or the platoon leader. However, some mode transitions involve more complex movements in both dimensions of the position space.
+
+\item \textit{``liveness controller described in the previous sections when it is not in any danger of collision with other vehicles'' – As before, the concept of liveness has not been introduced before, so it may be difficult to the reader to understand what is going on.}
+\item \textit{``3. Avoiding collisions'' – What happens when a potential collision is detected and there is no solution to the obstacle avoidance problem? Not clear from the text if the approach will work for the case when multiple UAVs are using safety controllers? This is even more interesting for the case of UAVs in a platoon. It is not clear from the text if the safety set is defined only for motions along the highway, or if there are additional degrees of freedom.}
+\end{itemize}
+
+D. Other controllers
+\begin{itemize}
+\item \textit{``$\hat d$ is the highway’s direction of travel.'' – The direction of travel is not properly defined.}
+\end{itemize}
+
+E. Safety analysis
+\begin{itemize}
+\item \textit{The discussion seems to overlook the definition of the information structures for the problem. The same happens with considerations about sensor performance.}
+\item \textit{``Given that vehicles within a platoon are safe with respect to each other, each platoon can be treated as a single vehicle, and perform collision avoidance with other platoons. By treating each platoon as a single unit, we can reduce the number of individual vehicles that need to check for safety against each other, reducing overall computation burden.'' – This seems to be in contradiction with the example with an intruder vehicle.}
+\end{itemize}
+
+F. Numerical simulations
+\begin{itemize}
+\item \textit{What are the information structures for these problems?}
+\item \textit{The maneuvers described in Fig 9 seem to go against our intuition. A more detailed description of what is going on is needed.}
+\end{itemize}
+
+IV. Conclusions
+\begin{itemize}
+\item \textit{``Many complex maneuvers can be performed using only a few reachability sets.'' – This phrase does not say much.}
+\end{itemize}
+
+\end{document}
