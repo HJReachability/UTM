@@ -1,6 +1,6 @@
 % !TEX root = main.tex
 \section{Unmanned Aerial Vehicle Platooning \label{sec:platooning}}
-Air highways exhibiting trunk routes that separate near destinations motivate the use of platoons which fly on these highways. The platooning concept provides a structural solution for monitoring and ensuring the safety of a large number of UAVs. The structure imposed by air highways reduces the number of pairwise safety checks, and makes pairwise analysis more indicative of the joint safety of all UAVs.
+Air highways exhibiting trunk routes that separate near destinations motivate the use of platoons which fly on these highways. \AEnote{The air highway structure along with the UAV platooning concept together enable the use of reachability to analyze liveness and safety.} The structure reduces the likelihood of multiple-way conflicts, and makes pairwise analysis more indicative of the joint safety of all UAVs. \AEnote{In addition to reducing complexity, the proposed structure is intuitive, and allows human participation in the monitoring and management of the unmanned airspace.}
 
 Organizing UAVs into platoons implies that the UAVs cannot fly in an unstructured way, and must have a restricted set of controllers or maneuvers depending on the UAV's role in the airspace. To model UAVs flying in platoons on air highways, we propose a hybrid system whose modes of operations describe a UAV's role in the highway structure. For the hybrid system model, reachability analysis is used to enable successful and safe operation and mode transitions.
 
@@ -65,6 +65,8 @@ A Follower vehicle is a vehicle that is following a platoon leader. The availabl
 \item Faulty: 
 
 If a vehicle from any of the other modes becomes unable to operate within the allowed set of maneuvers, it transitions into the Faulty mode. Reasons for transitioning to the Faulty mode include vehicle malfunctions, performing collision avoidance with respect to another Faulty vehicle, etc. A Faulty vehicle is assumed to descend via a fail-safe mechanism after some pre-specified duration $\td$ to a different altitude level where it no longer poses a threat to vehicles on the air highway system.
+
+\ROnote{Such a fail-safe mechanism could be an emergency landing procedure such as those analyzed in \cite{Adler2012,Coombes2014,Idicula2015}. Typically, emergency landing involves identifying types of faults, and finding feasible landing locations given the dynamics during the fault.}
 \end{itemize}
 
 The available maneuvers and associated mode transitions are summarized in Figure \ref{fig:vehicleModes}.
@@ -108,3 +110,5 @@ We also propose more basic controllers to perform other simpler actions such as
 \end{itemize}
 
 In general, the control strategies of each vehicle have a liveness component, which specifies a set of states that the vehicle aims to reach, and a safety component, which specifies a set of states that it must avoid. Together, the liveness and safety controllers guarantee the success and safety of a vehicle in the airspace making any desired mode transition. In this paper, these guarantees are provided using reachability analysis, and allow the multi-UAV system to perform joint maneuvers essential to maintaining structure in the airspace.
+
+\ROnote{Note that if vehicles in the airspace are far away from each other, it may be reasonable for all vehicles to remain in the ``free'' mode and fly in an unstructured manner. As long as multiple-way conflicts do not occur, pairwise collision avoidance maneuvers would be sufficient to ensure safety. Unstructured flight is likely to result in more efficient trajectories for each individual vehicle. However, whether multiple-way conflicts occur cannot be predicted ahead of time, and are not resolvable when they occur. By organizing vehicles into platoons, the likelihood of multiple-way conflicts is vastly reduced. Structured flight is in general less efficient for the individual vehicle, and this loss of efficiency can be thought of as a cost incurred by the vehicles in order ensure higher levels of safety. Further research is needed to better understand parameters such as the best size for a platoon and the density of vehicles above which unstructured flight is no longer manageable.}
