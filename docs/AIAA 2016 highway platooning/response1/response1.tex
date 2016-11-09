@@ -154,7 +154,7 @@ The Eikonal equation is only used for the air highway placement, which is done i
 
 \item \textbf{``can be viewed as a relaxation of the air highway placement problem defined in (2). Unlike'' – one wonders if it would have not been better to work on a discretized space space and use Dijkstra’s algorithm. A discussion of related work or related techniques is in order.}
 
-A continuous space is convenient since the cost map is defined on a geographic map, which is a continuous space.
+A continuous space is convenient since the cost map is defined on a geographic map, which is a continuous space. Effectively the air highway placement method we propose converts a continuous cost map into a graph whose edges are the air highways.
 
 \item \textit{``Given a single origin point po, the optimal cumulative cost function V (pd) can be computed. Suppose M different destination points. Then, M different optimal paths Pi; i = 1; : : : ;M are obtained from V'' – True, but misleading. In fact any number of M will do since the value function is defined for the whole state space.}
 \item \textit{ Equation (3) – Are there any assumptions on the cost function? If not it may happen that V may not be differentiable. What about the interpretation of equation (5) for this case?}
@@ -185,7 +185,8 @@ Yes, slightly confusing. Changed wording accordingly
 
 B. Hamilton-Jacobi reachability
 \item \textit{Equation (10) – Some of the symbols in the equation were not defined.}
-\item \textit{What is the difference between the HJB and the HJ equations?}
+\item \textbf{What is the difference between the HJB and the HJ equations?}
+HJ generally refers to either HJB or HJI. The HJB equation is used when the dynamics only involves a control, and the HJI equation is used when the dynamics involve both a control and a disturbance.
 \item \textit{Figure 6 – What is the zero plane and where is it in the picture?}
 \end{itemize}
 

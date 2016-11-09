@@ -35,7 +35,7 @@ where $\xi_f$ is the trajectory of the system satisfying initial conditions $\xi
 \end{aligned}
 \end{equation}
 
-Many methods involving solving HJ PDEs \cite{Mitchell05} and HJ variational inequalities (VI) \cite{Bokanowski10,Barron89,Fisac15} have been developed for computing the BRS. These HJ PDEs and HJ VIs can be solved using well-established numerical methods. For this paper, we use the formulation in \cite{Mitchell05}, which shows that the BRS $\mathcal{V}(t)$ can be obtained as the zero sublevel set of the viscosity solution \cite{Crandall84} $V(t,x)$ of the following terminal value Hamilton-Jacobi-Isaacs (HJI) PDE:
+Many methods involving solving HJ PDEs \cite{Mitchell05} and HJ variational inequalities (VI) \cite{Bokanowski10,Barron89,Fisac15} have been developed for computing the BRS. These HJ PDEs and HJ VIs can be solved using well-established numerical methods. For this paper, we use the formulation in \cite{Mitchell05}, which shows that the BRS $\mathcal{V}(t)$ can be obtained as the zero sublevel set of the viscosity solution \cite{Crandall84} $V(t,x)$ of the following terminal value HJ PDE:
 
 \begin{equation} \label{eq:HJIPDE}
 \begin{aligned}
@@ -67,7 +67,7 @@ In the special case where there is only one player, we obtain an optimal control
 \dot{x} = f(x, u), t\in [-T,0], u\in\mathcal U.
 \end{equation}
 
-The BRS in this case would be given by the Hamilton-Jacobi-Bellman (HJB) PDE
+The BRS in this case would be given by the HJ PDE
 
 \begin{equation} \label{eq:HJBPDE}
 \begin{aligned}

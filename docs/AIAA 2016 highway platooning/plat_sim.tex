@@ -50,7 +50,7 @@ Figure \ref{fig:in} shows the simulation result. At $t=9.9$, a platoon of four v
 
 Note that although in this particular simulation, the intruder travels in a straight line, a straight line motion of the intruder was \textit{not} assumed. Rather, the safety BRSs are computed assuming the worst case control of the intruder, according to \eqref{eq:HJI_ctrl_syn}.
 
-As the intruder $\veh{5}$ (yellow) continues to disregard other vehicles, the followers of the platoon also get near the respective boundaries of their safety BRSs with respect to the intruder. This occurs at $t=13.9$, where the platoon ``makes room'' for the intruder to pass by to avoid collisions; all vehicles deviate from their intended path, which is to follow the platoon leader or the highway.
+As the intruder $\veh{5}$ (yellow) continues to disregard other vehicles, the followers of the platoon also get near the respective boundaries of their safety BRSs with respect to the intruder. This occurs at $t=13.9$, where the platoon ``makes room'' for the intruder to pass by to avoid collisions; all vehicles deviate from their intended path, which is to follow the platoon leader or the highway. \MCnote{Note that in this case, we have assumed that the platoon does not move as a unit in response to an intruder to show more interesting behavior.}
 
 After the intruder has passed, eventually all vehicles become far away from any safety BRSs. When this occurs, the leader resumes following the highway, and the followers resume following the leader. At $t=19.9$, the platoon successfully gets back onto the highway.
 

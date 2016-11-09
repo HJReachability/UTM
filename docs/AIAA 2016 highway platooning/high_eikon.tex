@@ -20,7 +20,7 @@ For an origin-destination pair, we would like to find the path such that the abo
 \end{aligned}
 \end{equation}
 
-It is well known that the solution to the Eikonal equation \eqref{eq:eikonal} precisely computes the function $\ocost(\pos^d)$ given the cost map $\cmap$ \cite{Sethian96,Alton06}. Note that a single function characterizes the minimum cost from an origin $\pos^o$ to \textit{any} destination $\pos^d$. Once $\ocost$ is found, the optimal path $\ppath$ between $\pos^o$ and $\pos^d$ can be obtained via gradient descent.
+It is well known that the \MCnote{viscosity solution} \cite{Crandall84} to the Eikonal equation \eqref{eq:eikonal} precisely computes the function $\ocost(\pos^d)$ given the cost map $\cmap$ \cite{Sethian96,Alton06}. Note that a single function characterizes the minimum cost from an origin $\pos^o$ to \textit{any} destination $\pos^d$. Once $\ocost$ is found, the optimal path $\ppath$ between $\pos^o$ and $\pos^d$ can be obtained via gradient descent.
 
 \begin{equation}
 \label{eq:eikonal}
@@ -34,4 +34,4 @@ The Eikonal equation \eqref{eq:eikonal} can be efficiently computed numerically 
 
 Note that \eqref{eq:rahpp} can be viewed as a relaxation of the air highway placement problem defined in \eqref{eq:ahpp}. Unlike \eqref{eq:ahpp}, the relaxation \eqref{eq:rahpp} can be quickly solved using currently available numerical tools. Thus, we first solve the approximate air highway placement problem \eqref{eq:rahpp} by solving \eqref{eq:eikonal}, and then post-process the solution to \eqref{eq:rahpp} to obtain an approximation to \eqref{eq:ahpp}.
 
-Given a single origin point $\pos^o$, the optimal cumulative cost function $\ocost(\pos^d)$ can be computed. Suppose $M$ different destination points $\pos^d_i,i=1,\ldots,M$ are chosen. Then, $M$ different optimal paths $\ppath_i,i=1,\ldots,M$ are obtained from $\ocost$.
+Given a single origin point $\pos^o$, the optimal cumulative cost function $\ocost(\pos^d)$ can be computed. Suppose $M$ different destination points $\pos^d_i,i=1,\ldots,M$ are chosen. Then, $M$ different optimal paths $\ppath_i,i=1,\ldots,M$ are obtained from $\ocost$. 
