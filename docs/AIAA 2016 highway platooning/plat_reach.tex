@@ -19,7 +19,7 @@ A function $f:X\to Y$ between two measurable spaces $(X,\Sigma_X)$ and $(Y,\Sigm
 
 In our differential game, the goal of Player 2 is to drive the system into some target set $\mathcal{L}$, and the goal of Player 1 is to drive the system away from it. The set $\mathcal{L}$ is represented as the zero sublevel set of a bounded, Lipschitz continuous function $l:\mathbb{R}^n\rightarrow\mathbb{R}$. We call $l(\cdot)$ the \textit{implicit surface function} representing the set $\mathcal L: \mathcal{L}=\{x\in\mathbb{R}^n \mid l(x)\le 0\}$.
 
-Given the dynamics \eqref{eq:dyn} and the target set $\mathcal{L}$, we would like to compute the reachable set, $\mathcal{V}(t)$:
+Given the dynamics \eqref{eq:dyn} and the target set $\mathcal{L}$, we would like to compute the BRS, $\mathcal{V}(t)$:
 
 \begin{equation}
 \begin{aligned}
@@ -35,7 +35,7 @@ where $\xi_f$ is the trajectory of the system satisfying initial conditions $\xi
 \end{aligned}
 \end{equation}
 
-Many methods involving solving HJ PDEs \cite{Mitchell05} and HJ variational inequalities (VI) \cite{Bokanowski10,Barron89,Fisac15} have been developed for computing the reachable set. These HJ PDEs and HJ VIs can be solved using well-established numerical methods. For this paper, we use the formulation in \cite{Mitchell05}, which has shown that the reachable set $\mathcal{V}(t)$ can be obtained as the zero sublevel set of the viscosity solution \cite{Crandall84} $V(t,x)$ of the following terminal value Hamilton-Jacobi-Isaacs (HJI) PDE:
+Many methods involving solving HJ PDEs \cite{Mitchell05} and HJ variational inequalities (VI) \cite{Bokanowski10,Barron89,Fisac15} have been developed for computing the BRS. These HJ PDEs and HJ VIs can be solved using well-established numerical methods. For this paper, we use the formulation in \cite{Mitchell05}, which shows that the BRS $\mathcal{V}(t)$ can be obtained as the zero sublevel set of the viscosity solution \cite{Crandall84} $V(t,x)$ of the following terminal value Hamilton-Jacobi-Isaacs (HJI) PDE:
 
 \begin{equation} \label{eq:HJIPDE}
 \begin{aligned}
@@ -48,7 +48,7 @@ D_t &V(t,x) + \\
 \begin{figure}
 	\centering
 	\includegraphics[width=0.95\textwidth]{"fig/RSExample"}
-	\caption{Illustration of a target set, reachable set, and their implicit surface functions.}
+	\caption{Illustration of a target set, a BRS, and their implicit surface functions.}
 	\label{fig:RSExample}
 \end{figure}
 
@@ -67,7 +67,7 @@ In the special case where there is only one player, we obtain an optimal control
 \dot{x} = f(x, u), t\in [-T,0], u\in\mathcal U.
 \end{equation}
 
-The reachable set in this case would be given by the Hamilton-Jacobi-Bellman (HJB) PDE
+The BRS in this case would be given by the Hamilton-Jacobi-Bellman (HJB) PDE
 
 \begin{equation} \label{eq:HJBPDE}
 \begin{aligned}
@@ -82,7 +82,7 @@ V(0,x) = l(x)&
 u^*(t,x) = \arg \min_{u\in\mathcal{U}} D_x V(t,x) \cdot f(x,u)
 \end{equation}
 
-For our application, we will use several decoupled system models and utilize the decoupled HJ formulation in \cite{Chen15}, which enables real-time 4D reachable set computations and tractable 6D reachable set computations.
+For our application, we will use several decoupled system models and utilize decomposition techniques \cite{Chen15, Chen17b, Chen2016a}, which enables real-time 4D BRS computations and tractable 6D BRS computations.
 
 \subsubsection{Relative Dynamics and Augmented Relative Dynamics}
 Besides Equation \eqref{eq:dyn}, we will also consider the relative dynamics between two quadrotors $Q_i,Q_j$. These dynamics can be obtained by defining the relative variables

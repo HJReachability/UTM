@@ -5,8 +5,7 @@
 
 %\newcommand{\MCnote}{\todo[size=\footnotesize,author=MC,color=cyan]}
 \usepackage{cite}
-\newcommand{\AEnote}{\textcolor{red}}
-\newcommand{\ROnote}{\textcolor{blue}}
+\newcommand{\MCnote}{\textcolor{red}}
 
 \newcommand{\pos}{p} % position
 \newcommand{\Pos}{\bar{p}} % a particular position (or desired position}
@@ -29,9 +28,9 @@
 \newcommand{\vehSCS}[1]{\mathcal{Q}_{#1}} % vehicle safety check set
 
 \author{Mo Chen, Qie Hu, Jaime F. Fisac, Kene Akametalu, Casey Mackin, Claire J. Tomlin}
-\title{Reachability-Based Safety and Liveness of Unmanned Aerial Vehicle Platoons on Air Highways}
+\title{\MCnote{Reachability-Based Safety and Goal Satisfaction of Unmanned Aerial Vehicle Platoons on Air Highways}}
 
-\abstract{Recently, there has been immense interest in using unmanned aerial vehicles (UAVs) for civilian operations. As a result, unmanned aerial systems traffic management is needed to ensure the safety and liveness of potentially thousands of UAVs flying simultaneously. Currently, the analysis of large multi-agent systems cannot tractably provide safety and liveness guarantees if the agents' set of maneuvers is unrestricted. In this paper, platoons of UAVs flying on air highways is proposed to impose an airspace structure that allows for tractable analysis. For the air highway placement problem, the fast marching method is used to produce a sequence of air highways that minimizes the cost of flying from an origin to any destination. The placement of air highways can be updated in real-time to accommodate sudden airspace changes. Within platoons traveling on air highways, each vehicle is modeled as a hybrid system. Using Hamilton-Jacobi reachability, safety and liveness are guaranteed for all mode transitions. For a single altitude range, the proposed approach guarantees safety for one safety breach per vehicle; in the unlikely event of multiple safety breaches, safety can be guaranteed over multiple altitude ranges. The satisfaction of safety and liveness requirements is demonstrated through simulations of three scenarios.}
+\abstract{Recently, there has been immense interest in using unmanned aerial vehicles (UAVs) for civilian operations. As a result, unmanned aerial systems traffic management is needed to ensure the safety and \MCnote{goal satisfaction} of potentially thousands of UAVs flying simultaneously. Currently, the analysis of large multi-agent systems cannot tractably provide these guarantees if the agents' set of maneuvers is unrestricted. In this paper, platoons of UAVs flying on air highways is proposed to impose an airspace structure that allows for tractable analysis. For the air highway placement problem, the fast marching method is used to produce a sequence of air highways that minimizes the cost of flying from an origin to any destination. The placement of air highways can be updated in real-time to accommodate sudden airspace changes. Within platoons traveling on air highways, each vehicle is modeled as a hybrid system. Using Hamilton-Jacobi reachability, safety and \MCnote{goal satisfaction} are guaranteed for all mode transitions. For a single altitude range, the proposed approach guarantees safety for one safety breach per vehicle; in the unlikely event of multiple safety breaches, safety can be guaranteed over multiple altitude ranges. Safety and \MCnote{goal satisfaction} are demonstrated through simulations of three scenarios.}
 
 \begin{document}
 \maketitle
