@@ -66,7 +66,7 @@ A Follower vehicle is a vehicle that is following a platoon leader. The availabl
 
 If a vehicle from any of the other modes becomes unable to operate within the allowed set of maneuvers, it transitions into the Faulty mode. Reasons for transitioning to the Faulty mode include vehicle malfunctions, performing collision avoidance with respect to another Faulty vehicle, etc. A Faulty vehicle is assumed to descend via a fail-safe mechanism after some pre-specified duration $\td$ to a different altitude level where it no longer poses a threat to vehicles on the air highway system.
 
-\MCnote{Such a fail-safe mechanism could be an emergency landing procedure such as those analyzed in \cite{Adler2012,Coombes2014,Idicula2015}. Typically, emergency landing involves identifying types of faults, and finding feasible landing locations given the dynamics during the fault.}
+\MCnote{Such a fail-safe mechanism could be an emergency landing procedure such as those analyzed in \cite{Adler2012,Coombes2014,Idicula2015}. Typically, emergency landing involves identifying the type of fault and finding feasible landing locations given the dynamics during the fault. We will omit these details and summarize them into $\td$, the time required to exit the current altitude level.}
 \end{itemize}
 
 The available maneuvers and associated mode transitions are summarized in Figure \ref{fig:vehicleModes}.
