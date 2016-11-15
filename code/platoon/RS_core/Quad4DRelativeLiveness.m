@@ -1,12 +1,12 @@
 function Quad4DRelativeLiveness()
-N = 71;
+N = 41;
 N = N * ones(4,1);
-gMin = [-1; -1; -1; -1];
+gMin = [-1.5; -10; -1; -10];
 gMax = [1; 1; 1; 1];
 
 % Acceleration bounds
-aMax = [3; 3];
-bMax = [3; 3];
+aMax = [-1; 1];
+bMax = [-1; 1];
 
 % Time vector
 dt = 0.01;
