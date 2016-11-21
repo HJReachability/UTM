@@ -1,0 +1,16 @@
+% !TEX root = main.tex
+\subsection{Summary of Controllers}
+We have introduced several reachability-based controllers, as well as some simple controllers. Pairwise collision avoidance is guaranteed using the safety controller, described in Section \ref{sec:platooning}-\ref{sec:reach_ctrl}-\ref{sec:collision_ctrl}. As long as a vehicle is not in potential danger according to the safety BRSs, it is free to use any other controller. All of these other controllers are \textit{goal satisfaction controllers}, and their corresponding mode transitions are shown in Figure \ref{fig:modeControllers}.
+
+The controller for getting to an absolute target state, described in Section \ref{sec:platooning}-\ref{sec:reach_ctrl}-\ref{sec:abs_target_ctrl}, is used whenever a vehicle needs to move onto a highway to become a platoon leader. This controller guarantees the success of the mode transitions shown in blue in Figure \ref{fig:modeControllers}.
+
+The controller for getting to a relative target state, described in Section \ref{sec:platooning}-\ref{sec:reach_ctrl}-\ref{sec:rel_target_ctrl}, is used whenever a vehicle needs to join a platoon to become a follower. This controller guarantees the success of the mode transitions shown in green in Figure \ref{fig:modeControllers}.
+
+For the simple maneuvers of traveling along a highway or following a platoon, many simple controllers such as the ones suggested in Section \ref{sec:platooning}-\ref{sec:other_ctrl} can be used. These controllers keep the vehicles in either the Leader or the Follower mode. Alternatively, additional controllers can be designed for exiting the highway, although these are not considered in this paper. All of these non-reachability-based controllers are shown in gray in Figure \ref{fig:modeControllers}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.75\columnwidth]{"modeControllers"}
+	\caption{Summary of mode switching controllers. Reachability-based controllers are shown as the blue and green arrows.}
+	\label{fig:modeControllers}
+\end{figure}

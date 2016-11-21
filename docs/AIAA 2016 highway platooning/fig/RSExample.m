@@ -13,7 +13,8 @@ x = g.xs{1};
 y = g.xs{2};
 R = 4;
 
-figure
+f = figure;
+f.Color = 'w';
 %%
 T = sqrt(x.^2 + y.^2) - R;
 surf(x,y,T, 'facecolor', 'r', 'facealpha', 0.3, 'edgecolor', 'none')
@@ -67,6 +68,8 @@ plot(s+R*cos(t), R*sin(t),  'b-', 'linewidth', 4)
 
 xlabel('x')
 ylabel('y')
-legend('l(x)','Target set', 'Zero plane', 'V(t,x)', 'Reachable set')
+axis equal
+legend('l(x)','Target set', 'Zero plane', 'V(t,x)', 'Reachable set', ...
+  'Location', 'best')
 
 end

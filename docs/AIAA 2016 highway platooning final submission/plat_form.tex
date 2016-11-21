@@ -1,0 +1,111 @@
+% !TEX root = main.tex
+\section{Unmanned Aerial Vehicle Platooning \label{sec:platooning}}
+Air highways exhibiting trunk routes that separate near destinations motivate the use of platoons which fly on these highways. The air highway structure along with the UAV platooning concept together enable the use of reachability to analyze safety and goal satisfaction properties. The structure reduces the likelihood of multiple-way conflicts, and makes pairwise analysis more indicative of the joint safety of all UAVs. In addition to reducing complexity, the proposed structure is intuitive, and allows human participation in the monitoring and management of the unmanned airspace.
+
+Organizing UAVs into platoons implies that the UAVs cannot fly in an unstructured way, and must have a restricted set of controllers or maneuvers depending on the UAV's role in the airspace. To model UAVs flying in platoons on air highways, we propose a hybrid system whose modes of operations describe a UAV's role in the highway structure. For the hybrid system model, reachability analysis is used to enable successful and safe operation and mode transitions.
+
+\subsection{UAVs in Platoons}
+\subsubsection{Vehicle Dynamics}
+Consider a UAV whose dynamics are given by
+\begin{equation}
+\label{eq:veh_dyn}
+\dot{x} = f(x,u)
+\end{equation}
+
+\noindent where $x$ represents the state, and $u$ represents the control action. The techniques we present in this paper do not depend on the dynamics of the vehicles, as long as their dynamics are known. However, for concreteness, we assume that the UAVs are quadrotors that fly at a constant altitude under non-faulty circumstances. For the quadrotor, we use a simple model in which the $x$ and $y$ dynamics are double integrators:
+
+\begin{equation}
+\label{eq:dyn}
+\begin{aligned}
+\dot{\pos}_x &= \vel_x \\
+\dot{\pos}_y &= \vel_y  \\
+\dot{\vel}_x &= u_x \\
+\dot{\vel}_y &= u_y \\
+|u_x|,|u_y| &\le u_\text{max}
+\end{aligned}
+\end{equation}
+
+\noindent where the state $x=(\pos_x, \vel_x, \pos_y, \vel_y)\in\mathbb{R}^4$ represents the quadrotor's position in the $x$-direction, its velocity in the $x$-direction, and its position and velocity in the $y$-direction, respectively. The control input $u = (u_x, u_y)\in\mathbb{R}^2$ consists of the acceleration in the $x$- and $y$- directions. For convenience, we will denote the position and velocity $\pos=(\pos_x, \pos_y),\vel=(\vel_x,\vel_y)$, respectively. 
+
+In general, the problem of collision avoidance among $N$ vehicles cannot be tractably solved using traditional dynamic programming approaches because the computation complexity of these approaches scales exponentially with the number of vehicles. Thus, in our present work, we will consider the situation where UAVs travel on air highways in platoons, defined in the following sections. The structure imposed by air highways and platooning enables us to analyze the safety and goal satisfaction properties of the vehicles in a tractable manner.
+
+\subsubsection{Vehicles as Hybrid Systems}
+We model each vehicle as a hybrid system \cite{Lygeros98, Lygeros12} consisting of the modes ``Free", ``Leader", ``Follower", and ``Faulty". Within each mode, a vehicle has a set of restricted maneuvers, including one that allows the vehicle to change modes if desired. The modes and maneuvers are as follows:
+
+\begin{itemize}
+\item Free: 
+
+A Free vehicle is not in a platoon or on a highway, and its possible maneuvers or mode transitions are
+\begin{itemize}
+\item remain a Free vehicle by staying away from highways
+\item become a Leader by entering a highway to create a new platoon
+\item become a Follower by joining a platoon that is currently on a highway
+\end{itemize} 
+
+\item Leader: 
+
+A Leader vehicle is the vehicle at the front of a platoon (which could consist of only the vehicle itself). The available maneuvers and mode transitions are
+
+\begin{itemize}
+\item remain a Leader by traveling along the highway at a pre-specified speed $\vel_\hw$
+\item become a Follower by merging the current platoon with a platoon in front
+\item become a Free vehicle by leaving the highway
+\end{itemize}
+
+\item Follower: 
+
+A Follower vehicle is a vehicle that is following a platoon leader. The available maneuvers and mode transitions are 
+
+\begin{itemize}
+\item remain a Follower by staying a distance of $d_\text{sep}$ behind the vehicle in front in the current platoon
+\item remain a Follower by joining a different platoon on another highway
+\item become a Leader by splitting from the current platoon while remaining on the highway
+\item become a Free vehicle by leaving the highway
+\end{itemize}
+
+\item Faulty: 
+
+If a vehicle from any of the other modes becomes unable to operate within the allowed set of maneuvers, it transitions into the Faulty mode. Reasons for transitioning to the Faulty mode include vehicle malfunctions, performing collision avoidance with respect to another Faulty vehicle, etc. A Faulty vehicle is assumed to descend via a fail-safe mechanism after some pre-specified duration $\td$ to a different altitude level where it no longer poses a threat to vehicles on the air highway system.
+
+Such a fail-safe mechanism could be an emergency landing procedure such as those analyzed in \cite{Adler2012,Coombes2014,Idicula2015}. Typically, emergency landing involves identifying the type of fault and finding feasible landing locations given the dynamics during the fault. We will omit these details and summarize them into $\td$, the time required to exit the current altitude level.
+\end{itemize}
+
+The available maneuvers and associated mode transitions are summarized in Figure \ref{fig:vehicleModes}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\columnwidth]{"vehicleModes"}
+	\caption{Hybrid modes for vehicles in platoons. Vehicles begin in the ``Free'' mode before they enter the highway.}
+	\label{fig:vehicleModes}
+\end{figure}
+
+Suppose that there are $N$ vehicles in total in the airspace containing the highway system. We will denote the $N$ vehicles as $\veh{i}, i=1\ldots,N$. We consider a platoon of vehicles to be a group of $M$ vehicles ($M\le N$), denoted $\veh{P_1}, \ldots, \veh{P_M}, \{P_j\}_{j=1}^M \subseteq \{i\}_{i=1}^N$, in a single-file formation. When necessary, we will use superscripts to denote vehicles of different platoons: $\veh{P_i^j}$ represents the $i$th vehicle in the $j$th platoon. 
+
+For convenience, let $\vehSCS{i}$ denote the set of indices of vehicles with respect to which $Q_i$ checks safety. If vehicle $\veh{i}$ is a free vehicle, then it must check for safety with respect to all other vehicles, $\vehSCS{i} = \{j: j\neq i\}$. If the vehicle is part of a platoon, then it checks safety with respect to the platoon member in front and behind, $\vehSCS{i} = \{P_{j+1}, P_{j-1}\}$. Figure \ref{fig:vehicleNotation} summarizes the indexing system of the vehicles.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\columnwidth]{"vehicleNotation"}
+	\caption{Notation for vehicles in platoons.}
+	\label{fig:vehicleNotation}
+\end{figure}
+
+We will organize the vehicles into platoons travel along air highways. The vehicles maintain a separation distance of $\sepdist$ with their neighbors inside the platoon. In order to allow for close proximity of the vehicles and the ability to resolve multiple simultaneous safety breaches, we assume that when a vehicle exhibits unpredictable behavior, it will be able to exit the altitude range of the highway within a duration of $\td$. Such a requirement may be implemented practically as an fail-safe mechanism to which the vehicles revert when needed.
+
+\subsubsection{Objectives}
+Given the above modeling assumptions, our goal is to provide control strategies to guarantee the success and safety of all the mode transitions. The theoretical tool used to provide the safety and goal satisfaction guarantees is reachability. The BRSs we compute will allow each vehicle to perform complex actions such as 
+
+\begin{itemize}
+\item merge onto a highway to form a platoon
+\item join a new platoon
+\item leave a platoon to create a new one
+\item react to malfunctioning or intruder vehicles
+\end{itemize}
+
+We also propose more basic controllers to perform other simpler actions such as
+\begin{itemize}
+\item follow the highway at constant altitude at a specified speed
+\item maintain a constant relative position and velocity with respect to the leader of a platoon
+\end{itemize}
+
+In general, the control strategy of each vehicle has a safety component, which specifies a set of states that it must avoid, and a goal satisfaction component, which specifies a set of states that the vehicle aims to reach. Together, the safety and goal satisfaction controllers guarantee the safety and success of a vehicle in the airspace making any desired mode transition. In this paper, these guarantees are provided using reachability analysis, and allow the multi-UAV system to perform joint maneuvers essential to maintaining structure in the airspace.
