@@ -18,7 +18,7 @@ elseif isa(obj, 'Platoon')
     end
   end
   
-elseif isa(obj, 'Vehicle')
+elseif isa(obj, 'UAS')
   children = {};
   
 else

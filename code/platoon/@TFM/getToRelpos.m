@@ -10,10 +10,10 @@ if nargin < 5
 end
 
 switch class(veh)
-  case 'Quadrotor'
+  case 'UTMQuad4D'
     %% ===== Main vehicle is a quadrotor =====
     switch class(veh_ref)
-      case 'Quadrotor'
+      case 'UTMQuad4D'
         %% Reference vehicle is a quadrotor
         u = getToRelpos_qr_qr(obj, veh, veh_ref, rel_pos, debug);
         

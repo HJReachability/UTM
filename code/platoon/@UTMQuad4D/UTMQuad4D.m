@@ -15,6 +15,9 @@ classdef UTMQuad4D < Quad4D & UAS
     % it should just be a few points
     waypoints = []
     
+    A = [0 1 0 0; 0 0 0 0; 0 0 0 1; 0 0 0 0]
+    
+    B = [0 0; 1 0; 0 0; 0 1]
   end % end properties
   
   methods

@@ -32,7 +32,7 @@ switch type
     if exist(filename, 'file')
       load(filename)
     else
-      [grids, datas, tau] = quad_abs_target_2D(target, visualize);
+      [grids, datas, tau] = quad_abs_target_2D(target);
 
       gridLim = ...
         [grids{1}.min-1 grids{1}.max+1; grids{2}.min-1 grids{2}.max+1];
