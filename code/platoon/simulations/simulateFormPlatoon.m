@@ -20,13 +20,17 @@ tfm.computeRS('qr_abs_target_V');
 tfm.computeRS('qr_qr_safe_V');
 
 %% Highway
-theta = 2*pi*rand;
-hw_length = 350;
-z0 = [0 0];
-z1 = hw_length*[1 0];
+theta = pi/5;
+hw_length = 1500;
+z0 = -0.2*hw_length*[1 0];
+z1 = 0.8*hw_length*[1 0];
+z0 = rotate2D(z0, theta);
 z1 = rotate2D(z1, theta);
 hw = Highway(z0, z1, tfm.hw_speed);
 tfm.addHighway(hw);
+
+%% Target entry point
+tep = rotate2D([150 0], theta);
 
 % plot
 f = figure;
@@ -34,21 +38,25 @@ f = figure;
 hw.lpPlot;
 hold on
 f.Children.FontSize = 16;
+f.Color = 'white';
 f.Position(1:2) = [200 200];
 f.Position(3:4) = [800 600];
 
 %% Quadrotors
-xs = 100:-25:0;
+xs = 80:-20:0;
 ys = sign(rand(size(xs))-0.5).*(125 - xs);
 xs_ys = rotate2D([xs; ys], theta);
 xs = xs_ys(1,:);
 ys = xs_ys(2,:);
+colors = lines(length(xs));
 for j = 1:length(xs)
   tfm.regVehicle(UTMQuad4D([xs(j) 0 ys(j) 0]));
-  tfm.aas{j}.plotPosition;
+  tfm.aas{j}.plotPosition(colors(j,:));
 end
 
 title('t=0', 'FontSize', 16)
+xlim([-100 350])
+ylim([-100 350])
 drawnow
 
 % Save initial figure
@@ -73,9 +81,6 @@ if save_figures
     end
   end
 end
-
-%% Target entry point
-tep = rotate2D([150 0], theta);
 
 %% Integration
 tMax = 23;

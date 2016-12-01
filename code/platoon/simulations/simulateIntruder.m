@@ -19,9 +19,10 @@ tfm.computeRS('qr_rel_target_V');
 tfm.computeRS('qr_abs_target_V');
 tfm.computeRS('qr_qr_safe_V');
 tfm.ipsd = 10;
+
 %% Highways
-theta = 2*pi*rand;
-hw_length = 300;
+theta = -pi/4;
+hw_length = 1000;
 z0 = hw_length*[-0.1 0];
 z1 = hw_length*[1 0];
 
@@ -39,6 +40,7 @@ hold on
 f.Children.FontSize = 16;
 f.Position(1:2) = [200 200];
 f.Position(3:4) = [1000 750];
+f.Color = 'white';
 
 %% Quadrotors
 % Platoon 1 (4 vehicles)
@@ -50,8 +52,9 @@ xs = xs_ys(1,:);
 ys = xs_ys(2,:);
 vq = [10 0];
 vq = rotate2D(vq, theta);
+
 for j = 1:length(xs)
-  q = Quadrotor([xs(j) vq(1) ys(j) vq(2)]);
+  q = UTMQuad4D([xs(j) vq(1) ys(j) vq(2)]);
   tfm.regVehicle(q);
   if j == 1
     p = Platoon(q, hw, tfm);
@@ -62,20 +65,22 @@ end
 
 % Intruder
 pin = [250 50];
-vin = [10 0];
+vin = [10.2 0];
 vin = rotate2D(vin, 9*pi/8);
 pin = rotate2D(pin, theta);
 vin = rotate2D(vin, theta);
-intruder = Quadrotor([pin(1) vin(1) pin(2) vin(2)]);
+intruder = UTMQuad4D([pin(1) vin(1) pin(2) vin(2)]);
 tfm.regVehicle(intruder);
 
+colors = lines(length(tfm.aas));
 for j = 1:length(tfm.aas)
-  tfm.aas{j}.plotPosition;
+  tfm.aas{j}.plotPosition(colors(j,:),5);
 end
 
-
+xlim([-50 200])
+ylim([-200 50])
 title('t=0')
-axis equal
+axis square
 drawnow
 
 if save_figures
@@ -121,7 +126,12 @@ for i = 1:length(t)
     
     tfm.aas{j}.updateState(u{j}, tfm.dt);
     tfm.aas{j}.plotPosition;
+    
   end
+  
+  % Plot reachable set
+  tfm.aas{1}.plot_safe_V(tfm.aas{end}, tfm.qr_qr_safe_V, tfm.safetyTime)
+    
   title(['t=' num2str(t(i))])
   drawnow
 

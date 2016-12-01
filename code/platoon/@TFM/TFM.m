@@ -22,7 +22,7 @@ classdef TFM < Node
     cr = 5;
     
     % Thresholds for being considered in target set or in reachable set
-    ttt = 1; % target threshold time
+    ttt = 2; % target threshold time
     rtt = 12; % reachable set threshold time
     
     % Frequency of state updates to the system

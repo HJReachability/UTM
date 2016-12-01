@@ -32,16 +32,24 @@ switch type
     if exist(filename, 'file')
       load(filename)
     else
-      [grids, datas, tau] = quad_abs_target_2D(target);
+      [vfs.gs, vfs.datas, vfs.tau] = quad_abs_target_2D(target);
 
-      gridLim = ...
-        [grids{1}.min-1 grids{1}.max+1; grids{2}.min-1 grids{2}.max+1];
-      [~, ~, TTR_out] = ...
-        recon2x2D(tau, grids, datas, gridLim, tau(end));
+      vfs.dims = {[1 2]; [3 4]};
+%       gridLim = ...
+%         [vfs.gs{1}.min-1 vfs.gs{1}.max+1; vfs.gs{2}.min-1 vfs.gs{2}.max+1];
+      
+      range_lower = [vfs.gs{1}.min-1; vfs.gs{2}.min-1];
+      range_upper = [vfs.gs{1}.max+1; vfs.gs{2}.max+1];
+      vf = reconSC(vfs, range_lower, range_upper, 'full');
+      
+      
+%       [~, ~, TTR_out] = ...
+%         recon2x2D(tau, grids, datas, gridLim, tau(end));
 
-      g = TTR_out.g;
-      data = TTR_out.value;
-      grad = TTR_out.grad;
+      g = vf.g;
+      data = TD2TTR(vf.g, vf.dataMin, vf.tau);
+      grad = computeGradients(g, data);
+      tau = vf.tau;
       
       save(filename, 'g', 'data', 'grad', 'tau')
     end

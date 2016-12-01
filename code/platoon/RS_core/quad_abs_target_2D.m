@@ -56,7 +56,7 @@ dissType = 'global';
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %  (Slightly different grid cell counts will be chosen for each dimension.)
-Np = 41; % Try not to go over 61
+Np = 51; % Try not to go over 61
 Nv = 31;
 
 % Create the x grid.

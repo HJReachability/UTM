@@ -21,11 +21,10 @@ if ~iscolumn(ref_vel)
 end
 
 % Gains
-k_p = 1;
+k_p = 5;
 k_v = 1;
 
-u = uFB + k_p*(ref_pos - obj.getPosition) + ...
-  k_v*(ref_vel - obj.getVelocity);
+u = uFB + k_p*(ref_pos - obj.getPosition) + k_v*(ref_vel - obj.getVelocity);
 
 % Acceleration limit
 if any(u > obj.uMax)

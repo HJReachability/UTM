@@ -12,6 +12,6 @@ if nargin<2
 end
 
 pts = obj.fn([0 1]);
-obj.h = plot(pts(1,:), pts(2,:), '--', 'color', color);
+obj.h = plot(pts(1,:), pts(2,:), '--', 'color', color, 'linewidth', 1);
 
 end

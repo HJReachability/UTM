@@ -23,7 +23,7 @@ if nargin < 5
 end
 
 switch class(vehicle)
-  case 'Quadrotor'
+  case 'UTMQuad4D'
     u = getToPose_qr(obj, vehicle, position, heading, debug);
     
   otherwise

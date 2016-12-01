@@ -42,6 +42,7 @@ tfm.addHighway(hw2);
 f = figure;
 hw1.lpPlot;
 f.Children.FontSize = 16;
+f.Color = 'white';
 f.Position(1:2) = [200 200];
 f.Position(3:4) = [800 600];
 hold on
