@@ -57,7 +57,7 @@ xs_ys = rotate2D([xs; ys], theta1);
 xs = xs_ys(1,:);
 ys = xs_ys(2,:);
 for j = 1:length(xs)
-  q = Quadrotor([xs(j) 0 ys(j) 0]);
+  q = UTMQuad4D([xs(j) 0 ys(j) 0]);
   tfm.regVehicle(q);
   if j == 1
     p1 = Platoon(q, hw1, tfm);
@@ -74,7 +74,7 @@ xs_ys = rotate2D([xs; ys], theta2);
 xs = xs_ys(1,:);
 ys = xs_ys(2,:);
 for j = 1:length(xs)
-  q = Quadrotor([xs(j) 0 ys(j) 0]);
+  q = UTMQuad4D([xs(j) 0 ys(j) 0]);
   tfm.regVehicle(q);
   if j == 1
     p2 = Platoon(q, hw2, tfm);
@@ -83,8 +83,9 @@ for j = 1:length(xs)
   end
 end
 
+colors = lines(length(tfm.aas));
 for j = 1:length(tfm.aas)
-  tfm.aas{j}.plotPosition;
+  tfm.aas{j}.plotPosition(colors(j,:));
 end
 title('t=0', 'FontSize', 16)
 axis square
@@ -132,7 +133,7 @@ for i = 1:length(t)
     end
     
     tfm.aas{j}.updateState(u{j}, tfm.dt);
-    tfm.aas{j}.plotPosition;
+    tfm.aas{j}.plotPosition();
   end
   title(['t=' num2str(t(i))])
   drawnow

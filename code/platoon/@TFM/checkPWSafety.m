@@ -24,10 +24,10 @@ if isempty(obj.aas{j}) || obj.aas{i} == obj.aas{j}
 end
 
 switch(class(obj.aas{i}))
-  case 'Quadrotor'
+  case 'UTMQuad4D'
     %% agent i is a quadrotor
     switch(class(obj.aas{j}))
-      case 'Quadrotor'
+      case 'UTMQuad4D'
         [safe, uSafe, safe_val] = checkPWSafety_qr_qr(obj.qr_qr_safe_V, ...
           obj.safetyTime, obj.aas{i}, obj.aas{j});
         

@@ -12,8 +12,8 @@ if isempty(vehicle)
 end
 
 % Check vehicle type
-if ~isa(vehicle, 'Vehicle')
-  error('Agent must be a Vehicle!')
+if ~isa(vehicle, 'UAS')
+  error('Agent must be a UAS!')
 end
 
 % Expand cell array and assign an ID to the agent

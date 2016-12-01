@@ -47,7 +47,7 @@ elseif isa(obj, 'Platoon')
   disp(['  BP ID = ' num2str(obj.BP.ID)])
   disp('========================')
   
-elseif isa(obj, 'Vehicle')
+elseif isa(obj, 'UAS')
   %% ======================= Vehicle ====================================
   disp('===== Vehicle Info =====')
   disp(['  Type = ' class(obj)])
