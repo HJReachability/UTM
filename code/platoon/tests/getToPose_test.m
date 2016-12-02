@@ -21,7 +21,7 @@ addpath('../RS_core')
 % Initialize TFM
 tfm = TFM;
 tfm.computeRS('qr_abs_target_V');
-
+tfm.dt = 0.02;
 % Test N times...
 N = 10;
 for i = 1:N

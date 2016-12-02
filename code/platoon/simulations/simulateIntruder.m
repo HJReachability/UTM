@@ -65,7 +65,7 @@ end
 
 % Intruder
 pin = [250 50];
-vin = [10.2 0];
+vin = [10 0];
 vin = rotate2D(vin, 9*pi/8);
 pin = rotate2D(pin, theta);
 vin = rotate2D(vin, theta);
@@ -74,7 +74,9 @@ tfm.regVehicle(intruder);
 
 colors = lines(length(tfm.aas));
 for j = 1:length(tfm.aas)
-  tfm.aas{j}.plotPosition(colors(j,:),5);
+  extraArgs.Color = colors(j,:);
+  extraArgs.arrowLength = 5;
+  tfm.aas{j}.plotPosition(extraArgs);
 end
 
 xlim([-50 200])

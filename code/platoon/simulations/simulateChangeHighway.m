@@ -86,7 +86,8 @@ end
 
 colors = lines(length(tfm.aas));
 for j = 1:length(tfm.aas)
-  tfm.aas{j}.plotPosition(colors(j,:));
+  extraArgs.Color = colors(j,:);
+  tfm.aas{j}.plotPosition(extraArgs);
 end
 title('t=0', 'FontSize', 16)
 axis square

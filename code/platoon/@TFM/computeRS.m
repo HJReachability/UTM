@@ -24,7 +24,7 @@ switch type
     % value function. This computation assumes that the direction of motion
     % is in the positive x-axis
     target = [0 obj.hw_speed 0 0];
-    
+
     filename = [fileparts(mfilename('fullpath')) ...
       '/../RS_core/saved/qr_abs_target_V_' ...
       num2str(obj.hw_speed) '.mat'];
@@ -32,22 +32,23 @@ switch type
     if exist(filename, 'file')
       load(filename)
     else
+      
       [vfs.gs, vfs.datas, vfs.tau] = quad_abs_target_2D(target);
-
+      
       vfs.dims = {[1 2]; [3 4]};
-%       gridLim = ...
-%         [vfs.gs{1}.min-1 vfs.gs{1}.max+1; vfs.gs{2}.min-1 vfs.gs{2}.max+1];
+      %       gridLim = ...
+      %         [vfs.gs{1}.min-1 vfs.gs{1}.max+1; vfs.gs{2}.min-1 vfs.gs{2}.max+1];
       
       range_lower = [vfs.gs{1}.min-1; vfs.gs{2}.min-1];
       range_upper = [vfs.gs{1}.max+1; vfs.gs{2}.max+1];
-      vf = reconSC(vfs, range_lower, range_upper, 'full');
+      vf = reconSC(vfs, range_lower, range_upper, 'TTR');
       
       
-%       [~, ~, TTR_out] = ...
-%         recon2x2D(tau, grids, datas, gridLim, tau(end));
-
+      %       [~, ~, TTR_out] = ...
+      %         recon2x2D(tau, grids, datas, gridLim, tau(end));
+      
       g = vf.g;
-      data = TD2TTR(vf.g, vf.dataMin, vf.tau);
+      data = vf.TTR;
       grad = computeGradients(g, data);
       tau = vf.tau;
       
@@ -100,18 +101,18 @@ switch type
     
   case 'qr_qr_safe_V'
     %% Safety between two quadrotors
-    filename = [fileparts(mfilename('fullpath')) ... 
+    filename = [fileparts(mfilename('fullpath')) ...
       '/../RS_core/saved/qr_qr_safe_V_' ...
       num2str(obj.cr) '_' num2str(obj.hw_speed) '.mat'];
-
+    
     if exist(filename, 'file')
       load(filename)
     else
       [data, g, tau] = ...
         quad_quad_collision_2D(obj.cr, obj.hw_speed, visualize);
-
+      
       if fourD
-      % Reconstruct the base reachable set
+        % Reconstruct the base reachable set
         gridLim = [g.min-1 g.max+1; g.min-1 g.max+1];
         [~, ~, TTR_out] = ...
           recon2x2D(tau, {g; g}, {data; data}, gridLim, tau(end));
@@ -120,7 +121,7 @@ switch type
         grad = TTR_out.grad;
         save(filename, 'g', 'data', 'grad', 'tau')
       else
-        grad = [];      
+        grad = [];
       end
     end
     obj.qr_qr_safe_V.g = g;
@@ -133,21 +134,21 @@ switch type
     
   case 'pl_join_platoon_V'
     error('Not implemented yet.')
-  
-   case 'qr_pl4_safe_V'
+    
+  case 'qr_pl4_safe_V'
     %% Safety for quadrotor pursuing a plane4
-    filename = [fileparts(mfilename('fullpath')) ... 
+    filename = [fileparts(mfilename('fullpath')) ...
       '/../RS_core/saved/qr_pl4_safe_V_' ...
       num2str(obj.cr) '_' num2str(obj.hw_speed) '.mat'];
-
+    
     if exist(filename, 'file')
       load(filename)
     else
       [data, g, tau] = ...
         quad_pl4_collision_2D(obj.cr, obj.hw_speed, visualize);
-
+      
       if fourD
-      % Reconstruct the base reachable set
+        % Reconstruct the base reachable set
         gridLim = [g.min-1 g.max+1; g.min-1 g.max+1];
         [~, ~, TTR_out] = ...
           recon2x2D(tau, {g; g}, {data; data}, gridLim, tau(end));
@@ -156,28 +157,28 @@ switch type
         grad = TTR_out.grad;
         save(filename, 'g', 'data', 'grad', 'tau')
       else
-        grad = [];      
+        grad = [];
       end
     end
     obj.qr_pl4_safe_V.g = g;
     obj.qr_pl4_safe_V.data = data;
     obj.qr_pl4_safe_V.grad = grad;
-    obj.qr_pl4_safe_V.tau = tau; 
-
-   case 'pl4_qr_safe_V'
+    obj.qr_pl4_safe_V.tau = tau;
+    
+  case 'pl4_qr_safe_V'
     %% Safety for plane4 pursuing a quadrotor
-    filename = [fileparts(mfilename('fullpath')) ... 
+    filename = [fileparts(mfilename('fullpath')) ...
       '/../RS_core/saved/pl4_qr_safe_V_' ...
       num2str(obj.cr) '_' num2str(obj.hw_speed) '.mat'];
-
+    
     if exist(filename, 'file')
       load(filename)
     else
       [data, g, tau] = ...
         pl4_quad_collision_2D(obj.cr, obj.hw_speed, visualize);
-
+      
       if fourD
-      % Reconstruct the base reachable set
+        % Reconstruct the base reachable set
         gridLim = [g.min-1 g.max+1; g.min-1 g.max+1];
         [~, ~, TTR_out] = ...
           recon2x2D(tau, {g; g}, {data; data}, gridLim, tau(end));
@@ -186,13 +187,13 @@ switch type
         grad = TTR_out.grad;
         save(filename, 'g', 'data', 'grad', 'tau')
       else
-        grad = [];      
+        grad = [];
       end
     end
     obj.pl4_qr_safe_V.g = g;
     obj.pl4_qr_safe_V.data = data;
     obj.pl4_qr_safe_V.grad = grad;
-    obj.pl4_qr_safe_V.tau = tau; 
+    obj.pl4_qr_safe_V.tau = tau;
     
   case 'pl_pl_safe_V'
     %% Safety between two Planes
@@ -217,10 +218,10 @@ switch type
     
   case 'pl4_pl4_safe_V'
     %% Safety between two Plane4's
-    filename = [fileparts(mfilename('fullpath')) ... 
+    filename = [fileparts(mfilename('fullpath')) ...
       '/../RS_core/saved/pl4_pl4_safe_V_' ...
       num2str(obj.cr) '_' num2str(obj.hw_speed) '.mat'];
-
+    
     if exist(filename, 'file')
       load(filename)
     else
@@ -228,7 +229,7 @@ switch type
         pl4_pl4_collision_2D(obj.cr, obj.hw_speed, visualize);
       
       if fourD
-      % Reconstruct the base reachable set
+        % Reconstruct the base reachable set
         gridLim = [g.min-1 g.max+1; g.min-1 g.max+1];
         [~, ~, TTR_out] = ...
           recon2x2D(tau, {g; g}, {data; data}, gridLim, tau(end));
@@ -256,7 +257,7 @@ switch type
       load(filename)
     else
       [g, data, TTR] = pl4_rel_target_4D('medium');
-      grad = extractCostates(g, data);    
+      grad = extractCostates(g, data);
       save(filename, 'g', 'data', 'grad', 'TTR')
     end
     

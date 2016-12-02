@@ -31,11 +31,11 @@ if nargin<2
 end
 
 if nargin<3
-  grid_min = [x(1) - 35; x(2) - 15; x(3) - 35; x(4) - 15];
+  grid_min = [x(1) - 60; x(2) - 20; x(3) - 35; x(4) - 15];
 end
 
 if nargin<4
-  grid_max = [x(1) + 35; x(2) + 15; x(3) + 35; x(4) + 15];
+  grid_max = [x(1) + 10; x(2) + 10; x(3) + 35; x(4) + 15];
 end
 
 if nargin<5
@@ -56,15 +56,13 @@ dissType = 'global';
 %---------------------------------------------------------------------------
 % Approximately how many grid cells?
 %  (Slightly different grid cell counts will be chosen for each dimension.)
-Np = 51; % Try not to go over 61
-Nv = 31;
 
 % Create the x grid.
 g1.min = grid_min(1:2);
 g1.max = grid_max(1:2);
 g1.dim = 2;                              % Number of dimensions
 g1.bdry = @addGhostExtrapolate;
-g1.N = [ Np; Nv];
+g1.N = [ 51; 41];
 g1 = processGrid(g1);
 
 % Create the y grid.
@@ -73,7 +71,7 @@ g2.max = grid_max(3:4);
 
 g2.dim = 2;                             % Number of dimensions
 g2.bdry = @addGhostExtrapolate;
-g2.N = [ Np; Nv];
+g2.N = [ 51; 41];
 g2 = processGrid(g2);
 
 % ----------------- Target -----------------
@@ -83,6 +81,24 @@ datax = shapeRectangleByCorners(g1, ...
 datay = shapeRectangleByCorners(g2, ...
   [x(3); x(4)]-1.5*g2.dx, [x(3); x(4)]+1.5*g2.dx);
 
+% Subsystems
+qrX = Quad4D([0;0], -3, 3, [1 2]);
+qrY = Quad4D([0;0], -3, 3, [3 4]);
+sDX.grid = g1;
+sDY.grid = g2;
+sDX.dynSys = qrX;
+sDY.dynSys = qrY;
+
+tau = 0:0.01:tMax;
+extraArgs.visualize = true;
+extraArgs.deleteLastPlot = true;
+datax = HJIPDE_solve(datax, tau, sDX, 'none', extraArgs);
+datay = HJIPDE_solve(datay, tau, sDY, 'none', extraArgs);
+
+grids = {g1; g2};
+datas = {datax; datay};
+
+return
 %---------------------------------------------------------------------------
 % Set up spatial approximation scheme.
 schemeFunc = @termLaxFriedrichs;

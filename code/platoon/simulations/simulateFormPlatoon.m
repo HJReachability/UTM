@@ -15,6 +15,7 @@ end
 
 %% TFM
 tfm = TFM;
+tfm.dt = 0.05;
 tfm.computeRS('qr_rel_target_V');
 tfm.computeRS('qr_abs_target_V');
 tfm.computeRS('qr_qr_safe_V');
@@ -51,7 +52,8 @@ ys = xs_ys(2,:);
 colors = lines(length(xs));
 for j = 1:length(xs)
   tfm.regVehicle(UTMQuad4D([xs(j) 0 ys(j) 0]));
-  tfm.aas{j}.plotPosition(colors(j,:));
+  extraArgs.Color = colors(j,:);
+  tfm.aas{j}.plotPosition(extraArgs);
 end
 
 title('t=0', 'FontSize', 16)
@@ -69,11 +71,11 @@ if save_figures
   
   for ii = 1:length(fig_formats)
     if strcmp(fig_formats{ii}, 'png')
-      export_fig([fig_dir '/0'], '-png', '-m2', '-transparent')
+      export_fig([fig_dir '/0'], '-png', '-m2')
     end
     
     if strcmp(fig_formats{ii}, 'pdf')
-      export_fig([fig_dir '/0'], '-pdf', '-m2', '-transparent')
+      export_fig([fig_dir '/0'], '-pdf', '-m2')
     end
     
     if strcmp(fig_formats{ii}, 'fig')

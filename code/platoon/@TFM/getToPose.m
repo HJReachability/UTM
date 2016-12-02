@@ -60,7 +60,7 @@ end
 x0left = -1.5*obj.qr_abs_target_V.g.dx(1);
 y0left = 10;
 
-x0right = 0; obj.qr_abs_target_V.g.dx(1);
+x0right = obj.qr_abs_target_V.g.dx(1);
 y0right = 10 - 1.5*obj.qr_abs_target_V.g.dx(2);
 
 if in_band([x0left y0left], [x0right y0right], ...
@@ -146,7 +146,7 @@ function x = opt_curve_x(x0, y0, u, y)
 % Parametric form of the curve:
 % x = 0.5 * u * t.^2 + y0*t + x0;
 % y = u*t + y0;
-% Take y as input ans solve for x
+% Take y as input and solve for x
 
 t = (y-y0)/u;
 x = 0.5 * u * t.^2 + y0*t + x0;
