@@ -11,8 +11,6 @@ UTM systems are of great interest both for the industry and for government agenc
 ===== Folders =====
 code/ contains code for air highway placement and platooning imulations
 
-data/ contains pre-computed reachable sets used in simulations
-
 docs/ contains papers from this project, documentation, and other documents
 
 references/ contains papers from other authors that we refer to
