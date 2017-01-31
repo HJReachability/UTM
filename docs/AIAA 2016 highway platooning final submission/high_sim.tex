@@ -15,21 +15,21 @@ Figure \ref{fig:airHighway_results} shows the San Francisco Bay Area geographic 
 
 A couple of important observations can be made here. First, the cost-minimizing paths to the various destinations in general overlap, and only split up when they are very close to entering their destination cities. This is intuitively desirable because having overlapping cost-minimizing paths keeps the number of distinct air highways low. Secondly, the contours, which correspond to level curves of the value function, have a spacings corresponding to the cost map: the spacings are large in areas of low cost, and vice versa. This provides insight into the placement of air highways to destinations that were not shown in this example.
 
-\begin{figure}
+\begin{figure*}[h!]
 	\centering
-	\includegraphics[width=\columnwidth]{"airHighway_results"}
+	\includegraphics[width=\textwidth]{"airHighway_results"}
 	\caption{Cost-minimizing paths computed by the Fast Marching Method based on the assumed cost map of the San Francisco Bay Area.}
 	\label{fig:airHighway_results}
-\end{figure}
+\end{figure*}
 
 Figure \ref{fig:airHighway_sparse} shows the result of converting the cost-minimizing paths to a small number of waypoints. The left plot shows the waypoints, interpreted as the start and end points of air highways, over a white background for clarity. The right plot shows these air highways over the map of the Bay Area. Note that we could have gone further to merge some of the overlapping highways. However, the purpose of this section is to illustrate the natural occurrence of air highways from cost-minimizing paths; post-processing of the cost-minimizing paths, which serve as a guide for defining air highways, is not our focus. 
 
-\begin{figure}
+\begin{figure*}[h!]
 	\centering
-	\includegraphics[width=\columnwidth]{"airHighway_sparse"}
+	\includegraphics[width=\textwidth]{"airHighway_sparse"}
 	\caption{Results of conversion from cost-minimizing paths to highway way points.}
 	\label{fig:airHighway_sparse}
-\end{figure}
+\end{figure*}
 
 \subsection{Real-Time Highway Location Updates}
 Since \eqref{eq:eikonal} can be solved in approximately 1 second, the air highway placement process can be redone in real-time if the cost map changes at a particular time. This flexibility can be useful in any situation in which unforeseen circumstances could cause a change in the cost of a particular region of the airspace. For example, accidents or disaster response vehicles may result in an area temporarily having a high cost. On the other hand, depending on for instance the time of day, it may be most desirable to fly in different regions of the airspace, resulting in those regions temporarily having a low cost.

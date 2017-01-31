@@ -21,27 +21,27 @@ At $t=8.0$, $Q_2$ (purple) is in the process of joining the platoon behind $\veh
 In the bottom plots of Figure \ref{fig:fp}, $\veh{1}$ (orange) and $\veh{2}$ (purple) have already become the platoon leader and follower, respectively. The rest of the vehicles follow the same process to join the platoon. All 5 vehicles eventually form a single platoon and travel along the highway together. As with the first two vehicles, the goal satisfaction controllers allow the remaining vehicles to optimally and smoothly join the platoon, while the safety controllers prevent collisions from occurring.
 
 % 40 60 110 210
-\begin{figure} 
+\begin{figure*}[h!]
     \centering
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:fp_43}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:fp_43}
         \includegraphics[width=\columnwidth]{fp_43}
         \caption{The red vehicle is merging onto the highway while avoiding collisions.}
     \end{subfigure}
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:fp_81}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:fp_81}
         \includegraphics[width=\columnwidth]{fp_81}
         \caption{The purple vehicle is joining the platoon while avoiding collisions.}
     \end{subfigure}
 
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:fp_110}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:fp_110}
         \includegraphics[width=\columnwidth]{fp_110}
         \caption{The last three vehicles follow the same process to join the platoon.}
     \end{subfigure}
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:fp_210}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:fp_210}
         \includegraphics[width=\columnwidth]{fp_210}
         \caption{All five vehicles have successfully joined the platoon and now travel on the highway together.}
     \end{subfigure}   
     \caption{A simulation showing how five vehicles initially in the Free mode can form a platoon. \label{fig:fp}}
-\end{figure}
+\end{figure*}
 
 \subsubsection{Intruder Vehicle}
 We now consider the scenario in which a platoon of vehicles encounters an intruder vehicle. To avoid collision, each vehicle checks for safety with respect to the intruder and any vehicles in front and behind of it in the platoon. If necessary, the vehicle uses the reachability-based safety controller to avoid collision, otherwise it uses the appropriate controller to travel on the highway if it is a leader, or follow the leader if it is a follower. After danger has passed, the vehicles in the platoon resume normal operation.
@@ -55,27 +55,27 @@ As the intruder $\veh{5}$ (yellow) continues to disregard other vehicles, the fo
 After the intruder has passed, eventually all vehicles become far away from any safety BRSs. When this occurs, the leader resumes following the highway, and the followers resume following the leader. At $t=19.9$, the platoon successfully gets back onto the highway.
 
 % 100 120 140 200
-\begin{figure}
+\begin{figure*}[h!]
     \centering
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:in_100}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:in_100}
         \includegraphics[width=\columnwidth]{in_100}
         \caption{A four-vehicle platoon travels along the highway. The yellow vehicle disregards the others.}
     \end{subfigure}
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:in_120}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:in_120}
         \includegraphics[width=\columnwidth]{in_120}
         \caption{Vehicles begin avoidance maneuvers as they get near safety BRS boundaries.}
     \end{subfigure}
 
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:in_140}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:in_140}
         \includegraphics[width=\columnwidth]{in_140}
         \caption{Safety controllers cause vehicles to spread out to ``make room'' for the intruder to pass.}
     \end{subfigure}
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:in_200}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:in_200}
         \includegraphics[width=\columnwidth]{in_200}
         \caption{After danger has passed, the platoon resumes normal operation.}
     \end{subfigure}   
     \caption{A simulation showing how a platoon of four vehicles reacts to an intruder. \label{fig:in}}
-\end{figure}
+\end{figure*}
 
 \subsubsection{Changing highways}
 In order to travel from origin to destination, a vehicle may need to change highways several times before exiting an air highway system. In this simulation, shown in Figure \ref{fig:ch}, two platoons are traveling on two different highways that intersect. When the platoons are near the highway intersection, two of the vehicles in the four-vehicle platoon change highways and join the other platoon.
@@ -84,24 +84,24 @@ The $t=8.2$ plot shows the two platoons of vehicles traveling on the two air hig
 
 At $t=16.9$, the dark red vehicle is in the process of changing highways. In this case, it remains in the Follower mode, since it is a follower in both its old and new platoons. While the dark red vehicle changes highways, the orange vehicle moves forward to catch up to its new platoon leader, the green vehicle. By $t=23$, all the vehicles have finished performing their desired maneuvers, resulting in a two-vehicle platoon and a five-vehicle platoon traveling on their respective highways.
 
-\begin{figure}
+\begin{figure*}[h!]
     \centering
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:ch_83}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:ch_83}
         \includegraphics[width=\columnwidth]{ch_83}
         \caption{A three-vehicle platoon and a four-vehicle platoon travel on their respective air highways.}
     \end{subfigure}
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:ch_124}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:ch_124}
         \includegraphics[width=\columnwidth]{ch_124}
         \caption{The yellow vehicle begins to join the new platoon; The green vehicle becomes a leader.}
     \end{subfigure}
 
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:ch_170}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:ch_170}
         \includegraphics[width=\columnwidth]{ch_170}
         \caption{The dark red vehicle joins a new platoon; the orange vehicle catches up to new platoon leader.}
     \end{subfigure}
-    \begin{subfigure}[t]{0.45\columnwidth} \label{subfig:ch_231}
+    \begin{subfigure}[t]{0.9\columnwidth} \label{subfig:ch_231}
         \includegraphics[width=\columnwidth]{ch_231}
         \caption{New platoons now travel on their respective air highways.}
     \end{subfigure}   
     \caption{A simulation showing two vehicles changing highways and joining a new platoon. \label{fig:ch}}
-\end{figure}
+\end{figure*}
